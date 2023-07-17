@@ -19,11 +19,4 @@ public class MessageListener extends ListenerAdapter {
         }
         
     }
-
-    
-    // private boolean guessCountry(String guessWord) {
-    //     return flagGame.guess(guessWord);
-    // }
-
-    
 }
