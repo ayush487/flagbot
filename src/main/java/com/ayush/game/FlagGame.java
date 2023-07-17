@@ -6,87 +6,62 @@ import java.util.HashMap;
 import java.util.Random;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class FlagGame {
 
-    private static FlagGame flagGame;
-
-    private MessageChannel channel;
-    private static boolean isGameOn = false;
-
+    // Static Variables
     private static HashMap<String, String> countryMap = new HashMap<>(192);
-    
+    private static ArrayList<String> isoList;
+    private static Random random;
     private static String flagLink = "https://flagcdn.com/256x192/";
     private static String suffix = ".png";
 
-    private static ArrayList<String> isoList;
-    private static Random random;
-
-    private long startingTime;
+    // Only Instance variable
     private String countryCode;
+    private SlashCommandInteractionEvent event;
 
+    // static block to initialize the static variables
     static {
         random = new Random();
         loadCountries();
         isoList = new ArrayList<String>(countryMap.keySet());
     }
-    
-    private FlagGame (MessageChannel channel, long startingTime, String countryCode) {
-        super();
-        this.channel = channel;
-        this.startingTime = startingTime;
-        this.countryCode = countryCode;
+
+    // Instance block to initialize countryCode for every new Game
+    {
+        countryCode = isoList.get(random.nextInt(isoList.size()));
     }
 
-
-
-    public static FlagGame newGame(MessageChannel channel, long startingTime) {
-        if(isGameOn) {
-            throw new RuntimeException("There already a game on");
-        }
-        String codeForGame = isoList.get(random.nextInt(isoList.size()));
-        flagGame = new FlagGame(channel, startingTime, codeForGame);
-        isGameOn = true;
-        // String country = countryMap.get(codeForGame);
+    public FlagGame (SlashCommandInteractionEvent event) {
+        super();
+        this.event = event;
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("Country Flag");
-        eb.setImage(flagLink + codeForGame + suffix);
+        eb.setImage(flagLink + countryCode + suffix);
         eb.setColor(new Color(1,12,64));
-        channel.sendMessageEmbeds(eb.build()).queue();
-        return flagGame;
+        event.getChannel().sendMessageEmbeds(eb.build()).queue();
+    }
+    
+    void endGameAsWin(MessageReceivedEvent msgEvent) {
+        msgEvent.getMessage().reply("You Guessed it right!").queue();
+        GameHandler.getInstance().endGame(event.getChannel().getIdLong());
     }
 
-    public static void endGame (boolean isWin) {
-        isGameOn = false;
-        flagGame.endGameReminder(isWin);
-        flagGame = null;
-    }
-
-    private void endGameReminder(boolean win) {
-        if(win) {
-            
-        }else {
-            channel.sendMessage("No one guessed the country , it was " + countryMap.get(countryCode)).queue();;
-        }
+    void endGameAsLose() {
+        event.getChannel().sendMessage("No one guessed the country , it was " + countryMap.get(countryCode)).queue();
+        GameHandler.getInstance().endGame(event.getChannel().getIdLong());
     }
 
     public boolean guess(String guessCountry) {
-        if(countryMap.get(flagGame.countryCode).equalsIgnoreCase(guessCountry)) {
+        if(countryMap.get(countryCode).equalsIgnoreCase(guessCountry)) {
             return true;
         }else {
             return false;
         }
     }
 
-    public long getStartingTime() {
-        return startingTime;
-    }
-    public void setStartingTime(long s) {
-        this.startingTime = s;
-    }
-
-   
     private static void loadCountries() {
         countryMap.put("af", "Afghanistan");
         countryMap.put("al", "Albania");
@@ -126,7 +101,7 @@ public class FlagGame {
         countryMap.put("km", "Comoros");
         countryMap.put("cg", "Congo");
         countryMap.put("cr", "Costa Rica");
-        countryMap.put("ci", "CoteD'lvoire");
+        countryMap.put("ci", "Ivory Coast");
         countryMap.put("hr", "Croatia");
         countryMap.put("cu", "Cuba");
         countryMap.put("cy", "Cyprus");
@@ -179,7 +154,7 @@ public class FlagGame {
         countryMap.put("kr", "South Korea");
         countryMap.put("kw", "Kuwait");
         countryMap.put("kg", "Kyrgyzstan");
-        countryMap.put("la", "Lao");
+        countryMap.put("la", "Laos");
         countryMap.put("lv", "Latvia");
         countryMap.put("lb", "Lebanon");
         countryMap.put("ls", "Lesotho");
