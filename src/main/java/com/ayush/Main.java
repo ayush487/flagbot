@@ -24,7 +24,7 @@ public class Main
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String bot_token = properties.getProperty("BOT_TOKEN");
+        final String bot_token = properties.getProperty("BOT_TOKEN");
         JDA jda = JDABuilder.createDefault(bot_token).addEventListeners(new MessageListener(), new SlashCommandListener()).build().awaitReady();
         
         jda.upsertCommand("guess", "Guess the country name by its flag").queue();;
