@@ -1,5 +1,8 @@
 package com.ayush;
 
+import java.io.FileInputStream;
+import java.util.Properties;
+
 import javax.security.auth.login.LoginException;
 
 import com.ayush.listeners.MessageListener;
@@ -10,11 +13,19 @@ import net.dv8tion.jda.api.JDABuilder;
 
 public class Main 
 {
-    private final static String BOT_TOKEN = "MTEyOTc4OTMyMDE2NTg2NzY2Mg.GBQb5I.FNo146eci467VR74LlynjNrJ66S9c08QuDPDN4";
+
+    // private final static String BOT_TOKEN = "";
     
     public static void main( String[] args ) throws LoginException, InterruptedException
     {
-        JDA jda = JDABuilder.createDefault(BOT_TOKEN).addEventListeners(new MessageListener(), new SlashCommandListener()).build().awaitReady();
+        Properties properties = new Properties(1);
+        try {
+            properties.load(new FileInputStream("credential.properties"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String bot_token = properties.getProperty("BOT_TOKEN");
+        JDA jda = JDABuilder.createDefault(bot_token).addEventListeners(new MessageListener(), new SlashCommandListener()).build().awaitReady();
         
         jda.upsertCommand("guess", "Guess the country name by its flag").queue();;
     }

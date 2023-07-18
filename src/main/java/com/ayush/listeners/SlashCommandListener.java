@@ -4,6 +4,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nonnull;
+
 import com.ayush.game.GameEndRunnable;
 import com.ayush.game.GameHandler;
 
@@ -16,11 +18,11 @@ public class SlashCommandListener extends ListenerAdapter {
 
     public SlashCommandListener() {
         super();
-        gameEndService = new ScheduledThreadPoolExecutor(1);
+        gameEndService = new ScheduledThreadPoolExecutor(4);
     }
 
     @Override
-    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+    public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
         if (event.getName().equals("guess")) {
             boolean isAdded = GameHandler.getInstance().addGame(event);
             if (isAdded) {

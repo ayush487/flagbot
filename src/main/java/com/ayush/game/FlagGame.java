@@ -11,25 +11,21 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class FlagGame {
 
-    // Static Variables
     private static HashMap<String, String> countryMap = new HashMap<>(192);
     private static ArrayList<String> isoList;
     private static Random random;
     private static String flagLink = "https://flagcdn.com/256x192/";
     private static String suffix = ".png";
 
-    // Only Instance variable
     private String countryCode;
     private SlashCommandInteractionEvent event;
 
-    // static block to initialize the static variables
     static {
         random = new Random();
         loadCountries();
         isoList = new ArrayList<String>(countryMap.keySet());
     }
 
-    // Instance block to initialize countryCode for every new Game
     {
         countryCode = isoList.get(random.nextInt(isoList.size()));
     }
@@ -46,11 +42,12 @@ public class FlagGame {
     
     void endGameAsWin(MessageReceivedEvent msgEvent) {
         msgEvent.getMessage().reply("You Guessed it right!").queue();
-        GameHandler.getInstance().endGame(event.getChannel().getIdLong());
+        // GameHandler.getInstance().endGame(event.getChannel().getIdLong());
+        GameHandler.getInstance().getGameMap().remove(event.getChannel().getIdLong());
     }
 
     void endGameAsLose() {
-        event.getChannel().sendMessage("No one guessed the country , it was " + countryMap.get(countryCode)).queue();
+        this.event.getChannel().sendMessage("No one guessed the country , it was " + countryMap.get(countryCode)).queue();
         GameHandler.getInstance().endGame(event.getChannel().getIdLong());
     }
 

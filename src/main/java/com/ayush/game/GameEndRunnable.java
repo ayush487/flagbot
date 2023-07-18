@@ -12,7 +12,8 @@ public class GameEndRunnable implements Runnable {
 
     @Override
     public void run() {
-        if(GameHandler.getInstance().getGameMap().containsKey(channelId)){
+        if(GameHandler.getInstance().getGameMap().containsKey(channelId)
+        && GameHandler.getInstance().getGameMap().get(channelId)==flagGame){
             flagGame.endGameAsLose();
         }
     }
