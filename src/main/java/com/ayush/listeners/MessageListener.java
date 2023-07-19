@@ -13,6 +13,7 @@ public class MessageListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
         Message message = event.getMessage();
+        
         String messageText = message.getContentDisplay();
         // System.out.println(messageText);
         if (!event.getAuthor().isBot()) {

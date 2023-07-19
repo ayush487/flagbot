@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.Random;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
 public class FlagGame {
 
@@ -18,7 +20,8 @@ public class FlagGame {
     private static String suffix = ".png";
 
     private String countryCode;
-    private SlashCommandInteractionEvent event;
+    private MessageChannel channel;
+
 
     static {
         random = new Random();
@@ -30,25 +33,42 @@ public class FlagGame {
         countryCode = isoList.get(random.nextInt(isoList.size()));
     }
 
-    public FlagGame (SlashCommandInteractionEvent event) {
+    public FlagGame (MessageChannel channel) {
         super();
-        this.event = event;
+        this.channel = channel;
         EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle("Country Flag");
+        eb.setTitle("Guess the Country Flag");
         eb.setImage(flagLink + countryCode + suffix);
-        eb.setColor(new Color(1,12,64));
-        event.getChannel().sendMessageEmbeds(eb.build()).queue();
+        eb.setColor(new Color(38, 187, 237));
+        channel.sendMessageEmbeds(eb.build())
+            .setActionRow(Button.primary("skipButton", "Skip"))
+            .queue();
     }
     
     void endGameAsWin(MessageReceivedEvent msgEvent) {
-        msgEvent.getMessage().reply("You Guessed it right!").queue();
-        // GameHandler.getInstance().endGame(event.getChannel().getIdLong());
-        GameHandler.getInstance().getGameMap().remove(event.getChannel().getIdLong());
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setTitle("Correct!");
+        eb.setDescription(
+            msgEvent.getAuthor().getAsMention() + " is correct! \n **Correct Answer :** "+ countryMap.get(countryCode)
+        );
+        eb.setThumbnail(flagLink+countryCode+suffix);
+        eb.setColor(new Color(13, 240, 52));
+        msgEvent.getChannel().sendMessageEmbeds(eb.build())
+        .setActionRow(Button.primary("playAgainButton", "Play Again"))
+        .queue();
+        GameHandler.getInstance().getGameMap().remove(channel.getIdLong());
     }
 
-    void endGameAsLose() {
-        this.event.getChannel().sendMessage("No one guessed the country , it was " + countryMap.get(countryCode)).queue();
-        GameHandler.getInstance().endGame(event.getChannel().getIdLong());
+    public void endGameAsLose() {
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setTitle("No one guessed the country!");
+        eb.setDescription("**Correct Answer :** \n"+ countryMap.get(countryCode));
+        eb.setThumbnail(flagLink+countryCode+suffix);
+        eb.setColor(new Color(240, 13, 52));
+        this.channel.sendMessageEmbeds(eb.build())
+        .setActionRow(Button.primary("playAgainButton", "Play Again"))
+        .queue();
+        GameHandler.getInstance().endGame(channel.getIdLong());
     }
 
     public boolean guess(String guessCountry) {

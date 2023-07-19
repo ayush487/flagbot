@@ -3,6 +3,7 @@ package com.ayush.game;
 import java.util.HashMap;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class GameHandler {
@@ -27,12 +28,25 @@ public class GameHandler {
     }
 
     public boolean addGame(SlashCommandInteractionEvent event) {
+        
         if(gameMap.containsKey(event.getChannel().getIdLong())) {
             event.reply("There is already a game running in this channel!").queue();
             return false;
         } else {
             event.reply("Starting game now!").queue();
-            FlagGame game = new FlagGame(event);
+            FlagGame game = new FlagGame(event.getChannel());
+            gameMap.put(event.getChannel().getIdLong(), game);
+            return true;
+        }
+    }
+    
+    public boolean addGame(ButtonInteractionEvent event) {
+        if(gameMap.containsKey(event.getChannel().getIdLong())) {
+            event.reply("There is already a game running in this channel!").queue();
+            return false;
+        } else {
+            event.reply("Starting game now!").queue();
+            FlagGame game = new FlagGame(event.getChannel());
             gameMap.put(event.getChannel().getIdLong(), game);
             return true;
         }

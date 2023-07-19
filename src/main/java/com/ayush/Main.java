@@ -6,7 +6,7 @@ import java.util.Properties;
 import javax.security.auth.login.LoginException;
 
 import com.ayush.listeners.MessageListener;
-import com.ayush.listeners.SlashCommandListener;
+import com.ayush.listeners.InteractionsListener;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -25,7 +25,7 @@ public class Main
             e.printStackTrace();
         }
         final String bot_token = properties.getProperty("BOT_TOKEN");
-        JDA jda = JDABuilder.createDefault(bot_token).addEventListeners(new MessageListener(), new SlashCommandListener()).build().awaitReady();
+        JDA jda = JDABuilder.createDefault(bot_token).addEventListeners(new MessageListener(), new InteractionsListener()).build().awaitReady();
         
         jda.upsertCommand("guess", "Guess the country name by its flag").queue();;
     }
