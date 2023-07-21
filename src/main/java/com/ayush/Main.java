@@ -5,16 +5,18 @@ import java.util.Properties;
 
 import javax.security.auth.login.LoginException;
 
-import com.ayush.listeners.MessageListener;
 import com.ayush.listeners.InteractionsListener;
+import com.ayush.listeners.MessageListener;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
 
 public class Main 
 {
 
     // private final static String BOT_TOKEN = "";
+    // Invite Link -> https://discord.com/api/oauth2/authorize?client_id=1129789320165867662&permissions=139586824256&scope=applications.commands%20bot
     
     public static void main( String[] args ) throws LoginException, InterruptedException
     {
@@ -25,7 +27,9 @@ public class Main
             e.printStackTrace();
         }
         final String bot_token = properties.getProperty("BOT_TOKEN");
-        JDA jda = JDABuilder.createDefault(bot_token).addEventListeners(new MessageListener(), new InteractionsListener()).build().awaitReady();
+        JDA jda = JDABuilder.createDefault(bot_token).addEventListeners(new MessageListener(), new InteractionsListener())
+        .setActivity(Activity.playing("/guess"))
+        .build().awaitReady();
         
         jda.upsertCommand("guess", "Guess the country name by its flag").queue();;
     }

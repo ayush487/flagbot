@@ -48,6 +48,7 @@ public class InteractionsListener extends ListenerAdapter {
         }
         else if (event.getComponentId().equals("skipButton")) {
             if(GameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())){
+                event.reply(event.getUser().getAsMention() + " has skipped the game!").queue();
                 GameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()).endGameAsLose();
             }
         }
