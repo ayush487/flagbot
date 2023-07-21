@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import com.ayush.dbconnectivity.CoinDao;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -13,12 +15,13 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 public class FlagGame {
 
     private static HashMap<String, String> countryMap = new HashMap<>(194);
-    private static HashMap<Long, Integer> coinMap = new HashMap<>();
+//    private static HashMap<Long, Integer> coinMap = new HashMap<>();
     private static HashMap<String, String> hintMap = new HashMap<>(194);
     private static ArrayList<String> isoList;
     private static Random random;
     private static String flagLink = "https://flagcdn.com/256x192/";
     private static String suffix = ".png";
+    private static CoinDao coinDao;
 
     private String countryCode;
     private MessageChannel channel;
@@ -29,6 +32,7 @@ public class FlagGame {
         loadCountries();
         loadHints();
         isoList = new ArrayList<String>(countryMap.keySet());
+        coinDao = new CoinDao();
     }
 
     {
@@ -64,7 +68,7 @@ public class FlagGame {
         .setActionRow(Button.primary("playAgainButton", "Play Again"))
         .queue();
         GameHandler.getInstance().getGameMap().remove(channel.getIdLong());
-        increaseCoins(msgEvent.getAuthor().getIdLong(), 100);
+        increaseCoins(msgEvent.getAuthor().getIdLong(), 100l);
     }
 
     public void endGameAsLose() {
@@ -87,13 +91,23 @@ public class FlagGame {
         }
     }
 
-    private static synchronized void increaseCoins(long userId, int amount) {
-        if(coinMap.containsKey(userId)) {
-            int prevAmount = coinMap.get(userId);
-            coinMap.put(userId, prevAmount+amount);
-        } else {
-            coinMap.put(userId, amount);
-        }
+    private static synchronized void increaseCoins(long userId, long amount) {
+        // if(coinMap.containsKey(userId)) {
+        //     int prevAmount = coinMap.get(userId);
+        //     coinMap.put(userId, prevAmount+amount);
+        // } else {
+        //     coinMap.put(userId, amount);
+        // }
+        coinDao.addCoins(userId, amount);
+    }
+    
+    private static synchronized long getAmount(long userId) {
+        // if(coinMap.containsKey(userId)) {
+        //     return coinMap.get(userId);
+        // } else {
+        //     return 0;
+        // }
+        return coinDao.getBalance(userId);
     }
 
     private static void loadHints() {
@@ -291,14 +305,6 @@ public class FlagGame {
         hintMap.put("ye", "Yemen");
         hintMap.put("zm", "Zambia");
         hintMap.put("zw", "Zimbabwe");     
-    }
-
-    private static synchronized int getAmount(long userId) {
-        if(coinMap.containsKey(userId)) {
-            return coinMap.get(userId);
-        } else {
-            return 0;
-        }
     }
 
     private static void loadCountries() {

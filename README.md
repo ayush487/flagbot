@@ -5,7 +5,9 @@ This is source code of the Discord Bot (<a href="https://discord.com/api/oauth2/
 
 <h3>Clonig the Project</h3>
 
-You need to create a credential.properties file inside the flagbot folder which consists of key value pairs ( BOT_TOKEN : YOUR_BOT_TOKEN ), after that your bot will start working.
+You need to create a credential.properties file inside the flagbot folder which consists of key value pairs ( BOT_TOKEN : YOUR_BOT_TOKEN ), after that your bot will start working. <br />
+Moreover, for database features, update the variables in DBInfo.java in the com.ayush.dbconnectivity package.
+
 
 <hr />
 
