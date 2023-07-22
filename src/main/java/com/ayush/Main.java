@@ -11,6 +11,7 @@ import com.ayush.listeners.MessageListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
 
 public class Main 
 {
@@ -27,10 +28,14 @@ public class Main
             e.printStackTrace();
         }
         final String bot_token = properties.getProperty("BOT_TOKEN");
-        JDA jda = JDABuilder.createDefault(bot_token).addEventListeners(new MessageListener(), new InteractionsListener())
+//        JDA jda = 
+        	JDABuilder.createDefault(bot_token).addEventListeners(new MessageListener(), new InteractionsListener())
         .setActivity(Activity.playing("/guess"))
         .build().awaitReady();
         
-        jda.upsertCommand("guess", "Guess the country name by its flag").queue();;
+//        jda.upsertCommand("guess", "Guess the country name by its flag").queue();
+        
+//        jda.upsertCommand("leaderboards", "See the top players accross the bot").queue();
+        
     }
 }

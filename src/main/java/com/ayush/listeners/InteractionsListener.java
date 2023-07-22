@@ -8,7 +8,9 @@ import javax.annotation.Nonnull;
 
 import com.ayush.game.GameEndRunnable;
 import com.ayush.game.GameHandler;
+import com.ayush.game.LeaderboardHandler;
 
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -32,6 +34,11 @@ public class InteractionsListener extends ListenerAdapter {
                         GameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()),
                         event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
             }
+        } else if(event.getName().equals("leaderboards")) {
+        	event.deferReply().queue();
+        	JDA jda = event.getJDA();
+        	String leaderboard = LeaderboardHandler.getInstance().getLeaderboard(jda);
+			event.getHook().sendMessage(leaderboard).queue();
         }
     }
 

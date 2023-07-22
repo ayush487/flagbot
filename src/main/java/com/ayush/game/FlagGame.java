@@ -431,7 +431,7 @@ public class FlagGame {
         countryMap.put("nr", "Nauru");
         countryMap.put("np", "Nepal");
         countryMap.put("nl", "Netherlands");
-        countryMap.put("nz", "NewZealand");
+        countryMap.put("nz", "New Zealand");
         countryMap.put("ni", "Nicaragua");
         countryMap.put("ne", "Niger");
         countryMap.put("no", "Norway");
