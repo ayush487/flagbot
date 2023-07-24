@@ -40,6 +40,7 @@ public class GameHandler {
         }
     }
     
+    
     public boolean addGame(ButtonInteractionEvent event) {
         if(gameMap.containsKey(event.getChannel().getIdLong())) {
             event.reply("There is already a game running in this channel!").queue();

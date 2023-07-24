@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import com.ayush.game.GameEndRunnable;
 import com.ayush.game.GameHandler;
 import com.ayush.game.LeaderboardHandler;
+import com.ayush.game.RegionHandler;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -25,9 +26,10 @@ public class InteractionsListener extends ListenerAdapter {
     }
 
     
-    @Override
+	@Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
         if (event.getName().equals("guess")) {
+        	
             boolean isAdded = GameHandler.getInstance().addGame(event);
             if (isAdded) {
                 gameEndService.schedule(new GameEndRunnable(
@@ -37,7 +39,8 @@ public class InteractionsListener extends ListenerAdapter {
         } else if(event.getName().equals("leaderboards")) {
         	event.deferReply().queue();
         	JDA jda = event.getJDA();
-        	String leaderboard = LeaderboardHandler.getInstance().getLeaderboard(jda);
+        	String temp = LeaderboardHandler.getInstance().getLeaderboard(jda);
+        	String leaderboard = temp!=null ? temp : "Something went wrong!";
 			event.getHook().sendMessage(leaderboard).queue();
         }
     }
@@ -54,10 +57,17 @@ public class InteractionsListener extends ListenerAdapter {
             }
         }
         else if (event.getComponentId().equals("skipButton")) {
+        	event.deferReply().queue();
             if(GameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())){
-                event.reply(event.getUser().getAsMention() + " has skipped the game!").queue();
+                event.getHook().sendMessage(event.getUser().getAsMention() + " has skipped the game!").queue();
                 GameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()).endGameAsLose();
             }
+        }
+        else if (event.getComponentId().equals("checkRegionButton")) {
+        	event.deferReply().setEphemeral(true).queue();
+        	String response = RegionHandler.getInstance().requestForHint(event);
+        	response = (response!=null) ? response : "Region Not Found!";
+			event.getHook().sendMessage(response).setEphemeral(true).queue();;
         }
     }
 

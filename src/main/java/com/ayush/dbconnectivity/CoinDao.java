@@ -5,6 +5,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class CoinDao {
+	
+	public static CoinDao coinDao = null;
+	
+	private CoinDao() {}
+	
+	public static synchronized CoinDao getInstance() {
+		if(coinDao==null) {
+			coinDao = new CoinDao();
+		}
+		return coinDao;
+	}
+	
     public void addCoins(Long userId, Long amount) {
         try {
             Connection conn = ConnectionProvider.getConnection();
@@ -30,7 +42,7 @@ public class CoinDao {
             return coin;
         } catch (Exception e) {
             e.printStackTrace();
+            return 0l;
         }
-        return 0l;
     }
 }

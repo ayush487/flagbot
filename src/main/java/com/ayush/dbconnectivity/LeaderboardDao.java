@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.requests.RestAction;
 
 public class LeaderboardDao {
 	
@@ -24,18 +22,16 @@ public class LeaderboardDao {
 			while(rs.next()) {
 				long userId = rs.getLong("user_id");
 				long amount = rs.getLong("coins");
-				RestAction<User> restAction = jda.retrieveUserById(userId);
-				RestAction<String> map = restAction.map(user -> user.getAsTag());
-				String complete = map.complete();
-//				User user = User.fromId(userId);
-				sb.append("\n#"+index+" "+complete + "    " + amount + " Coins");
+				String userTagName = jda.retrieveUserById(userId)
+						.map(user -> user.getAsTag())
+						.complete();
+				sb.append("\n#"+index+" "+userTagName + "    " + amount + " Coins");
 				index++;
 			}
 			return sb.toString();
 		} catch (SQLException exception) {
 			exception.printStackTrace();
+			return null;
 		}
-		return null;
-		
 	}
 }

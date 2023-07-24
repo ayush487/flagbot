@@ -9,9 +9,7 @@ public class LeaderboardHandler {
 	private static LeaderboardHandler leaderboardHandler = null;
 	private static LeaderboardDao dao = new LeaderboardDao();
 	
-	private LeaderboardHandler() {
-		
-	}
+	private LeaderboardHandler() {}
 	
 	public static synchronized LeaderboardHandler getInstance() {
         if(leaderboardHandler==null) {
