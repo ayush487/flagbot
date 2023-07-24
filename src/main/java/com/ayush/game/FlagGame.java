@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import com.ayush.dbconnectivity.CoinDao;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
@@ -23,6 +26,7 @@ public class FlagGame {
     private String countryCode;
     private MessageChannel channel;
     private Long messageId;
+    private MessageEmbed messageEmbed;
 
     static {
         random = new Random();
@@ -42,7 +46,9 @@ public class FlagGame {
         eb.setImage(flagLink + countryCode + suffix);
         eb.setColor(new Color(38, 187, 237));
         eb.setFooter("*See Region will cost you 60 coins");
-        channel.sendMessageEmbeds(eb.build())
+        MessageEmbed embed = eb.build();
+        setMessageEmbed(embed);
+        channel.sendMessageEmbeds(embed)
             .setActionRow(Button.primary("skipButton", "Skip"), Button.primary("checkRegionButton", "See Region"))
             .queue(message -> setMessageId(message.getIdLong())
             );
@@ -68,17 +74,7 @@ public class FlagGame {
         increaseCoins(msgEvent.getAuthor().getIdLong(), 100l); 
         disableButtons();
     }
-    public String getCountryCode() {
-    	return this.countryCode;
-    }
-    public long getMessageId() {
-    	return messageId;
-    }
     
-    public void setMessageId(long msgId) {
-    	this.messageId = msgId;
-    }
-
     public void endGameAsLose() {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("No one guessed the country!");
@@ -94,7 +90,7 @@ public class FlagGame {
     
     private void disableButtons() {
     	this.channel.retrieveMessageById(this.getMessageId())
-        .complete().editMessageEmbeds()
+        .complete().editMessageEmbeds(getMessageEmbed())
         .setActionRow(Button.primary("skipButton", "Skip").asDisabled(), Button.primary("checkRegionButton", "See Region").asDisabled())
         .queue();
     }
@@ -113,6 +109,22 @@ public class FlagGame {
     
     private static synchronized long getAmount(long userId) {
         return CoinDao.getInstance().getBalance(userId);
+    }
+    
+    public String getCountryCode() {
+    	return this.countryCode;
+    }
+    public long getMessageId() {
+    	return messageId;
+    }    
+    public void setMessageId(long msgId) {
+    	this.messageId = msgId;
+    }
+    public void setMessageEmbed(@Nullable MessageEmbed msgEmbed) {
+    	this.messageEmbed = msgEmbed;
+    }
+    public MessageEmbed getMessageEmbed() {
+    	return messageEmbed;
     }
 
     private static void loadCountries() {
