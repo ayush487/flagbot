@@ -8,8 +8,10 @@ import javax.security.auth.login.LoginException;
 import com.ayush.listeners.InteractionsListener;
 import com.ayush.listeners.MessageListener;
 
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
 
 public class Main 
 {
@@ -28,10 +30,11 @@ public class Main
         
         final String bot_token = properties.getProperty("BOT_TOKEN");
         
-        JDABuilder.createDefault(bot_token).addEventListeners(new MessageListener(), new InteractionsListener())
+        JDA jda = JDABuilder.createDefault(bot_token).addEventListeners(new MessageListener(), new InteractionsListener())
         .setActivity(Activity.playing("/guess"))
         .build().awaitReady();
         
-        
+//        Guild swambot = jda.getGuildById(1127236362530209932l);
+        jda.upsertCommand("guessmap", "Guess which country map is it!").queue();
     }
 }

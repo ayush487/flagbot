@@ -1,4 +1,4 @@
-package com.ayush.game;
+package com.ayush.game.flag;
 
 import com.ayush.dbconnectivity.CoinDao;
 import com.ayush.dbconnectivity.RegionDao;
@@ -41,7 +41,7 @@ public class RegionHandler {
 	}
 	
 	public String getRegion(long eventChannelId) {
-    	String countryCode = GameHandler.getInstance().getGameMap()
+    	String countryCode = FlagGameHandler.getInstance().getGameMap()
     			.get(eventChannelId).getCountryCode();
     	return RegionDao.getInstance().getRegion(countryCode);
     }

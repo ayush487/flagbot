@@ -1,20 +1,20 @@
-package com.ayush.game;
+package com.ayush.game.flag;
 
-public class GameEndRunnable implements Runnable {
+public class FlagGameEndRunnable implements Runnable {
 
-    private FlagGame flagGame;
+    private FlagGame game;
     private long channelId;
 
-    public GameEndRunnable(FlagGame flagGame, long channelId) {
-        this.flagGame = flagGame;
+    public FlagGameEndRunnable(FlagGame game, long channelId) {
+        this.game = game;
         this.channelId = channelId;
     }
 
     @Override
     public void run() {
-        if(GameHandler.getInstance().getGameMap().containsKey(channelId)
-        && GameHandler.getInstance().getGameMap().get(channelId)==flagGame){
-            flagGame.endGameAsLose();
+        if(FlagGameHandler.getInstance().getGameMap().containsKey(channelId)
+        && FlagGameHandler.getInstance().getGameMap().get(channelId)==game){
+            game.endGameAsLose();
         }
     }
 }

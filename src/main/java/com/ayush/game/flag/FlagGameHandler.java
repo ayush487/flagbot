@@ -1,4 +1,4 @@
-package com.ayush.game;
+package com.ayush.game.flag;
 
 import java.util.HashMap;
 
@@ -6,19 +6,19 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-public class GameHandler {
+public class FlagGameHandler {
 
-    private static GameHandler gameHandler = null;
+    private static FlagGameHandler gameHandler = null;
     
     private HashMap<Long, FlagGame> gameMap;
 
-    private GameHandler () {
+    private FlagGameHandler () {
         gameMap = new HashMap<>();
     }
 
-    public static synchronized GameHandler getInstance() {
+    public static synchronized FlagGameHandler getInstance() {
         if(gameHandler==null) {
-            gameHandler = new GameHandler();
+            gameHandler = new FlagGameHandler();
         }
         return gameHandler;
     }

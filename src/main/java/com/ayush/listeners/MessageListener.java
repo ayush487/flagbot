@@ -2,7 +2,8 @@ package com.ayush.listeners;
 
 import javax.annotation.Nonnull;
 
-import com.ayush.game.GameHandler;
+import com.ayush.game.flag.FlagGameHandler;
+import com.ayush.game.map.MapGameHandler;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -17,10 +18,15 @@ public class MessageListener extends ListenerAdapter {
         String messageText = message.getContentDisplay();
         // System.out.println(messageText);
         if (!event.getAuthor().isBot()) {
-            if (GameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())) {
+            if (FlagGameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())) {
                 // System.out.println(messageText);
-                GameHandler.getInstance().handleGuess(messageText, event);
+                FlagGameHandler.getInstance().handleGuess(messageText, event);
             }
+            if(MapGameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())) {
+            	MapGameHandler.getInstance().handleGuess(messageText, event);
+            }
+            
         }
+        
     }
 }
