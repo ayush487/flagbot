@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
+import com.ayushtech.flagbot.dbconnectivity.ChannelDao;
 import com.ayushtech.flagbot.game.LeaderboardHandler;
 import com.ayushtech.flagbot.game.flag.FlagGameEndRunnable;
 import com.ayushtech.flagbot.game.flag.FlagGameHandler;
@@ -14,25 +15,83 @@ import com.ayushtech.flagbot.game.map.MapGameEndRunnable;
 import com.ayushtech.flagbot.game.map.MapGameHandler;
 
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.GuildMessageChannel;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
 public class InteractionsListener extends ListenerAdapter {
 
     ScheduledExecutorService gameEndService;
+    ChannelDao channelDao;
 
     public InteractionsListener() {
         super();
         gameEndService = new ScheduledThreadPoolExecutor(4);
+        channelDao = ChannelDao.getInstance();
     }
 
     
 	@Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
+		event.deferReply().queue();
+		
+//		Disable Command
+		if(event.getName().equals("disable")) {
+			Member member = event.getMember();
+			if(member.hasPermission(Permission.MANAGE_CHANNEL)) {
+				OptionMapping option = event.getOption("channel");
+				if(option==null) {					
+					channelDao.addDisableChannel(event.getChannel().getIdLong());
+					event.getHook().sendMessage("Commands are disabled for this channel now!").setEphemeral(true).queue();
+				} else {
+					GuildMessageChannel channelOption = option.getAsMessageChannel();
+					if(channelOption==null) {
+						event.getHook().sendMessage("Mentioned channel is not a Message Channel").queue();
+					} else {	
+						channelDao.addDisableChannel(channelOption.getIdLong());
+						event.getHook().sendMessage("Commands are disabled for " + channelOption.getAsMention() + " now!").setEphemeral(true).queue();
+					}
+				}
+			} else {
+				event.getHook().sendMessage("You need `Manage_Channel` permissions to use this command!").setEphemeral(true).queue();
+			}
+			return;
+		} 
+		
+//		Enable Command
+		else if(event.getName().equals("enable")) {
+			Member member = event.getMember();
+			if(member.hasPermission(Permission.MANAGE_CHANNEL)) {
+				OptionMapping option = event.getOption("channel");
+				if(option==null) {	
+					channelDao.enableChannel(event.getChannel().getIdLong());
+					event.getHook().sendMessage("Commands are enabled for this channel now!").setEphemeral(true).queue();
+				} else {
+					GuildMessageChannel channelOption = option.getAsMessageChannel();
+					if(channelOption==null) {
+						event.getHook().sendMessage("Mentioned channel is not a Message Channel").queue();
+					} else {		
+						channelDao.enableChannel(channelOption.getIdLong());
+						event.getHook().sendMessage("Commands are enabled for " + channelOption.getAsMention() + " now!").setEphemeral(true).queue();
+					}
+				}
+			} else {
+				event.getHook().sendMessage("You need `Manage_Channel` permissions to use this command!").setEphemeral(true).queue();
+			}
+		}
+		
+		if(channelDao.isChannelDisabled(event.getChannel().getIdLong())) {
+			event.getHook().sendMessage("Commands are disabled in this channel").setEphemeral(true).queue();
+    		return;
+    	}
+		
+		
         if (event.getName().equals("guess")) {
-        	
-            boolean isAdded = FlagGameHandler.getInstance().addGame(event);
+        	boolean isAdded = FlagGameHandler.getInstance().addGame(event);
             if (isAdded) {
                 gameEndService.schedule(new FlagGameEndRunnable(
                         FlagGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()),
@@ -40,14 +99,12 @@ public class InteractionsListener extends ListenerAdapter {
             }
         }
         else if(event.getName().equals("leaderboards")) {
-        	event.deferReply().queue();
         	JDA jda = event.getJDA();
         	String temp = LeaderboardHandler.getInstance().getLeaderboard(jda);
         	String leaderboard = temp!=null ? temp : "Something went wrong!";
 			event.getHook().sendMessage(leaderboard).queue();
         }
         else if(event.getName().equals("guessmap")) {
-        
         	boolean isAdded = MapGameHandler.getInstance().addGame(event);
         	if(isAdded) {
         		gameEndService.schedule(
@@ -58,6 +115,7 @@ public class InteractionsListener extends ListenerAdapter {
         				);
         	}
         }
+        
     }
 
     @Override

@@ -17,9 +17,11 @@ Moreover, for database features, update the variables in DBInfo.java in the com.
 
 <h3>Commands</h3>
 
-<b>/guess</b> -> Will start a Flag Guessing game in the current channel
-<b>/guessmap</b> -> Will start a Map Guessing game in the current channel
-<b>/leaderboards</b> -> Will show list of top players of the bot
+<b>/guess</b> -> Will start a Flag Guessing game in the current channel<br />
+<b>/guessmap</b> -> Will start a Map Guessing game in the current channel><br />
+<b>/leaderboards</b> -> Will show list of top players of the bot<br />
+<b>/disable</b> -> Moderation Command to disable the commands in a specific channel<br />
+<b>/enable</b> -> Moderation Command to enable the commands in a specific channel<br />
 
 <footer>
   <p>Remote Database Credit : <a href="https://freedb.tech/" target="_blank">FreeDb Tech</a></p>

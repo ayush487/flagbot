@@ -5,8 +5,6 @@ import java.sql.DriverManager;
 
 public class ConnectionProvider {
 
-    // private ConnectionProvider() {}
-
     public static Connection getConnection() {
         Connection conn = null;
         try {

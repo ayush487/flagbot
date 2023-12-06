@@ -12,6 +12,7 @@ import com.ayushtech.flagbot.listeners.MessageListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 public class Main 
 {
@@ -21,7 +22,7 @@ public class Main
     
     public static void main( String[] args ) throws LoginException, InterruptedException
     {
-        Properties properties = new Properties(1);
+        Properties properties = new Properties();
         try {
             properties.load(new FileInputStream("credential.properties"));
         } catch (Exception e) {
@@ -38,7 +39,15 @@ public class Main
         .setActivity(Activity.playing("/guess"))
         .build().awaitReady();
         
+        jda.upsertCommand("disable", "Disable the bot commands in the following channel")
+        .addOption(OptionType.CHANNEL, "channel", "Enter channel", false).queue();
+        jda.upsertCommand("enable", "Enable the bot commands in the following channel")
+        .addOption(OptionType.CHANNEL, "channel", "Enter channel", false).queue();
+        
 //        Guild swambot = jda.getGuildById(1127236362530209932l);
+//        swambot.upsertCommand("enable", "Enable the bot commands in the following channel")
+//        .addOption(OptionType.CHANNEL, "channel", "Enter channel", false).queue();
+        
 //        jda.upsertCommand("guessmap", "Guess which country map is it!").queue();
     }
 }
