@@ -18,7 +18,10 @@ Moreover, for database features, update the variables in DBInfo.java in the com.
 <h3>Commands</h3>
 
 <b>/guess</b> -> Will start a Flag Guessing game in the current channel
+<b>/guessmap</b> -> Will start a Map Guessing game in the current channel
+<b>/leaderboards</b> -> Will show list of top players of the bot
 
 <footer>
+  <p>Remote Database Credit : <a href="https://freedb.tech/" target="_blank">FreeDb Tech</a></p>
   <p>Thanks for visiting the repository <3</p>
 </footer>

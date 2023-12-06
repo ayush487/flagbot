@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import javax.security.auth.login.LoginException;
 
+import com.ayushtech.flagbot.dbconnectivity.DBInfo;
 import com.ayushtech.flagbot.listeners.InteractionsListener;
 import com.ayushtech.flagbot.listeners.MessageListener;
 
@@ -28,6 +29,10 @@ public class Main
         }
         
         final String bot_token = properties.getProperty("BOT_TOKEN");
+        final String db_host = properties.getProperty("database_url");
+        final String db_username = properties.getProperty("database_username");
+        final String db_password = properties.getProperty("database_password");
+        DBInfo.setData(db_host, db_username, db_password);
         
         JDA jda = JDABuilder.createDefault(bot_token).addEventListeners(new MessageListener(), new InteractionsListener())
         .setActivity(Activity.playing("/guess"))
