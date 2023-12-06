@@ -1,9 +1,9 @@
-package com.ayush.listeners;
+package com.ayushtech.flagbot.listeners;
 
 import javax.annotation.Nonnull;
 
-import com.ayush.game.flag.FlagGameHandler;
-import com.ayush.game.map.MapGameHandler;
+import com.ayushtech.flagbot.game.flag.FlagGameHandler;
+import com.ayushtech.flagbot.game.map.MapGameHandler;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;

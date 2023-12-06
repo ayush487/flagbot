@@ -1,4 +1,4 @@
-package com.ayush.dbconnectivity;
+package com.ayushtech.flagbot.dbconnectivity;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

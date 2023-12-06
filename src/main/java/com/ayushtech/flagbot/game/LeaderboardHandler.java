@@ -1,6 +1,6 @@
-package com.ayush.game;
+package com.ayushtech.flagbot.game;
 
-import com.ayush.dbconnectivity.LeaderboardDao;
+import com.ayushtech.flagbot.dbconnectivity.LeaderboardDao;
 
 import net.dv8tion.jda.api.JDA;
 

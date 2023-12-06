@@ -1,4 +1,4 @@
-package com.ayush.game.map;
+package com.ayushtech.flagbot.game.map;
 
 import java.util.HashMap;
 

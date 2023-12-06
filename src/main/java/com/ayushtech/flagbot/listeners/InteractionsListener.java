@@ -1,4 +1,4 @@
-package com.ayush.listeners;
+package com.ayushtech.flagbot.listeners;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -6,12 +6,12 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
-import com.ayush.game.LeaderboardHandler;
-import com.ayush.game.flag.FlagGameEndRunnable;
-import com.ayush.game.flag.FlagGameHandler;
-import com.ayush.game.flag.RegionHandler;
-import com.ayush.game.map.MapGameEndRunnable;
-import com.ayush.game.map.MapGameHandler;
+import com.ayushtech.flagbot.game.LeaderboardHandler;
+import com.ayushtech.flagbot.game.flag.FlagGameEndRunnable;
+import com.ayushtech.flagbot.game.flag.FlagGameHandler;
+import com.ayushtech.flagbot.game.flag.RegionHandler;
+import com.ayushtech.flagbot.game.map.MapGameEndRunnable;
+import com.ayushtech.flagbot.game.map.MapGameHandler;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;

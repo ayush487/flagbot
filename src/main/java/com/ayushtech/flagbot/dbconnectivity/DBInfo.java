@@ -1,4 +1,4 @@
-package com.ayush.dbconnectivity;
+package com.ayushtech.flagbot.dbconnectivity;
 
 public interface DBInfo {
     final static String url = "jdbc:mysql://localhost:3306/world";

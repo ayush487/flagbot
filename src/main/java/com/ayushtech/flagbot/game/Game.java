@@ -1,16 +1,16 @@
-package com.ayush.game;
+package com.ayushtech.flagbot.game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.ayush.dbconnectivity.CoinDao;
+import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public abstract class Game {
 	
-	protected static HashMap<String, String> countryMap = new HashMap<>(194);
+	protected static HashMap<String, String> countryMap = new HashMap<>(195);
 	protected static List<String> isoList;
 	protected static final String flagLink = "https://flagcdn.com/256x192/";
     protected static final String suffix = ".png";
@@ -161,6 +161,7 @@ public abstract class Game {
         countryMap.put("nz", "New Zealand");
         countryMap.put("ni", "Nicaragua");
         countryMap.put("ne", "Niger");
+        countryMap.put("ng", "Nigeria");
         countryMap.put("no", "Norway");
         countryMap.put("om", "Oman");
         countryMap.put("pk", "Pakistan");

@@ -1,7 +1,7 @@
-package com.ayush.game.flag;
+package com.ayushtech.flagbot.game.flag;
 
-import com.ayush.dbconnectivity.CoinDao;
-import com.ayush.dbconnectivity.RegionDao;
+import com.ayushtech.flagbot.dbconnectivity.CoinDao;
+import com.ayushtech.flagbot.dbconnectivity.RegionDao;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;

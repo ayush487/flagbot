@@ -1,11 +1,11 @@
-package com.ayush.game.flag;
+package com.ayushtech.flagbot.game.flag;
 
 import java.awt.Color;
 import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import com.ayush.game.Game;
+import com.ayushtech.flagbot.game.Game;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;

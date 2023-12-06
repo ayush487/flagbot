@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>flagbot</name>
+	<name>FlagBot</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -22,7 +22,7 @@
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>1689494478576</id>
+			<id>1701873292022</id>
 			<name></name>
 			<type>30</type>
 			<matcher>

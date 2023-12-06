@@ -1,4 +1,4 @@
-package com.ayush.game.map;
+package com.ayushtech.flagbot.game.map;
 
 import java.awt.Color;
 import java.util.HashMap;
@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import com.ayush.game.Game;
+import com.ayushtech.flagbot.game.Game;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
