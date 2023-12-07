@@ -1,5 +1,8 @@
 package com.ayushtech.flagbot;
 
+import java.io.FileInputStream;
+import java.util.Properties;
+
 import javax.security.auth.login.LoginException;
 
 import com.ayushtech.flagbot.dbconnectivity.DBInfo;
@@ -18,21 +21,21 @@ public class Main {
     // https://discord.com/api/oauth2/authorize?client_id=1129789320165867662&permissions=139586824256&scope=applications.commands%20bot
 
     public static void main(String[] args) throws LoginException, InterruptedException {
-        // Properties properties = new Properties();
-        // try {
-        // properties.load(new FileInputStream("credential.properties"));
-        // } catch (Exception e) {
-        // e.printStackTrace();
-        // }
+        Properties properties = new Properties();
+        try {
+        properties.load(new FileInputStream("credential.properties"));
+        } catch (Exception e) {
+        e.printStackTrace();
+        }
 
-        // final String bot_token = properties.getProperty("BOT_TOKEN");
-        // final String db_host = properties.getProperty("database_url");
-        // final String db_username = properties.getProperty("database_username");
-        // final String db_password = properties.getProperty("database_password");
-        final String bot_token = System.getenv("bot_token");
-        final String db_host = System.getenv("db_url");
-        final String db_username = System.getenv("db_username");
-        final String db_password = System.getenv("db_password");
+        final String bot_token = properties.getProperty("BOT_TOKEN");
+        final String db_host = properties.getProperty("database_url");
+        final String db_username = properties.getProperty("database_username");
+        final String db_password = properties.getProperty("database_password");
+        // final String bot_token = System.getenv("bot_token");
+        // final String db_host = System.getenv("db_url");
+        // final String db_username = System.getenv("db_username");
+        // final String db_password = System.getenv("db_password");
 
         
 

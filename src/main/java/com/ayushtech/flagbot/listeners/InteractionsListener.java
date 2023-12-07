@@ -122,7 +122,7 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.setColor(Color.GREEN);
 			eb.setTitle("Invite Flagbot");
 			eb.setDescription("Add Flagbot \n[here](https://discord.com/api/oauth2/authorize?client_id=1129789320165867662&permissions=139586824256&scope=applications.commands%20bot)");
-			event.replyEmbeds(eb.build()).queue();
+			event.getHook().sendMessageEmbeds(eb.build()).queue();
 		}
 	}
 
