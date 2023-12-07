@@ -29,10 +29,10 @@ public class MapGameHandler {
 	public boolean addGame(SlashCommandInteractionEvent event) {
         
         if(mapGameMap.containsKey(event.getChannel().getIdLong())) {
-            event.reply("There is already a game running in this channel!").queue();
+            event.getHook().sendMessage("There is already a game running in this channel!").queue();
             return false;
         } else {
-            event.reply("Starting game now!").queue();
+            event.getHook().sendMessage("Starting game now!").queue();
             MapGame game = new MapGame(event.getChannel());
             mapGameMap.put(event.getChannel().getIdLong(), game);
             return true;
