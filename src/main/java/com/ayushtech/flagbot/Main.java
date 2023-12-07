@@ -11,21 +11,20 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
-public class Main 
-{
+public class Main {
 
     // private final static String BOT_TOKEN = "";
-    // Invite Link -> https://discord.com/api/oauth2/authorize?client_id=1129789320165867662&permissions=139586824256&scope=applications.commands%20bot
-    
-    public static void main( String[] args ) throws LoginException, InterruptedException
-    {
+    // Invite Link ->
+    // https://discord.com/api/oauth2/authorize?client_id=1129789320165867662&permissions=139586824256&scope=applications.commands%20bot
+
+    public static void main(String[] args) throws LoginException, InterruptedException {
         // Properties properties = new Properties();
         // try {
-        //     properties.load(new FileInputStream("credential.properties"));
+        // properties.load(new FileInputStream("credential.properties"));
         // } catch (Exception e) {
-        //     e.printStackTrace();
+        // e.printStackTrace();
         // }
-        
+
         // final String bot_token = properties.getProperty("BOT_TOKEN");
         // final String db_host = properties.getProperty("database_url");
         // final String db_username = properties.getProperty("database_username");
@@ -35,21 +34,25 @@ public class Main
         final String db_username = System.getenv("db_username");
         final String db_password = System.getenv("db_password");
 
+        
+
         DBInfo.setData(db_host, db_username, db_password);
-        
-        JDA jda = JDABuilder.createDefault(bot_token).addEventListeners(new MessageListener(), new InteractionsListener())
-        .setActivity(Activity.playing("/guess"))
-        .build().awaitReady();
-        
+
+        JDA jda = JDABuilder.createDefault(bot_token)
+                .addEventListeners(new MessageListener(), new InteractionsListener())
+                .setActivity(Activity.playing("/guess"))
+                .build().awaitReady();
+
         jda.upsertCommand("disable", "Disable the bot commands in the following channel")
-        .addOption(OptionType.CHANNEL, "channel", "Enter channel", false).queue();
+                .addOption(OptionType.CHANNEL, "channel", "Enter channel", false).queue();
         jda.upsertCommand("enable", "Enable the bot commands in the following channel")
-        .addOption(OptionType.CHANNEL, "channel", "Enter channel", false).queue();
-        
-//        Guild swambot = jda.getGuildById(1127236362530209932l);
-//        swambot.upsertCommand("enable", "Enable the bot commands in the following channel")
-//        .addOption(OptionType.CHANNEL, "channel", "Enter channel", false).queue();
-        
-//        jda.upsertCommand("guessmap", "Guess which country map is it!").queue();
+                .addOption(OptionType.CHANNEL, "channel", "Enter channel", false).queue();
+
+        // Guild swambot = jda.getGuildById(1127236362530209932l);
+        // swambot.upsertCommand("enable", "Enable the bot commands in the following
+        // channel")
+        // .addOption(OptionType.CHANNEL, "channel", "Enter channel", false).queue();
+
+        // jda.upsertCommand("guessmap", "Guess which country map is it!").queue();
     }
 }
