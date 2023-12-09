@@ -36,7 +36,7 @@ public class ChannelDao {
 		}
 	}
 
-	public boolean addDisableChannel(Long channelId) {
+	public synchronized boolean addDisableChannel(Long channelId) {
 		try {
 			Connection conn = ConnectionProvider.getConnection();
 			PreparedStatement ps = conn.prepareStatement("Insert into disabled_channels (channel) values (?);");
@@ -44,14 +44,13 @@ public class ChannelDao {
 			ps.executeUpdate();
 			return true;
 		} catch (SQLException e) {
-//			e.printStackTrace();
 			return false;
 		}
 	}
 	
-	public boolean enableChannel(Long channelId) {
+	public synchronized boolean enableChannel(Long channelId) {
 		try {
-			Connection conn = ConnectionProvider.getConnection(); //delete from disabled_channels where channel=1127236362999959594;
+			Connection conn = ConnectionProvider.getConnection();
 			PreparedStatement ps = conn.prepareStatement("Delete from disabled_channels where channel=?;");
 			ps.setLong(1, channelId);
 			ps.executeUpdate();

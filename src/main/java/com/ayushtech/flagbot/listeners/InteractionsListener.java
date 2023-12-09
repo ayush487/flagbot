@@ -14,6 +14,7 @@ import com.ayushtech.flagbot.game.flag.FlagGameHandler;
 import com.ayushtech.flagbot.game.flag.RegionHandler;
 import com.ayushtech.flagbot.game.map.MapGameEndRunnable;
 import com.ayushtech.flagbot.game.map.MapGameHandler;
+import com.ayushtech.flagbot.services.ChannelService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -27,13 +28,13 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
 public class InteractionsListener extends ListenerAdapter {
 
-	ScheduledExecutorService gameEndService;
-	ChannelDao channelDao;
+	private ScheduledExecutorService gameEndService;
+	private ChannelService channelService;
 
 	public InteractionsListener() {
 		super();
 		gameEndService = new ScheduledThreadPoolExecutor(4);
-		channelDao = ChannelDao.getInstance();
+		channelService = ChannelService.getInstance();
 	}
 
 	@Override
@@ -46,14 +47,16 @@ public class InteractionsListener extends ListenerAdapter {
 			if (member.hasPermission(Permission.MANAGE_CHANNEL)) {
 				OptionMapping option = event.getOption("channel");
 				if (option == null) {
-					channelDao.addDisableChannel(event.getChannel().getIdLong());
+					// channelDao.addDisableChannel(event.getChannel().getIdLong());
+					channelService.disableChannel(event.getChannel().getIdLong());
 					event.getHook().sendMessage("Commands are disabled for this channel now!").setEphemeral(true).queue();
 				} else {
 					GuildMessageChannel channelOption = option.getAsMessageChannel();
 					if (channelOption == null) {
 						event.getHook().sendMessage("Mentioned channel is not a Message Channel").queue();
 					} else {
-						channelDao.addDisableChannel(channelOption.getIdLong());
+						// channelDao.addDisableChannel(channelOption.getIdLong());
+						channelService.disableChannel(channelOption.getIdLong());
 						event.getHook().sendMessage("Commands are disabled for " + channelOption.getAsMention() + " now!")
 								.setEphemeral(true).queue();
 					}
@@ -71,14 +74,14 @@ public class InteractionsListener extends ListenerAdapter {
 			if (member.hasPermission(Permission.MANAGE_CHANNEL)) {
 				OptionMapping option = event.getOption("channel");
 				if (option == null) {
-					channelDao.enableChannel(event.getChannel().getIdLong());
+					channelService.enableChannel(event.getChannel().getIdLong());
 					event.getHook().sendMessage("Commands are enabled for this channel now!").setEphemeral(true).queue();
 				} else {
 					GuildMessageChannel channelOption = option.getAsMessageChannel();
 					if (channelOption == null) {
 						event.getHook().sendMessage("Mentioned channel is not a Message Channel").queue();
 					} else {
-						channelDao.enableChannel(channelOption.getIdLong());
+						channelService.enableChannel(channelOption.getIdLong());
 						event.getHook().sendMessage("Commands are enabled for " + channelOption.getAsMention() + " now!")
 								.setEphemeral(true).queue();
 					}
@@ -89,7 +92,7 @@ public class InteractionsListener extends ListenerAdapter {
 			}
 		}
 
-		if (channelDao.isChannelDisabled(event.getChannel().getIdLong())) {
+		if (channelService.isChannelDisabled(event.getChannel().getIdLong())) {
 			event.getHook().sendMessage("Commands are disabled in this channel").setEphemeral(true).queue();
 			return;
 		}
