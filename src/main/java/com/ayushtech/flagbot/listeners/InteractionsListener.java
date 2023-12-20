@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
-import com.ayushtech.flagbot.dbconnectivity.ChannelDao;
 import com.ayushtech.flagbot.game.LeaderboardHandler;
 import com.ayushtech.flagbot.game.flag.FlagGameEndRunnable;
 import com.ayushtech.flagbot.game.flag.FlagGameHandler;

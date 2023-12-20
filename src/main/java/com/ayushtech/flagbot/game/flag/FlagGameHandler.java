@@ -63,8 +63,8 @@ public class FlagGameHandler {
         if(gameMap.containsKey(event.getChannel().getIdLong())) {
             Long channelId = event.getChannel().getIdLong();
             if(gameMap.get(channelId).guess(guessWord)) {
-                gameMap.get(channelId).endGameAsWin(event);
                 event.getMessage().addReaction("U+1F389").queue();
+                gameMap.get(channelId).endGameAsWin(event);
             } else {
                 event.getMessage().addReaction("U+274C").queue();
             }

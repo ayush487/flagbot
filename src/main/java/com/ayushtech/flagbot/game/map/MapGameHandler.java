@@ -62,8 +62,8 @@ public class MapGameHandler {
         if(mapGameMap.containsKey(event.getChannel().getIdLong())) {
             Long channelId = event.getChannel().getIdLong();
             if(mapGameMap.get(channelId).guess(guessWord)) {
-            	mapGameMap.get(channelId).endGameAsWin(event);
                 event.getMessage().addReaction("U+1F389").queue();
+            	mapGameMap.get(channelId).endGameAsWin(event);
             } else {
                 event.getMessage().addReaction("U+274C").queue();
             }
