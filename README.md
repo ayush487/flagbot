@@ -11,7 +11,7 @@ Moreover, for database features, update the variables in DBInfo.java in the com.
 
 <hr />
 
-<h3><a href="https://discord.com/api/oauth2/authorize?client_id=1129789320165867662&permissions=139586824256&scope=applications.commands%20bot">Invite the Bot to your Discord Server</a></h3>
+<h3><a href="https://discord.com/api/oauth2/authorize?client_id=1129789320165867662&permissions=85056&scope=bot+applications.commands">Invite the Bot to your Discord Server</a></h3>
 
 <hr />
 
