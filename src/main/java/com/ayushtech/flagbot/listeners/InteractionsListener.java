@@ -123,7 +123,9 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
 			eb.setColor(Color.GREEN);
 			eb.setTitle("Invite Flagbot");
-			eb.setDescription("Add Flagbot \n[here](https://discord.com/api/oauth2/authorize?client_id=1129789320165867662&permissions=85056&scope=bot+applications.commands)");
+			eb.addField("Add Flagbot", "[here](https://discord.com/api/oauth2/authorize?client_id=1129789320165867662&permissions=85056&scope=bot+applications.commands)", true);
+			eb.addBlankField(true);
+			eb.addField("Support Server", "[here](https://discord.gg/MASMYsNCT9)", true);
 			event.getHook().sendMessageEmbeds(eb.build()).queue();
 		}
 	}
