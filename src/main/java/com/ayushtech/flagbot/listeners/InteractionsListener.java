@@ -128,6 +128,9 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.addField("Support Server", "[here](https://discord.gg/MASMYsNCT9)", true);
 			event.getHook().sendMessageEmbeds(eb.build()).queue();
 		}
+		 else if (event.getName().equals("show_server_count")) {
+			event.getHook().sendMessage("Total Servers in : " + event.getJDA().getGuilds().size()).queue();;
+		}
 	}
 
 	public void onButtonInteraction(@Nonnull ButtonInteractionEvent event) {
