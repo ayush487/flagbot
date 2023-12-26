@@ -1,9 +1,11 @@
 package com.ayushtech.flagbot.dbconnectivity;
 
+import java.util.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class ChannelDao {
 
@@ -47,7 +49,7 @@ public class ChannelDao {
 			return false;
 		}
 	}
-	
+
 	public synchronized boolean enableChannel(Long channelId) {
 		try {
 			Connection conn = ConnectionProvider.getConnection();
@@ -55,8 +57,28 @@ public class ChannelDao {
 			ps.setLong(1, channelId);
 			ps.executeUpdate();
 			return true;
-		}catch(SQLException e) {
+		} catch (SQLException e) {
 			return false;
 		}
+	}
+
+	public synchronized boolean addDisableChannel(List<Long> channelIdList) {
+		try {
+			Connection conn = ConnectionProvider.getConnection();
+			Statement st = conn.createStatement();
+			String query = getQueryToAddMultipleChannels(channelIdList);
+			st.executeUpdate(query);
+			return true;
+		} catch (SQLException e) {
+			return false;
+		}
+
+	}
+
+	private String getQueryToAddMultipleChannels(List<Long> channelIdList) {
+		StringBuilder builder = new StringBuilder("Insert into disabled_channels (channel) values ");
+		channelIdList.forEach(channelId -> builder.append("(" + channelId + ")"));
+		builder.append(";");
+		return null;
 	}
 }

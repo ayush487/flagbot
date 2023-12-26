@@ -24,6 +24,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class InteractionsListener extends ListenerAdapter {
 
@@ -60,6 +61,18 @@ public class InteractionsListener extends ListenerAdapter {
 								.setEphemeral(true).queue();
 					}
 				}
+			} else {
+				event.getHook().sendMessage("You need `Manage_Channel` permissions to use this command!").setEphemeral(true)
+						.queue();
+			}
+			return;
+		}
+
+		else if (event.getName().equals("disable_all_channels")) {
+			Member member = event.getMember();
+			if (member.hasPermission(Permission.MANAGE_CHANNEL)) {
+				channelService.disableMultipleChannels(event.getGuild());
+				event.getHook().sendMessage("Commands are disabled in all channels.").setEphemeral(true).queue();
 			} else {
 				event.getHook().sendMessage("You need `Manage_Channel` permissions to use this command!").setEphemeral(true)
 						.queue();
@@ -123,13 +136,24 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
 			eb.setColor(Color.GREEN);
 			eb.setTitle("Invite Flagbot");
-			eb.addField("Add Flagbot", "[here](https://discord.com/api/oauth2/authorize?client_id=1129789320165867662&permissions=85056&scope=bot+applications.commands)", true);
+			eb.addField("Add Flagbot",
+					"[here](https://discord.com/api/oauth2/authorize?client_id=1129789320165867662&permissions=85056&scope=bot+applications.commands)",
+					true);
 			eb.addBlankField(true);
 			eb.addField("Support Server", "[here](https://discord.gg/MASMYsNCT9)", true);
 			event.getHook().sendMessageEmbeds(eb.build()).queue();
-		}
-		 else if (event.getName().equals("show_server_count")) {
-			event.getHook().sendMessage("Total Servers in : " + event.getJDA().getGuilds().size()).queue();;
+		} else if (event.getName().equals("show_server_count")) {
+			event.getHook().sendMessage("Total Servers in : " + event.getJDA().getGuilds().size()).queue();
+		} else if (event.getName().equals("help")) {
+			EmbedBuilder eb = new EmbedBuilder();
+			eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
+			eb.setTitle("Commands");
+			eb.setColor(new Color(223,32,32));
+			eb.setDescription(
+					"`/guess` : Start a flag guessing game in the channel\n`/guessmap` : Start a map guessing game in the channel\n`/leaderboards` : Check the global leaderboard (Top 5)\n`/invite` : Invite the bot to your server\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server");
+			event.getHook().sendMessageEmbeds(eb.build())
+			.addActionRow(Button.link("https://discord.gg/RqvTRMmVgR", "Support Server"))
+			.queue();
 		}
 	}
 

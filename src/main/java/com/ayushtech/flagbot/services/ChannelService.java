@@ -1,8 +1,12 @@
 package com.ayushtech.flagbot.services;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.ayushtech.flagbot.dbconnectivity.ChannelDao;
+
+import net.dv8tion.jda.api.entities.Guild;
 
 public class ChannelService {
 
@@ -37,5 +41,11 @@ public class ChannelService {
   public synchronized void enableChannel(long channelId) {
     disabledMap.put(channelId, false);
     ChannelDao.getInstance().enableChannel(channelId);
+  }
+
+  public synchronized void disableMultipleChannels(Guild guild) {
+    List<Long> channelIdList = guild.getChannels().stream().map(channel -> channel.getIdLong()).collect(Collectors.toList());
+    channelIdList.forEach(channelId -> disabledMap.put(channelId, true));
+    ChannelDao.getInstance().addDisableChannel(channelIdList);
   }
 }
