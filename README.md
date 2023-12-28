@@ -22,6 +22,5 @@ This is source code of the Discord Bot (<a href="https://discord.gg/MASMYsNCT9">
 
 <footer>
   <p><a href="https://discord.gg/MASMYsNCT9">Support Server</a></p>
-  <p>Remote Database Credit : <a href="https://freedb.tech/" target="_blank">FreeDb Tech</a></p>
   <p>Thanks for visiting the repository <3</p>
 </footer>
