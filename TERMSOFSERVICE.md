@@ -1,6 +1,6 @@
 # Terms of Service for Flag Bot
 
-**Last updated:** [Date]
+**Last updated:** 28-12-2023
 
 ## 1. Acceptance of Terms
 
