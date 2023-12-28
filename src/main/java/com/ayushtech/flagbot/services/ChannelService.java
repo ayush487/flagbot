@@ -33,17 +33,17 @@ public class ChannelService {
     return isDisabled;
   }
 
-  public synchronized void disableChannel(long channelId) {
+  public void disableChannel(long channelId) {
     disabledMap.put(channelId, true);
     ChannelDao.getInstance().addDisableChannel(channelId);
   }
 
-  public synchronized void enableChannel(long channelId) {
+  public void enableChannel(long channelId) {
     disabledMap.put(channelId, false);
     ChannelDao.getInstance().enableChannel(channelId);
   }
 
-  public synchronized void disableMultipleChannels(Guild guild) {
+  public void disableMultipleChannels(Guild guild) {
     List<Long> channelIdList = guild.getChannels().stream().map(channel -> channel.getIdLong()).collect(Collectors.toList());
     channelIdList.forEach(channelId -> disabledMap.put(channelId, true));
     ChannelDao.getInstance().addDisableChannel(channelIdList);

@@ -18,6 +18,8 @@ This is source code of the Discord Bot (<a href="https://discord.gg/MASMYsNCT9">
 <b>/leaderboards</b> -> Will show list of top players of the bot<br />
 <b>/disable</b> -> Moderation Command to disable the commands in a specific channel<br />
 <b>/enable</b> -> Moderation Command to enable the commands in a specific channel<br />
+<b>/disable_channels</b> -> Moderation Command to disable commands in all channels at once.
+<b>/delete_my_data</b> -> Delete your data form the bot permanently.
 
 
 <footer>

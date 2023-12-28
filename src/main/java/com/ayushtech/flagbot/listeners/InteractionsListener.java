@@ -1,12 +1,16 @@
 package com.ayushtech.flagbot.listeners;
 
 import java.awt.Color;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
+import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.game.LeaderboardHandler;
 import com.ayushtech.flagbot.game.flag.FlagGameEndRunnable;
 import com.ayushtech.flagbot.game.flag.FlagGameHandler;
@@ -20,10 +24,12 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class InteractionsListener extends ListenerAdapter {
@@ -68,6 +74,7 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
+		// disable_all_channels command
 		else if (event.getName().equals("disable_all_channels")) {
 			Member member = event.getMember();
 			if (member.hasPermission(Permission.MANAGE_CHANNEL)) {
@@ -109,6 +116,8 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
+
+		// guess command
 		if (event.getName().equals("guess")) {
 			boolean isAdded = FlagGameHandler.getInstance().addGame(event);
 			if (isAdded) {
@@ -116,12 +125,18 @@ public class InteractionsListener extends ListenerAdapter {
 						FlagGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()),
 						event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
 			}
-		} else if (event.getName().equals("leaderboards")) {
+		} 
+		
+		// leaderboards command
+		else if (event.getName().equals("leaderboards")) {
 			JDA jda = event.getJDA();
 			String temp = LeaderboardHandler.getInstance().getLeaderboard(jda);
 			String leaderboard = temp != null ? temp : "Something went wrong!";
 			event.getHook().sendMessage(leaderboard).queue();
-		} else if (event.getName().equals("guessmap")) {
+		} 
+		
+		// guessmap command
+		else if (event.getName().equals("guessmap")) {
 			boolean isAdded = MapGameHandler.getInstance().addGame(event);
 			if (isAdded) {
 				gameEndService.schedule(
@@ -131,7 +146,10 @@ public class InteractionsListener extends ListenerAdapter {
 								event.getChannel().getIdLong()),
 						30, TimeUnit.SECONDS);
 			}
-		} else if (event.getName().equals("invite")) {
+		} 
+		
+		// invite command
+		else if (event.getName().equals("invite")) {
 			EmbedBuilder eb = new EmbedBuilder();
 			eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
 			eb.setColor(Color.GREEN);
@@ -142,18 +160,44 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.addBlankField(true);
 			eb.addField("Support Server", "[here](https://discord.gg/MASMYsNCT9)", true);
 			event.getHook().sendMessageEmbeds(eb.build()).queue();
-		} else if (event.getName().equals("show_server_count")) {
+		}
+		
+		// show_server_count command (private access)
+		else if (event.getName().equals("show_server_count")) {
 			event.getHook().sendMessage("Total Servers in : " + event.getJDA().getGuilds().size()).queue();
-		} else if (event.getName().equals("help")) {
+		} 
+		
+		// help command
+		else if (event.getName().equals("help")) {
 			EmbedBuilder eb = new EmbedBuilder();
 			eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
 			eb.setTitle("Commands");
 			eb.setColor(new Color(223,32,32));
 			eb.setDescription(
-					"`/guess` : Start a flag guessing game in the channel\n`/guessmap` : Start a map guessing game in the channel\n`/leaderboards` : Check the global leaderboard (Top 5)\n`/invite` : Invite the bot to your server\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server");
+					"`/guess` : Start a flag guessing game in the channel\n`/guessmap` : Start a map guessing game in the channel\n`/leaderboards` : Check the global leaderboard (Top 5)\n`/invite` : Invite the bot to your server\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot");
 			eb.addField("Other Information", "[Privacy Policy](https://github.com/ayush487/flagbot/blob/main/PRIVACY.md)", false);
 			event.getHook().sendMessageEmbeds(eb.build())
 			.addActionRow(Button.link("https://discord.gg/RqvTRMmVgR", "Support Server"))
+			.queue();
+		} 
+
+		// delete_my_data command
+		else if(event.getName().equals("delete_my_data")) {
+			User user = event.getUser();
+			EmbedBuilder eb = new EmbedBuilder();
+			eb.setColor(Color.RED);
+			eb.setTitle("Delete data");
+			eb.setDescription("Sending a dm for confirmation.");
+			eb.setFooter("If not received message, consider turning on DMs.");
+			event.getHook().sendMessageEmbeds(eb.build()).queue();
+			EmbedBuilder eb2 = new EmbedBuilder();
+			eb2.setColor(Color.RED);
+			eb2.setTitle("Confirm Data deletion");
+			eb2.setDescription("Click on the **Delete My Data** button to delete your data permanetly.\nNote : It will wipe all your coins permanently.");
+			;
+			user.openPrivateChannel().flatMap(channel -> 
+				channel.sendMessageEmbeds(eb2.build()).setActionRows(ActionRow.of(Button.primary("delete_data", "Delete My Data")))
+			)
 			.queue();
 		}
 	}
@@ -195,7 +239,27 @@ public class InteractionsListener extends ListenerAdapter {
 				event.getHook().sendMessage(event.getUser().getAsMention() + " has skipped the game!").queue();
 				MapGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()).endGameAsLose();
 			}
+		} else if (event.getComponentId().equals("delete_data")) {
+			
+			LocalDateTime messageCreationTime = event.getMessage().getTimeCreated().toLocalDateTime();
+			LocalDateTime currentTime = LocalDateTime.now(ZoneId.of("GMT"));
+			long timeDifference = Duration.between(messageCreationTime, currentTime).toMillis();
+		
+			if(timeDifference>=60000l) {
+				EmbedBuilder eb = new EmbedBuilder();
+				eb.setDescription("Too late");
+				eb.setColor(new Color(252, 209, 42));
+				event.replyEmbeds(eb.build()).queue();
+			} else {
+				CoinDao.getInstance().deleteData(event.getUser().getIdLong());
+				EmbedBuilder eb = new EmbedBuilder();
+				eb.setTitle("Delete Confirmed");
+				eb.setDescription("Data deleted");
+				eb.setColor(Color.GREEN);
+				event.replyEmbeds(eb.build()).queue();
+			}
 		}
+		
 
 	}
 

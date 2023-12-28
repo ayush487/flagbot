@@ -13,6 +13,7 @@ import com.ayushtech.flagbot.listeners.MessageListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
 
 public class Main {
 
@@ -37,12 +38,10 @@ public class Main {
                                 .setActivity(Activity.playing("/guess"))
                                 .build().awaitReady();
 
-                // jda.upsertCommand("disable", "Disable the bot commands in the following channel")
-                //                 .addOption(OptionType.CHANNEL, "channel", "Enter channel", false).queue();
-                // jda.upsertCommand("enable", "Enable the bot commands in the following channel")
-                //                 .addOption(OptionType.CHANNEL, "channel", "Enter channel", false).queue();
-
-                jda.upsertCommand("disable_all_channels", "Disable the bot commands in all channels of the server").queue();
-                jda.upsertCommand("help", "Shows command list").queue();
+                Guild testServer = jda.getGuildById(834364315879342130l);
+                testServer.upsertCommand("delete_my_data", "Will delete your user data including your coins").queue();
+                // jda.upsertCommand("disable_all_channels", "Disable the bot commands in all channels of the server").queue();
+                // jda.upsertCommand("help", "Shows command list").queue();
+                // jda.upsertCommand("delete_my_data", "Will delete your user data including your coins").queue();
         }
 }

@@ -45,4 +45,15 @@ public class CoinDao {
             return 0l;
         }
     }
+
+    public void deleteData(Long userId) {
+        try {
+            Connection conn = ConnectionProvider.getConnection();
+            PreparedStatement ps = conn.prepareStatement("delete from coin_table where user_id=?;");
+            ps.setLong(1, userId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
