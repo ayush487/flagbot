@@ -151,6 +151,7 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.setColor(new Color(223,32,32));
 			eb.setDescription(
 					"`/guess` : Start a flag guessing game in the channel\n`/guessmap` : Start a map guessing game in the channel\n`/leaderboards` : Check the global leaderboard (Top 5)\n`/invite` : Invite the bot to your server\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server");
+			eb.addField("Other Information", "[Privacy Policy](https://github.com/ayush487/flagbot/blob/main/PRIVACY.md)", false);
 			event.getHook().sendMessageEmbeds(eb.build())
 			.addActionRow(Button.link("https://discord.gg/RqvTRMmVgR", "Support Server"))
 			.queue();

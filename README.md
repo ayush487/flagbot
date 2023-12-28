@@ -1,5 +1,9 @@
 # Flag Bot
 
+<a href="https://top.gg/bot/1129789320165867662">
+  <img src="https://top.gg/api/widget/upvotes/1129789320165867662.svg">
+</a>
+
 This is source code of the Discord Bot (<a href="https://discord.gg/MASMYsNCT9">Flag Bot</a>)
 <hr />
 

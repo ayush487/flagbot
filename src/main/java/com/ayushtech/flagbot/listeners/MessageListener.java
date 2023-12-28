@@ -16,10 +16,8 @@ public class MessageListener extends ListenerAdapter {
         Message message = event.getMessage();
         
         String messageText = message.getContentDisplay();
-        // System.out.println(messageText);
         if (!event.getAuthor().isBot()) {
             if (FlagGameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())) {
-                // System.out.println(messageText);
                 FlagGameHandler.getInstance().handleGuess(messageText, event);
             }
             if(MapGameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())) {

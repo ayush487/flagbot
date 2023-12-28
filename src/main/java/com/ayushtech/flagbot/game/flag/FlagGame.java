@@ -48,6 +48,7 @@ public class FlagGame extends Game {
 
 	@Override
 	public void endGameAsWin(MessageReceivedEvent msgEvent) {
+		FlagGameHandler.getInstance().getGameMap().remove(channel.getIdLong());
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setTitle("Correct!");
 		eb.setDescription(msgEvent.getAuthor().getAsMention() + " is correct!\n**Coins :** `"
@@ -57,7 +58,6 @@ public class FlagGame extends Game {
 		eb.setColor(new Color(13, 240, 52));
 		msgEvent.getChannel().sendMessageEmbeds(eb.build())
 				.setActionRow(Button.primary("playAgainButton", "Play Again")).queue();
-		FlagGameHandler.getInstance().getGameMap().remove(channel.getIdLong());
 		Game.increaseCoins(msgEvent.getAuthor().getIdLong(), 100l);
 		disableButtons();
 	}

@@ -14,7 +14,7 @@ public class ChannelDao {
 	private ChannelDao() {
 	}
 
-	public static ChannelDao getInstance() {
+	public static synchronized ChannelDao getInstance() {
 		if (channelDao == null) {
 			channelDao = new ChannelDao();
 		}
@@ -38,7 +38,7 @@ public class ChannelDao {
 		}
 	}
 
-	public synchronized boolean addDisableChannel(Long channelId) {
+	public boolean addDisableChannel(Long channelId) {
 		try {
 			Connection conn = ConnectionProvider.getConnection();
 			PreparedStatement ps = conn.prepareStatement("Insert into disabled_channels (channel) values (?);");
@@ -50,7 +50,7 @@ public class ChannelDao {
 		}
 	}
 
-	public synchronized boolean enableChannel(Long channelId) {
+	public boolean enableChannel(Long channelId) {
 		try {
 			Connection conn = ConnectionProvider.getConnection();
 			PreparedStatement ps = conn.prepareStatement("Delete from disabled_channels where channel=?;");
@@ -62,7 +62,7 @@ public class ChannelDao {
 		}
 	}
 
-	public synchronized boolean addDisableChannel(List<Long> channelIdList) {
+	public boolean addDisableChannel(List<Long> channelIdList) {
 		try {
 			Connection conn = ConnectionProvider.getConnection();
 			Statement st = conn.createStatement();
