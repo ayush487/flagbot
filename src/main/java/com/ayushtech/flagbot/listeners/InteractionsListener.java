@@ -200,6 +200,19 @@ public class InteractionsListener extends ListenerAdapter {
 			)
 			.queue();
 		}
+
+		// balance command
+		else if(event.getName().equals("balance")) {
+			User user = event.getUser();
+			EmbedBuilder eb = new EmbedBuilder();
+			eb.setTitle(user.getName());
+			long[] coins_rank = CoinDao.getInstance().getBalanceAndRank(user.getIdLong());
+			eb.setDescription("**Balance** : " + coins_rank[0] + " :coin:\n**Rank** : " + coins_rank[1]);
+			eb.setColor(Color.YELLOW);
+			eb.setThumbnail(user.getAvatarUrl());
+			// eb.setFooter("Your rank : " + coins_rank[1]);
+			event.getHook().sendMessageEmbeds(eb.build()).queue();
+		}
 	}
 
 	public void onButtonInteraction(@Nonnull ButtonInteractionEvent event) {

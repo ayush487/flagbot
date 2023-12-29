@@ -56,4 +56,24 @@ public class CoinDao {
             e.printStackTrace();
         }
     }
+
+    public long[] getBalanceAndRank(long userId) {
+        try {
+            Connection conn = ConnectionProvider.getConnection();
+            PreparedStatement ps = conn.prepareStatement("select coins, ranking from coin_ranking where user_id=?");
+            ps.setLong(1, userId);
+            ResultSet result = ps.executeQuery();
+            long[] balance_rank = new long[2];
+            while (result.next()) {
+                balance_rank[0] = result.getLong("coins");
+                balance_rank[1] = result.getLong("ranking");
+            }
+            return balance_rank;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        long[] returnArr = {0, 9999l};
+        return returnArr;
+        
+    }
 }

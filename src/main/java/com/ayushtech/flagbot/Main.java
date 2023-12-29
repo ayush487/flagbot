@@ -38,8 +38,10 @@ public class Main {
                                 .setActivity(Activity.playing("/guess"))
                                 .build().awaitReady();
 
-                Guild testServer = jda.getGuildById(834364315879342130l);
-                testServer.upsertCommand("delete_my_data", "Will delete your user data including your coins").queue();
+                // Guild testServer = jda.getGuildById(834364315879342130l);
+                // testServer.upsertCommand("delete_my_data", "Will delete your user data including your coins").queue();
+                // testServer.upsertCommand("balance", "Shows your current coins").queue();
+                jda.upsertCommand("balance", "Shows your current coins").queue();
                 // jda.upsertCommand("disable_all_channels", "Disable the bot commands in all channels of the server").queue();
                 // jda.upsertCommand("help", "Shows command list").queue();
                 // jda.upsertCommand("delete_my_data", "Will delete your user data including your coins").queue();
