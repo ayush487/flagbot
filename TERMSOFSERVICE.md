@@ -14,6 +14,9 @@ You must be a Discord user and comply with Discord's Terms of Service to use Fla
 ### 2.2 User Conduct
 You agree not to engage in any activity that disrupts or interferes with the functioning of Flag Bot or violates Discord's guidelines.
 
+## 2.3 Usage of Macros
+Usage of Macros (auto click, bot automation) is strongly prohibited.
+
 ## 3. Data Collection and Storage
 
 ### 3.1 User and Channel Data
