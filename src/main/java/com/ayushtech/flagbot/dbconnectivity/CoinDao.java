@@ -76,4 +76,24 @@ public class CoinDao {
         return returnArr;
         
     }
+
+    public long resetUserCoins(long userId) {
+        try {
+            Connection conn = ConnectionProvider.getConnection();
+            PreparedStatement ps1 = conn.prepareStatement("Select coins from coin_table where user_id=?");
+            ps1.setLong(1, userId);
+            ResultSet rs = ps1.executeQuery();
+            long coin = 0;
+            while(rs.next()) {
+                coin = rs.getLong("coins");
+            }
+            PreparedStatement ps = conn.prepareStatement("UPDATE coin_table SET coins=0 WHERE user_id=?;");
+            ps.setLong(1, userId);
+            ps.executeUpdate();
+            return coin;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

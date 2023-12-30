@@ -162,11 +162,6 @@ public class InteractionsListener extends ListenerAdapter {
 			event.getHook().sendMessageEmbeds(eb.build()).queue();
 		}
 		
-		// show_server_count command (private access)
-		else if (event.getName().equals("show_server_count")) {
-			event.getHook().sendMessage("Total Servers in : " + event.getJDA().getGuilds().size()).queue();
-		} 
-		
 		// help command
 		else if (event.getName().equals("help")) {
 			EmbedBuilder eb = new EmbedBuilder();
@@ -174,8 +169,8 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.setTitle("Commands");
 			eb.setColor(new Color(223,32,32));
 			eb.setDescription(
-					"`/guess` : Start a flag guessing game in the channel\n`/guessmap` : Start a map guessing game in the channel\n`/leaderboards` : Check the global leaderboard (Top 5)\n`/invite` : Invite the bot to your server\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot");
-			eb.addField("Other Information", "[Privacy Policy](https://github.com/ayush487/flagbot/blob/main/PRIVACY.md)", false);
+					"`/guess` : Start a flag guessing game in the channel\n`/guessmap` : Start a map guessing game in the channel\n`/leaderboards` : Check the global leaderboard (Top 5)\n`/invite` : Invite the bot to your server\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank");
+			eb.addField("Other Information", "[Terms of Services](https://github.com/ayush487/flagbot/blob/main/TERMSOFSERVICE.md)\n[Privacy Policy](https://github.com/ayush487/flagbot/blob/main/PRIVACY.md)", false);
 			event.getHook().sendMessageEmbeds(eb.build())
 			.addActionRow(Button.link("https://discord.gg/RqvTRMmVgR", "Support Server"))
 			.queue();
@@ -213,6 +208,28 @@ public class InteractionsListener extends ListenerAdapter {
 			// eb.setFooter("Your rank : " + coins_rank[1]);
 			event.getHook().sendMessageEmbeds(eb.build()).queue();
 		}
+
+		// Admin commands
+		// show_server_count command (private access)
+    else if (event.getName().equals("show_server_count")) {
+      event.getHook().sendMessage("Total Servers in : " + event.getJDA().getGuilds().size()).queue();
+    }
+
+    else if(event.getName().equals("reset_coins")) {
+      String user_id = event.getOption("user_id").getAsString();
+      long coinsDedecuted = CoinDao.getInstance().resetUserCoins(Long.parseLong(user_id));
+      event.getHook().sendMessage("Deducted " + coinsDedecuted + " coins from the User").queue();
+    }
+
+    // send_dm (private access)
+    else if (event.getName().equals("send_dm")) {
+      String user_id = event.getOption("user_id").getAsString();
+      String message = event.getOption("message").getAsString();
+      event.getJDA().retrieveUserById(Long.parseLong(user_id)).queue(user -> {
+        user.openPrivateChannel().flatMap(channel -> channel.sendMessage(message)).queue();
+      });
+      event.getHook().sendMessage("Message Sent").queue();
+    }
 	}
 
 	public void onButtonInteraction(@Nonnull ButtonInteractionEvent event) {

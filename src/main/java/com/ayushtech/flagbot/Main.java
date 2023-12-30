@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 public class Main {
 
@@ -37,13 +38,16 @@ public class Main {
                                                 new GuildEventListener())
                                 .setActivity(Activity.playing("/guess"))
                                 .build().awaitReady();
+                
+                Guild testServer = jda.getGuildById(834364315879342130l);
+                testServer.upsertCommand("send_dm", "Send a bot message to someone's dm")
+                .addOption(OptionType.STRING, "user_id", "Enter id of the user",true)
+                .addOption(OptionType.STRING, "message", "Enter message to be sent", true)
+                .queue();
 
-                // Guild testServer = jda.getGuildById(834364315879342130l);
-                // testServer.upsertCommand("delete_my_data", "Will delete your user data including your coins").queue();
-                // testServer.upsertCommand("balance", "Shows your current coins").queue();
-                jda.upsertCommand("balance", "Shows your current coins").queue();
-                // jda.upsertCommand("disable_all_channels", "Disable the bot commands in all channels of the server").queue();
-                // jda.upsertCommand("help", "Shows command list").queue();
-                // jda.upsertCommand("delete_my_data", "Will delete your user data including your coins").queue();
+                testServer.upsertCommand("reset_coins", "Wipe all the coins of the user.")
+                .addOption(OptionType.STRING, "user_id", "Enter the user id", true)
+                .queue();
+        
         }
 }
