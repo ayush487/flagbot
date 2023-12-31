@@ -45,10 +45,10 @@ public class InteractionsListener extends ListenerAdapter {
 
 	@Override
 	public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
-		event.deferReply().queue();
 
 		// Disable Command
 		if (event.getName().equals("disable")) {
+			event.deferReply().setEphemeral(true).queue();
 			Member member = event.getMember();
 			if (member.hasPermission(Permission.MANAGE_CHANNEL)) {
 				OptionMapping option = event.getOption("channel");
@@ -59,7 +59,7 @@ public class InteractionsListener extends ListenerAdapter {
 				} else {
 					GuildMessageChannel channelOption = option.getAsMessageChannel();
 					if (channelOption == null) {
-						event.getHook().sendMessage("Mentioned channel is not a Message Channel").queue();
+						event.getHook().sendMessage("Mentioned channel is not a Message Channel").setEphemeral(true).queue();
 					} else {
 						// channelDao.addDisableChannel(channelOption.getIdLong());
 						channelService.disableChannel(channelOption.getIdLong());
@@ -76,6 +76,7 @@ public class InteractionsListener extends ListenerAdapter {
 
 		// disable_all_channels command
 		else if (event.getName().equals("disable_all_channels")) {
+			event.deferReply().setEphemeral(true).queue();
 			Member member = event.getMember();
 			if (member.hasPermission(Permission.MANAGE_CHANNEL)) {
 				channelService.disableMultipleChannels(event.getGuild());
@@ -89,6 +90,7 @@ public class InteractionsListener extends ListenerAdapter {
 
 		// Enable Command
 		else if (event.getName().equals("enable")) {
+			event.deferReply().setEphemeral(true).queue();
 			Member member = event.getMember();
 			if (member.hasPermission(Permission.MANAGE_CHANNEL)) {
 				OptionMapping option = event.getOption("channel");
@@ -109,13 +111,20 @@ public class InteractionsListener extends ListenerAdapter {
 				event.getHook().sendMessage("You need `Manage_Channel` permissions to use this command!").setEphemeral(true)
 						.queue();
 			}
+			return;
 		}
 
-		if (channelService.isChannelDisabled(event.getChannel().getIdLong())) {
+	
+
+		boolean isCommandsDisabled = channelService.isChannelDisabled(event.getChannel().getIdLong());
+
+		if (isCommandsDisabled) {
+			event.deferReply().setEphemeral(true).queue();
 			event.getHook().sendMessage("Commands are disabled in this channel").setEphemeral(true).queue();
 			return;
 		}
 
+		event.deferReply().queue();
 
 		// guess command
 		if (event.getName().equals("guess")) {
@@ -130,7 +139,13 @@ public class InteractionsListener extends ListenerAdapter {
 		// leaderboards command
 		else if (event.getName().equals("leaderboards")) {
 			JDA jda = event.getJDA();
-			String temp = LeaderboardHandler.getInstance().getLeaderboard(jda);
+			int optInt = 5;
+			OptionMapping optSize = event.getOption("size");
+			if(optSize!=null) {
+				optInt = optSize.getAsInt();
+			}
+			int lbSize = optInt >= 25 ? 25 : (optInt <= 5) ? 5 : optInt;
+			String temp = LeaderboardHandler.getInstance().getLeaderboard(jda, lbSize);
 			String leaderboard = temp != null ? temp : "Something went wrong!";
 			event.getHook().sendMessage(leaderboard).queue();
 		} 
@@ -205,8 +220,7 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.setDescription("**Balance** : " + coins_rank[0] + " :coin:\n**Rank** : " + coins_rank[1]);
 			eb.setColor(Color.YELLOW);
 			eb.setThumbnail(user.getAvatarUrl());
-			// eb.setFooter("Your rank : " + coins_rank[1]);
-			event.getHook().sendMessageEmbeds(eb.build()).queue();
+			event.getHook().sendMessageEmbeds(eb.build()).setEphemeral(false).queue();
 		}
 
 		// Admin commands

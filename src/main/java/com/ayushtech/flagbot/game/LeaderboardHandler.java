@@ -18,11 +18,11 @@ public class LeaderboardHandler {
         return leaderboardHandler;
     }
 	
-	public String getLeaderboard(JDA jda) {
+	public String getLeaderboard(JDA jda, int lbSize) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("```");
-		sb.append("Top 5 players\n");
-		sb.append(dao.getPlayers(jda, 5));
+		sb.append("```md\n");
+		sb.append("Top " + lbSize + " players\n");
+		sb.append(dao.getPlayers(jda, lbSize));
 		sb.append("\n```");
 		return sb.toString();
 	}

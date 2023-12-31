@@ -13,7 +13,6 @@ import com.ayushtech.flagbot.listeners.MessageListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 public class Main {
@@ -39,14 +38,8 @@ public class Main {
                                 .setActivity(Activity.playing("/guess"))
                                 .build().awaitReady();
                 
-                Guild testServer = jda.getGuildById(834364315879342130l);
-                testServer.upsertCommand("send_dm", "Send a bot message to someone's dm")
-                .addOption(OptionType.STRING, "user_id", "Enter id of the user",true)
-                .addOption(OptionType.STRING, "message", "Enter message to be sent", true)
-                .queue();
-
-                testServer.upsertCommand("reset_coins", "Wipe all the coins of the user.")
-                .addOption(OptionType.STRING, "user_id", "Enter the user id", true)
+                jda.upsertCommand("leaderboards", "See the top players accross the bot")
+                .addOption(OptionType.INTEGER, "size", "Enter length of leaderboard size")
                 .queue();
         
         }

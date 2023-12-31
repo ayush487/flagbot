@@ -23,7 +23,7 @@ public class LeaderboardDao {
 				long userId = rs.getLong("user_id");
 				long amount = rs.getLong("coins");
 				String userTagName = jda.retrieveUserById(userId)
-						.map(user -> user.getAsTag())
+						.map(user -> user.getName())
 						.complete();
 				sb.append("\n#"+index+" "+userTagName + "    " + amount + " Coins");
 				index++;
