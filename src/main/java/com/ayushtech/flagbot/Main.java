@@ -13,7 +13,7 @@ import com.ayushtech.flagbot.listeners.MessageListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.entities.Guild;
 
 public class Main {
 
@@ -38,9 +38,8 @@ public class Main {
                                 .setActivity(Activity.playing("/guess"))
                                 .build().awaitReady();
                 
-                jda.upsertCommand("leaderboards", "See the top players accross the bot")
-                .addOption(OptionType.INTEGER, "size", "Enter length of leaderboard size")
-                .queue();
+                Guild testServer = jda.getGuildById("834364315879342130");
+                testServer.upsertCommand("invite", "Invite Flagbot to your server").queue();
         
         }
 }

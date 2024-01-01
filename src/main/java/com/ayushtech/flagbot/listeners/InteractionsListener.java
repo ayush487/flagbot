@@ -114,8 +114,6 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
-	
-
 		boolean isCommandsDisabled = channelService.isChannelDisabled(event.getChannel().getIdLong());
 
 		if (isCommandsDisabled) {
@@ -134,22 +132,22 @@ public class InteractionsListener extends ListenerAdapter {
 						FlagGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()),
 						event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
 			}
-		} 
-		
+		}
+
 		// leaderboards command
 		else if (event.getName().equals("leaderboards")) {
 			JDA jda = event.getJDA();
 			int optInt = 5;
 			OptionMapping optSize = event.getOption("size");
-			if(optSize!=null) {
+			if (optSize != null) {
 				optInt = optSize.getAsInt();
 			}
 			int lbSize = optInt >= 25 ? 25 : (optInt <= 5) ? 5 : optInt;
 			String temp = LeaderboardHandler.getInstance().getLeaderboard(jda, lbSize);
 			String leaderboard = temp != null ? temp : "Something went wrong!";
 			event.getHook().sendMessage(leaderboard).queue();
-		} 
-		
+		}
+
 		// guessmap command
 		else if (event.getName().equals("guessmap")) {
 			boolean isAdded = MapGameHandler.getInstance().addGame(event);
@@ -161,8 +159,8 @@ public class InteractionsListener extends ListenerAdapter {
 								event.getChannel().getIdLong()),
 						30, TimeUnit.SECONDS);
 			}
-		} 
-		
+		}
+
 		// invite command
 		else if (event.getName().equals("invite")) {
 			EmbedBuilder eb = new EmbedBuilder();
@@ -174,25 +172,29 @@ public class InteractionsListener extends ListenerAdapter {
 					true);
 			eb.addBlankField(true);
 			eb.addField("Support Server", "[here](https://discord.gg/MASMYsNCT9)", true);
-			event.getHook().sendMessageEmbeds(eb.build()).queue();
+			event.getHook().sendMessageEmbeds(eb.build())
+					.addActionRow(Button.link("https://top.gg/bot/1129789320165867662/vote", "❤️Vote")).queue();
 		}
-		
+
 		// help command
 		else if (event.getName().equals("help")) {
 			EmbedBuilder eb = new EmbedBuilder();
 			eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
 			eb.setTitle("Commands");
-			eb.setColor(new Color(223,32,32));
+			eb.setColor(new Color(223, 32, 32));
 			eb.setDescription(
 					"`/guess` : Start a flag guessing game in the channel\n`/guessmap` : Start a map guessing game in the channel\n`/leaderboards` : Check the global leaderboard (Top 5)\n`/invite` : Invite the bot to your server\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank");
-			eb.addField("Other Information", "[Terms of Services](https://github.com/ayush487/flagbot/blob/main/TERMSOFSERVICE.md)\n[Privacy Policy](https://github.com/ayush487/flagbot/blob/main/PRIVACY.md)", false);
+			eb.addField("Other Information",
+					"[Terms of Services](https://github.com/ayush487/flagbot/blob/main/TERMSOFSERVICE.md)\n[Privacy Policy](https://github.com/ayush487/flagbot/blob/main/PRIVACY.md)",
+					false);
 			event.getHook().sendMessageEmbeds(eb.build())
-			.addActionRow(Button.link("https://discord.gg/RqvTRMmVgR", "Support Server"))
-			.queue();
-		} 
+					.addActionRow(Button.link("https://discord.gg/RqvTRMmVgR", "Support Server"),
+							Button.link("https://top.gg/bot/1129789320165867662/vote", "❤️Vote"))
+					.queue();
+		}
 
 		// delete_my_data command
-		else if(event.getName().equals("delete_my_data")) {
+		else if (event.getName().equals("delete_my_data")) {
 			User user = event.getUser();
 			EmbedBuilder eb = new EmbedBuilder();
 			eb.setColor(Color.RED);
@@ -203,16 +205,17 @@ public class InteractionsListener extends ListenerAdapter {
 			EmbedBuilder eb2 = new EmbedBuilder();
 			eb2.setColor(Color.RED);
 			eb2.setTitle("Confirm Data deletion");
-			eb2.setDescription("Click on the **Delete My Data** button to delete your data permanetly.\nNote : It will wipe all your coins permanently.");
+			eb2.setDescription(
+					"Click on the **Delete My Data** button to delete your data permanetly.\nNote : It will wipe all your coins permanently.");
 			;
-			user.openPrivateChannel().flatMap(channel -> 
-				channel.sendMessageEmbeds(eb2.build()).setActionRows(ActionRow.of(Button.primary("delete_data", "Delete My Data")))
-			)
-			.queue();
+			user.openPrivateChannel()
+					.flatMap(channel -> channel.sendMessageEmbeds(eb2.build())
+							.setActionRows(ActionRow.of(Button.primary("delete_data", "Delete My Data"))))
+					.queue();
 		}
 
 		// balance command
-		else if(event.getName().equals("balance")) {
+		else if (event.getName().equals("balance")) {
 			User user = event.getUser();
 			EmbedBuilder eb = new EmbedBuilder();
 			eb.setTitle(user.getName());
@@ -225,25 +228,25 @@ public class InteractionsListener extends ListenerAdapter {
 
 		// Admin commands
 		// show_server_count command (private access)
-    else if (event.getName().equals("show_server_count")) {
-      event.getHook().sendMessage("Total Servers in : " + event.getJDA().getGuilds().size()).queue();
-    }
+		else if (event.getName().equals("show_server_count")) {
+			event.getHook().sendMessage("Total Servers in : " + event.getJDA().getGuilds().size()).queue();
+		}
 
-    else if(event.getName().equals("reset_coins")) {
-      String user_id = event.getOption("user_id").getAsString();
-      long coinsDedecuted = CoinDao.getInstance().resetUserCoins(Long.parseLong(user_id));
-      event.getHook().sendMessage("Deducted " + coinsDedecuted + " coins from the User").queue();
-    }
+		else if (event.getName().equals("reset_coins")) {
+			String user_id = event.getOption("user_id").getAsString();
+			long coinsDedecuted = CoinDao.getInstance().resetUserCoins(Long.parseLong(user_id));
+			event.getHook().sendMessage("Deducted " + coinsDedecuted + " coins from the User").queue();
+		}
 
-    // send_dm (private access)
-    else if (event.getName().equals("send_dm")) {
-      String user_id = event.getOption("user_id").getAsString();
-      String message = event.getOption("message").getAsString();
-      event.getJDA().retrieveUserById(Long.parseLong(user_id)).queue(user -> {
-        user.openPrivateChannel().flatMap(channel -> channel.sendMessage(message)).queue();
-      });
-      event.getHook().sendMessage("Message Sent").queue();
-    }
+		// send_dm (private access)
+		else if (event.getName().equals("send_dm")) {
+			String user_id = event.getOption("user_id").getAsString();
+			String message = event.getOption("message").getAsString();
+			event.getJDA().retrieveUserById(Long.parseLong(user_id)).queue(user -> {
+				user.openPrivateChannel().flatMap(channel -> channel.sendMessage(message)).queue();
+			});
+			event.getHook().sendMessage("Message Sent").queue();
+		}
 	}
 
 	public void onButtonInteraction(@Nonnull ButtonInteractionEvent event) {
@@ -284,12 +287,12 @@ public class InteractionsListener extends ListenerAdapter {
 				MapGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()).endGameAsLose();
 			}
 		} else if (event.getComponentId().equals("delete_data")) {
-			
+
 			LocalDateTime messageCreationTime = event.getMessage().getTimeCreated().toLocalDateTime();
 			LocalDateTime currentTime = LocalDateTime.now(ZoneId.of("GMT"));
 			long timeDifference = Duration.between(messageCreationTime, currentTime).toMillis();
-		
-			if(timeDifference>=60000l) {
+
+			if (timeDifference >= 60000l) {
 				EmbedBuilder eb = new EmbedBuilder();
 				eb.setDescription("Too late");
 				eb.setColor(new Color(252, 209, 42));
@@ -303,7 +306,6 @@ public class InteractionsListener extends ListenerAdapter {
 				event.replyEmbeds(eb.build()).queue();
 			}
 		}
-		
 
 	}
 

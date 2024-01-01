@@ -8,8 +8,31 @@ import java.sql.SQLException;
 import net.dv8tion.jda.api.JDA;
 
 public class LeaderboardDao {
-	
-//	public LeaderboardDao() {}
+
+	private String[] spaceArray = {
+			"",
+			" ",
+			"  ",
+			"   ",
+			"    ",
+			"     ",
+			"      ",
+			"       ",
+			"        ",
+			"         ",
+			"          ",
+			"           ",
+			"            ",
+			"             ",
+			"              ",
+			"               ",
+			"                ",
+			"                 ",
+			"                  ",
+			"                   ",
+			"                    ",
+			"                     "
+	};
 
 	public String getPlayers(JDA jda, int players) {
 		try {
@@ -19,13 +42,15 @@ public class LeaderboardDao {
 			ResultSet rs = ps.executeQuery();
 			StringBuffer sb = new StringBuffer();
 			int index = 1;
-			while(rs.next()) {
+			while (rs.next()) {
 				long userId = rs.getLong("user_id");
 				long amount = rs.getLong("coins");
+
 				String userTagName = jda.retrieveUserById(userId)
 						.map(user -> user.getName())
 						.complete();
-				sb.append("\n#"+index+" "+userTagName + "    " + amount + " Coins");
+				int spaces = (18 - userTagName.length()) > 1 ? (18 - userTagName.length()) : 1;
+				sb.append("\n" + index + ". " + userTagName + spaceArray[spaces] + amount + " Coins");
 				index++;
 			}
 			return sb.toString();
