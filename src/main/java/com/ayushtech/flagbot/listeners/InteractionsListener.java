@@ -181,12 +181,13 @@ public class InteractionsListener extends ListenerAdapter {
 			EmbedBuilder eb = new EmbedBuilder();
 			eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
 			eb.setTitle("Commands");
-			eb.setColor(new Color(223, 32, 32));
+			eb.setColor(new Color(255, 153, 51)); //	rgb (255,153,51)
 			eb.setDescription(
-					"`/guess` : Start a flag guessing game in the channel\n`/guessmap` : Start a map guessing game in the channel\n`/leaderboards` : Check the global leaderboard (Top 5)\n`/invite` : Invite the bot to your server\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank");
+					"`/guess` : Start a flag guessing game in the channel\n`/guessmap` : Start a map guessing game in the channel\n`/leaderboards` : Check the global leaderboard (Top 5)\n`/invite` : Invite the bot to your server\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank\n`/vote` : Vote for us and get rewards");
 			eb.addField("Other Information",
 					"[Terms of Services](https://github.com/ayush487/flagbot/blob/main/TERMSOFSERVICE.md)\n[Privacy Policy](https://github.com/ayush487/flagbot/blob/main/PRIVACY.md)",
 					false);
+			eb.setFooter("You can earn 1000 coins by voting for us");
 			event.getHook().sendMessageEmbeds(eb.build())
 					.addActionRow(Button.link("https://discord.gg/RqvTRMmVgR", "Support Server"),
 							Button.link("https://top.gg/bot/1129789320165867662/vote", "❤️Vote"))
@@ -224,6 +225,19 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.setColor(Color.YELLOW);
 			eb.setThumbnail(user.getAvatarUrl());
 			event.getHook().sendMessageEmbeds(eb.build()).setEphemeral(false).queue();
+		}
+
+		else if(event.getName().equals("vote")) {
+			EmbedBuilder eb = new EmbedBuilder();
+			eb.setTitle("Vote for Flag Bot");
+			eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
+			eb.setDescription("Vote for Flag bot on top.gg\n[here](https://top.gg/bot/1129789320165867662/vote)");
+			eb.addField("Rewards", "**•** Each vote gets you 1000 :coin: ", false);
+			eb.setFooter("You can vote every 12 hours");
+			eb.setColor(Color.GREEN);
+			event.getHook().sendMessageEmbeds(eb.build())
+			.addActionRow(Button.link("https://top.gg/bot/1129789320165867662/vote", "Top.gg"))
+			.queue();
 		}
 
 		// Admin commands

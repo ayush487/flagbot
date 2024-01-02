@@ -17,7 +17,7 @@ public class ChannelService {
     disabledMap = new HashMap<Long, Boolean>();
   }
 
-  public static ChannelService getInstance() {
+  public static synchronized ChannelService getInstance() {
     if(channelService==null) {
       channelService = new ChannelService();
     }
