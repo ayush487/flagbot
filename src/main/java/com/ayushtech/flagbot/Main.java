@@ -41,5 +41,7 @@ public class Main {
                 Guild testServer = jda.getGuildById("834364315879342130");
                 testServer.upsertCommand("invite", "Invite Flagbot to your server").queue();
                 testServer.upsertCommand("vote", "Vote for us on top.gg and get rewards").queue();
+
+                jda.upsertCommand("vote", "Vote for us on top.gg and get rewards").queue();
         }
 }

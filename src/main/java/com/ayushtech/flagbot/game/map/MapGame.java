@@ -133,6 +133,22 @@ public class MapGame extends Game{
 		ignoreSet.add("sz");
 		ignoreSet.add("ps");
 		ignoreSet.add("cd");
+		ignoreSet.add("ag");
+		ignoreSet.add("re");
+		ignoreSet.add("ax");
+		ignoreSet.add("bq");
+		ignoreSet.add("sh");
+		ignoreSet.add("sj");
+		ignoreSet.add("um");
+		ignoreSet.add("gf");
+		ignoreSet.add("gp");
+		ignoreSet.add("gs");
+		ignoreSet.add("gb-sct");
+		ignoreSet.add("gb-nir");
+		ignoreSet.add("yt");
+		ignoreSet.add("gb-wls");
+		ignoreSet.add("gb-eng");
+		ignoreSet.add("mq");
 	}
 	private static void loadCountryOverrideMap() {
 		countryOverrideMap.put("Myanmar", "burma");
@@ -146,6 +162,7 @@ public class MapGame extends Game{
 		countryOverrideMap.put("Cape Verde", "cabo_verde");
 		countryOverrideMap.put("Ivory Coast", "cote_divoire");
 		countryOverrideMap.put("Congo", "congo_republic_of_the_");
+		
 	}
 
 
