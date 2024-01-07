@@ -51,7 +51,7 @@ public abstract class Game {
         countryMap.put("at", "Austria");
         countryMap.put("au", "Australia");
         countryMap.put("aw", "Aruba");
-        countryMap.put("ax", "Åland Islands");
+        countryMap.put("ax", "Aland Islands");
         countryMap.put("az", "Azerbaijan");
         countryMap.put("ba", "Bosnia and Herzegovina");
         countryMap.put("bb", "Barbados");
@@ -78,7 +78,7 @@ public abstract class Game {
         countryMap.put("cc", "Cocos Islands");
         countryMap.put("cd", "Democratic Republic of the Congo");
         countryMap.put("cf", "Central African Republic");
-        countryMap.put("cg", "Republic of the Congo");
+        countryMap.put("cg", "Congo");
         countryMap.put("ch", "Switzerland");
         countryMap.put("ci", "Ivory Coast");
         countryMap.put("ck", "Cook Islands");
@@ -106,7 +106,6 @@ public abstract class Game {
         countryMap.put("er", "Eritrea");
         countryMap.put("es", "Spain");
         countryMap.put("et", "Ethiopia");
-        countryMap.put("eu", "European Union");
         countryMap.put("fi", "Finland");
         countryMap.put("fj", "Fiji");
         countryMap.put("fk", "Falkland Islands");

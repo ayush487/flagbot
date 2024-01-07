@@ -43,5 +43,9 @@ public class Main {
                 testServer.upsertCommand("vote", "Vote for us on top.gg and get rewards").queue();
 
                 jda.upsertCommand("vote", "Vote for us on top.gg and get rewards").queue();
+
+                Guild swambot = jda.getGuildById(1127236362530209932l);
+                swambot.upsertCommand("image", "Create a png image with a text given by you")
+                .queue();
         }
 }

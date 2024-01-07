@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Random;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -17,6 +18,7 @@ import com.ayushtech.flagbot.game.flag.FlagGameHandler;
 import com.ayushtech.flagbot.game.flag.RegionHandler;
 import com.ayushtech.flagbot.game.map.MapGameEndRunnable;
 import com.ayushtech.flagbot.game.map.MapGameHandler;
+import com.ayushtech.flagbot.services.CaptchaService;
 import com.ayushtech.flagbot.services.ChannelService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -36,15 +38,28 @@ public class InteractionsListener extends ListenerAdapter {
 
 	private ScheduledExecutorService gameEndService;
 	private ChannelService channelService;
+	private Random random;
+	private final int BOUND = 40;
 
 	public InteractionsListener() {
 		super();
-		gameEndService = new ScheduledThreadPoolExecutor(4);
+		gameEndService = new ScheduledThreadPoolExecutor(50);
 		channelService = ChannelService.getInstance();
+		random = new Random();
 	}
 
 	@Override
 	public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
+
+		if (CaptchaService.getInstance().isUserBanned(event.getUser().getIdLong())) {
+			event.reply("You are banned from using bot").setEphemeral(true).queue();
+			return;
+		}
+
+		if (CaptchaService.getInstance().userHasCaptched(event.getUser().getIdLong())) {
+			event.reply("Solve the captcha first").setEphemeral(true).queue();
+			return;
+		}
 
 		// Disable Command
 		if (event.getName().equals("disable")) {
@@ -53,7 +68,6 @@ public class InteractionsListener extends ListenerAdapter {
 			if (member.hasPermission(Permission.MANAGE_CHANNEL)) {
 				OptionMapping option = event.getOption("channel");
 				if (option == null) {
-					// channelDao.addDisableChannel(event.getChannel().getIdLong());
 					channelService.disableChannel(event.getChannel().getIdLong());
 					event.getHook().sendMessage("Commands are disabled for this channel now!").setEphemeral(true).queue();
 				} else {
@@ -61,7 +75,6 @@ public class InteractionsListener extends ListenerAdapter {
 					if (channelOption == null) {
 						event.getHook().sendMessage("Mentioned channel is not a Message Channel").setEphemeral(true).queue();
 					} else {
-						// channelDao.addDisableChannel(channelOption.getIdLong());
 						channelService.disableChannel(channelOption.getIdLong());
 						event.getHook().sendMessage("Commands are disabled for " + channelOption.getAsMention() + " now!")
 								.setEphemeral(true).queue();
@@ -124,14 +137,18 @@ public class InteractionsListener extends ListenerAdapter {
 
 		event.deferReply().queue();
 
-		// guess command
-		if (event.getName().equals("guess")) {
-			boolean isAdded = FlagGameHandler.getInstance().addGame(event);
-			if (isAdded) {
-				gameEndService.schedule(new FlagGameEndRunnable(
-						FlagGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()),
-						event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
-			}
+		if (event.getName().equals("vote")) {
+			EmbedBuilder eb = new EmbedBuilder();
+			eb.setTitle("Vote for Flag Bot");
+			eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
+			eb.setDescription("Vote for Flag bot on top.gg\n[here](https://top.gg/bot/1129789320165867662/vote)");
+			eb.addField("Rewards", "**•** Each vote gets you 1000 :coin: ", false);
+			eb.setFooter("You can vote every 12 hours");
+			eb.setColor(Color.GREEN);
+			event.getHook().sendMessageEmbeds(eb.build())
+					.addActionRow(Button.link("https://top.gg/bot/1129789320165867662/vote", "Top.gg"))
+					.queue();
+			return;
 		}
 
 		// leaderboards command
@@ -146,19 +163,7 @@ public class InteractionsListener extends ListenerAdapter {
 			String temp = LeaderboardHandler.getInstance().getLeaderboard(jda, lbSize);
 			String leaderboard = temp != null ? temp : "Something went wrong!";
 			event.getHook().sendMessage(leaderboard).queue();
-		}
-
-		// guessmap command
-		else if (event.getName().equals("guessmap")) {
-			boolean isAdded = MapGameHandler.getInstance().addGame(event);
-			if (isAdded) {
-				gameEndService.schedule(
-						new MapGameEndRunnable(
-								MapGameHandler.getInstance().getGameMap()
-										.get(event.getChannel().getIdLong()),
-								event.getChannel().getIdLong()),
-						30, TimeUnit.SECONDS);
-			}
+			return;
 		}
 
 		// invite command
@@ -174,6 +179,7 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.addField("Support Server", "[here](https://discord.gg/MASMYsNCT9)", true);
 			event.getHook().sendMessageEmbeds(eb.build())
 					.addActionRow(Button.link("https://top.gg/bot/1129789320165867662/vote", "❤️Vote")).queue();
+			return;
 		}
 
 		// help command
@@ -181,7 +187,7 @@ public class InteractionsListener extends ListenerAdapter {
 			EmbedBuilder eb = new EmbedBuilder();
 			eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
 			eb.setTitle("Commands");
-			eb.setColor(new Color(255, 153, 51)); //	rgb (255,153,51)
+			eb.setColor(new Color(255, 153, 51)); // rgb (255,153,51)
 			eb.setDescription(
 					"`/guess` : Start a flag guessing game in the channel\n`/guessmap` : Start a map guessing game in the channel\n`/leaderboards` : Check the global leaderboard (Top 5)\n`/invite` : Invite the bot to your server\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank\n`/vote` : Vote for us and get rewards");
 			eb.addField("Other Information",
@@ -192,6 +198,7 @@ public class InteractionsListener extends ListenerAdapter {
 					.addActionRow(Button.link("https://discord.gg/RqvTRMmVgR", "Support Server"),
 							Button.link("https://top.gg/bot/1129789320165867662/vote", "❤️Vote"))
 					.queue();
+			return;
 		}
 
 		// delete_my_data command
@@ -213,6 +220,7 @@ public class InteractionsListener extends ListenerAdapter {
 					.flatMap(channel -> channel.sendMessageEmbeds(eb2.build())
 							.setActionRows(ActionRow.of(Button.primary("delete_data", "Delete My Data"))))
 					.queue();
+			return;
 		}
 
 		// balance command
@@ -225,19 +233,37 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.setColor(Color.YELLOW);
 			eb.setThumbnail(user.getAvatarUrl());
 			event.getHook().sendMessageEmbeds(eb.build()).setEphemeral(false).queue();
+			return;
 		}
 
-		else if(event.getName().equals("vote")) {
-			EmbedBuilder eb = new EmbedBuilder();
-			eb.setTitle("Vote for Flag Bot");
-			eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
-			eb.setDescription("Vote for Flag bot on top.gg\n[here](https://top.gg/bot/1129789320165867662/vote)");
-			eb.addField("Rewards", "**•** Each vote gets you 1000 :coin: ", false);
-			eb.setFooter("You can vote every 12 hours");
-			eb.setColor(Color.GREEN);
-			event.getHook().sendMessageEmbeds(eb.build())
-			.addActionRow(Button.link("https://top.gg/bot/1129789320165867662/vote", "Top.gg"))
-			.queue();
+		if (random.nextInt(BOUND) == 1) {
+			CaptchaService.getInstance().sendCaptcha(event);
+			return;
+		}
+
+		// guess command
+		else if (event.getName().equals("guess")) {
+			boolean isAdded = FlagGameHandler.getInstance().addGame(event);
+			if (isAdded) {
+				gameEndService.schedule(new FlagGameEndRunnable(
+						FlagGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()),
+						event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
+			}
+			return;
+		}
+
+		// guessmap command
+		else if (event.getName().equals("guessmap")) {
+			boolean isAdded = MapGameHandler.getInstance().addGame(event);
+			if (isAdded) {
+				gameEndService.schedule(
+						new MapGameEndRunnable(
+								MapGameHandler.getInstance().getGameMap()
+										.get(event.getChannel().getIdLong()),
+								event.getChannel().getIdLong()),
+						30, TimeUnit.SECONDS);
+			}
+			return;
 		}
 
 		// Admin commands
@@ -265,42 +291,18 @@ public class InteractionsListener extends ListenerAdapter {
 
 	public void onButtonInteraction(@Nonnull ButtonInteractionEvent event) {
 		super.onButtonInteraction(event);
-		if (event.getComponentId().equals("playAgainButton")) {
-			boolean isAdded = FlagGameHandler.getInstance().addGame(event);
-			if (isAdded) {
-				gameEndService.schedule(new FlagGameEndRunnable(
-						FlagGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()),
-						event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
-			}
-		} else if (event.getComponentId().equals("skipButton")) {
-			event.deferReply().queue();
-			if (FlagGameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())) {
-				event.getHook().sendMessage(event.getUser().getAsMention() + " has skipped the game!").queue();
-				FlagGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()).endGameAsLose();
-			}
-		} else if (event.getComponentId().equals("checkRegionButton")) {
-			event.deferReply().setEphemeral(true).queue();
-			String response = RegionHandler.getInstance().requestForHint(event);
-			response = (response != null) ? response : "Region Not Found!";
-			event.getHook().sendMessage(response).setEphemeral(true).queue();
-			;
-		} else if (event.getComponentId().equals("playAgainMap")) {
-			boolean isAdded = MapGameHandler.getInstance().addGame(event);
-			if (isAdded) {
-				gameEndService.schedule(
-						new MapGameEndRunnable(
-								MapGameHandler.getInstance().getGameMap()
-										.get(event.getChannel().getIdLong()),
-								event.getChannel().getIdLong()),
-						30, TimeUnit.SECONDS);
-			}
-		} else if (event.getComponentId().equals("skipMap")) {
-			event.deferReply().queue();
-			if (MapGameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())) {
-				event.getHook().sendMessage(event.getUser().getAsMention() + " has skipped the game!").queue();
-				MapGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()).endGameAsLose();
-			}
-		} else if (event.getComponentId().equals("delete_data")) {
+
+		if (CaptchaService.getInstance().isUserBanned(event.getUser().getIdLong())) {
+			event.reply("You are banned from using bot").setEphemeral(true).queue();
+			return;
+		}
+
+		if (CaptchaService.getInstance().userHasCaptched(event.getUser().getIdLong())) {
+			event.reply("Solve the captcha first").setEphemeral(true).queue();
+			return;
+		}
+
+		if (event.getComponentId().equals("delete_data")) {
 
 			LocalDateTime messageCreationTime = event.getMessage().getTimeCreated().toLocalDateTime();
 			LocalDateTime currentTime = LocalDateTime.now(ZoneId.of("GMT"));
@@ -319,8 +321,63 @@ public class InteractionsListener extends ListenerAdapter {
 				eb.setColor(Color.GREEN);
 				event.replyEmbeds(eb.build()).queue();
 			}
+			return;
 		}
 
+		else if (event.getComponentId().equals("skipButton")) {
+			event.deferReply().queue();
+			if (FlagGameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())) {
+				event.getHook().sendMessage(event.getUser().getAsMention() + " has skipped the game!").queue();
+				FlagGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()).endGameAsLose();
+			}
+			return;
+		}
+
+		else if (event.getComponentId().equals("checkRegionButton")) {
+			event.deferReply().setEphemeral(true).queue();
+			String response = RegionHandler.getInstance().requestForHint(event);
+			response = (response != null) ? response : "Region Not Found!";
+			event.getHook().sendMessage(response).setEphemeral(true).queue();
+			return;
+		}
+
+		else if (event.getComponentId().equals("skipMap")) {
+			event.deferReply().queue();
+			if (MapGameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())) {
+				event.getHook().sendMessage(event.getUser().getAsMention() + " has skipped the game!").queue();
+				MapGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()).endGameAsLose();
+			}
+			return;
+		}
+
+		if (random.nextInt(BOUND) == 1) {
+			event.deferReply().queue();
+			CaptchaService.getInstance().sendCaptcha(event);
+			return;
+		}
+
+		else if (event.getComponentId().equals("playAgainButton")) {
+			boolean isAdded = FlagGameHandler.getInstance().addGame(event);
+			if (isAdded) {
+				gameEndService.schedule(new FlagGameEndRunnable(
+						FlagGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()),
+						event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
+			}
+			return;
+		}
+
+		else if (event.getComponentId().equals("playAgainMap")) {
+			boolean isAdded = MapGameHandler.getInstance().addGame(event);
+			if (isAdded) {
+				gameEndService.schedule(
+						new MapGameEndRunnable(
+								MapGameHandler.getInstance().getGameMap()
+										.get(event.getChannel().getIdLong()),
+								event.getChannel().getIdLong()),
+						30, TimeUnit.SECONDS);
+			}
+			return;
+		}
 	}
 
 }

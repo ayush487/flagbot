@@ -36,3 +36,4 @@ credential.properties
 .gitignore
 maps data.txt
 .settings/
+.png
