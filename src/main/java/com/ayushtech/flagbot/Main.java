@@ -13,7 +13,7 @@ import com.ayushtech.flagbot.listeners.MessageListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 public class Main {
 
@@ -35,17 +35,13 @@ public class Main {
                 JDA jda = JDABuilder.createDefault(bot_token)
                                 .addEventListeners(new MessageListener(), new InteractionsListener(),
                                                 new GuildEventListener())
-                                .setActivity(Activity.playing("/guess"))
+                                .setActivity(Activity.playing("/battle"))
                                 .build().awaitReady();
                 
-                Guild testServer = jda.getGuildById("834364315879342130");
-                testServer.upsertCommand("invite", "Invite Flagbot to your server").queue();
-                testServer.upsertCommand("vote", "Vote for us on top.gg and get rewards").queue();
-
-                jda.upsertCommand("vote", "Vote for us on top.gg and get rewards").queue();
-
-                Guild swambot = jda.getGuildById(1127236362530209932l);
-                swambot.upsertCommand("image", "Create a png image with a text given by you")
+                jda.upsertCommand("battle", "Start a battle between you and mentioned users")
+                .addOption(OptionType.USER, "opponent", "Mention your opponent", true)
+                .addOption(OptionType.INTEGER, "bet", "Enter amount to bet (max can be 10k)", false)
                 .queue();
+                
         }
 }

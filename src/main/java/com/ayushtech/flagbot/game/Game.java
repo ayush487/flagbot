@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public abstract class Game {
 
     public static HashMap<String, String> countryMap = new HashMap<>(256);
-    public static List<String> isoList;
+    protected static List<String> isoList;
     protected static final String flagLink = "https://flagcdn.com/256x192/";
     protected static final String suffix = ".png";
 

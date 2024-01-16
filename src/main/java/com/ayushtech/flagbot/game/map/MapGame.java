@@ -19,7 +19,7 @@ public class MapGame extends Game{
 	
 	private static Random random;
 	private static Set<String> ignoreSet;
-	private static Map<String, String> countryOverrideMap;
+	public static Map<String, String> countryOverrideMap;
 	
 	private MessageChannel channel;
 	private MessageEmbed messageEmbed;

@@ -13,6 +13,8 @@ import javax.annotation.Nonnull;
 
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.game.LeaderboardHandler;
+import com.ayushtech.flagbot.game.fight.Damage;
+import com.ayushtech.flagbot.game.fight.FightHandler;
 import com.ayushtech.flagbot.game.flag.FlagGameEndRunnable;
 import com.ayushtech.flagbot.game.flag.FlagGameHandler;
 import com.ayushtech.flagbot.game.flag.RegionHandler;
@@ -39,7 +41,7 @@ public class InteractionsListener extends ListenerAdapter {
 	private ScheduledExecutorService gameEndService;
 	private ChannelService channelService;
 	private Random random;
-	private final int BOUND = 40;
+	private final int BOUND = 75;
 
 	public InteractionsListener() {
 		super();
@@ -55,12 +57,13 @@ public class InteractionsListener extends ListenerAdapter {
 			event.reply("You are banned from using bot").setEphemeral(true).queue();
 			return;
 		}
-
+		
 		if (CaptchaService.getInstance().userHasCaptched(event.getUser().getIdLong())) {
 			event.reply("Solve the captcha first").setEphemeral(true).queue();
 			return;
 		}
-
+		
+		
 		// Disable Command
 		if (event.getName().equals("disable")) {
 			event.deferReply().setEphemeral(true).queue();
@@ -134,8 +137,14 @@ public class InteractionsListener extends ListenerAdapter {
 			event.getHook().sendMessage("Commands are disabled in this channel").setEphemeral(true).queue();
 			return;
 		}
-
+		
+		if (event.getName().equals("battle")) {
+			FightHandler.getInstance().handleFightCommand(event);
+			return;
+		}
+		
 		event.deferReply().queue();
+
 
 		if (event.getName().equals("vote")) {
 			EmbedBuilder eb = new EmbedBuilder();
@@ -190,6 +199,7 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.setColor(new Color(255, 153, 51)); // rgb (255,153,51)
 			eb.setDescription(
 					"`/guess` : Start a flag guessing game in the channel\n`/guessmap` : Start a map guessing game in the channel\n`/leaderboards` : Check the global leaderboard (Top 5)\n`/invite` : Invite the bot to your server\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank\n`/vote` : Vote for us and get rewards");
+			eb.addField("__Battle Command__", "`/battle` : Start a 1v1 battle between two users.\n**__Options__**\n**opponent** : Mention the user with whom you wanna battle.\n**bet** : Amout to bet in the battle (optional)", false);
 			eb.addField("Other Information",
 					"[Terms of Services](https://github.com/ayush487/flagbot/blob/main/TERMSOFSERVICE.md)\n[Privacy Policy](https://github.com/ayush487/flagbot/blob/main/PRIVACY.md)",
 					false);
@@ -287,6 +297,14 @@ public class InteractionsListener extends ListenerAdapter {
 			});
 			event.getHook().sendMessage("Message Sent").queue();
 		}
+
+		// unblock users
+		else if(event.getName().equals("unblock")) {
+			String user_id = event.getOption("user_id").getAsString();
+			CaptchaService.getInstance().removeBlock(Long.parseLong(user_id));
+			event.reply("Unblocked User").queue();
+			return;
+		}
 	}
 
 	public void onButtonInteraction(@Nonnull ButtonInteractionEvent event) {
@@ -299,6 +317,17 @@ public class InteractionsListener extends ListenerAdapter {
 
 		if (CaptchaService.getInstance().userHasCaptched(event.getUser().getIdLong())) {
 			event.reply("Solve the captcha first").setEphemeral(true).queue();
+			return;
+		}
+
+		if(event.getComponentId().startsWith("punchSelection")) {
+			String selectedOptionIso = event.getComponentId().split("-")[1];
+			FightHandler.getInstance().handleSelection(event, Damage.PUNCH, selectedOptionIso);
+			return;
+		}
+		else if (event.getComponentId().startsWith("kickSelection")) {
+			String selectedOptionIso = event.getComponentId().split("-")[1];
+			FightHandler.getInstance().handleSelection(event, Damage.KICK, selectedOptionIso);
 			return;
 		}
 
@@ -347,6 +376,31 @@ public class InteractionsListener extends ListenerAdapter {
 				event.getHook().sendMessage(event.getUser().getAsMention() + " has skipped the game!").queue();
 				MapGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()).endGameAsLose();
 			}
+			return;
+		}
+
+		else if (event.getComponentId().equals("rejectBattle")) {
+			FightHandler.getInstance().handleCancelButton(event);
+			return;
+		}
+
+		else if (event.getComponentId().equals("acceptBattle")) {
+			FightHandler.getInstance().handleAcceptButton(event);
+			return;
+		}
+
+		else if (event.getComponentId().equals("punchInBattle")) {
+			FightHandler.getInstance().handlePunchButton(event);
+			return;
+		}
+
+		else if(event.getComponentId().equals("kickInBattle")) {
+			FightHandler.getInstance().handleKickButton(event);
+			return;
+		}
+
+		else if (event.getComponentId().equals("runInBattle")) {
+			FightHandler.getInstance().handleRunButton(event);
 			return;
 		}
 
