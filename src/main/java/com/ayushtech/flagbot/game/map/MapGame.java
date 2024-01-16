@@ -161,7 +161,7 @@ public class MapGame extends Game{
 		countryOverrideMap.put("Turkiye", "turkey");
 		countryOverrideMap.put("Cape Verde", "cabo_verde");
 		countryOverrideMap.put("Ivory Coast", "cote_divoire");
-		countryOverrideMap.put("Congo", "congo_republic_of_the_");
+		countryOverrideMap.put("Congo", "congo_republic_of_the");
 		
 	}
 

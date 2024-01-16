@@ -63,6 +63,9 @@ public class FightGame {
         whoseTurn = player1.getName();
       }
     } else {
+      lastRoundText = type.equals(Damage.PUNCH)
+            ? whoseTurn + " trying to punch but failed damaging himself for " + dmg
+            : whoseTurn + " trying to kick but failed damaging himself for " + dmg;
       if (whoseTurn.equals(player1.getName())) {
         player1Hp -= dmg;
         whoseTurn = player2.getName();
@@ -70,9 +73,6 @@ public class FightGame {
         player2Hp -= dmg;
         whoseTurn = player1.getName();
       }
-      lastRoundText = type.equals(Damage.PUNCH)
-            ? whoseTurn + " trying to punch but failed damaging himself for " + dmg
-            : whoseTurn + " trying to kick but failed damaging himself for " + dmg;
     }
     if (player1Hp <= 0 || player2Hp <= 0) {
       endBattle(lastRoundText);
