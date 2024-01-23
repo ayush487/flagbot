@@ -41,7 +41,7 @@ public class InteractionsListener extends ListenerAdapter {
 	private ScheduledExecutorService gameEndService;
 	private ChannelService channelService;
 	private Random random;
-	private final int BOUND = 75;
+	private final int BOUND = 125;
 
 	public InteractionsListener() {
 		super();
@@ -302,7 +302,7 @@ public class InteractionsListener extends ListenerAdapter {
 		else if(event.getName().equals("unblock")) {
 			String user_id = event.getOption("user_id").getAsString();
 			CaptchaService.getInstance().removeBlock(Long.parseLong(user_id));
-			event.reply("Unblocked User").queue();
+			event.getHook().sendMessage("Unblocked User").queue();
 			return;
 		}
 	}
