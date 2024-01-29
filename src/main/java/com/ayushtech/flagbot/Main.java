@@ -9,6 +9,7 @@ import com.ayushtech.flagbot.dbconnectivity.DBInfo;
 import com.ayushtech.flagbot.listeners.GuildEventListener;
 import com.ayushtech.flagbot.listeners.InteractionsListener;
 import com.ayushtech.flagbot.listeners.MessageListener;
+import com.ayushtech.flagbot.services.ChannelService;
 
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -35,5 +36,6 @@ public class Main {
                                                 new GuildEventListener())
                                 .setActivity(Activity.playing("/battle"))
                                 .build().awaitReady();
+                ChannelService.getInstance().loadDisabledChannels();
         }
 }
