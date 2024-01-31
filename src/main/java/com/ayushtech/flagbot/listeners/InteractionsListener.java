@@ -26,6 +26,7 @@ import com.ayushtech.flagbot.services.ChannelService;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
@@ -57,13 +58,12 @@ public class InteractionsListener extends ListenerAdapter {
 			event.reply("You are banned from using bot").setEphemeral(true).queue();
 			return;
 		}
-		
+
 		if (CaptchaService.getInstance().userHasCaptched(event.getUser().getIdLong())) {
 			event.reply("Solve the captcha first").setEphemeral(true).queue();
 			return;
 		}
-		
-		
+
 		// Disable Command
 		if (event.getName().equals("disable")) {
 			event.deferReply().setEphemeral(true).queue();
@@ -137,14 +137,13 @@ public class InteractionsListener extends ListenerAdapter {
 			event.getHook().sendMessage("Commands are disabled in this channel").setEphemeral(true).queue();
 			return;
 		}
-		
+
 		if (event.getName().equals("battle")) {
 			FightHandler.getInstance().handleFightCommand(event);
 			return;
 		}
-		
-		event.deferReply().queue();
 
+		event.deferReply().queue();
 
 		if (event.getName().equals("vote")) {
 			EmbedBuilder eb = new EmbedBuilder();
@@ -199,7 +198,9 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.setColor(new Color(255, 153, 51)); // rgb (255,153,51)
 			eb.setDescription(
 					"`/guess` : Start a flag guessing game in the channel\n`/guessmap` : Start a map guessing game in the channel\n`/leaderboards` : Check the global leaderboard (Top 5)\n`/invite` : Invite the bot to your server\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank\n`/vote` : Vote for us and get rewards");
-			eb.addField("__Battle Command__", "`/battle` : Start a 1v1 battle between two users.\n**__Options__**\n**opponent** : Mention the user with whom you wanna battle.\n**bet** : Amout to bet in the battle (optional)", false);
+			eb.addField("__Battle Command__",
+					"`/battle` : Start a 1v1 battle between two users.\n**__Options__**\n**opponent** : Mention the user with whom you wanna battle.\n**bet** : Amout to bet in the battle (optional)",
+					false);
 			eb.addField("Other Information",
 					"[Terms of Services](https://github.com/ayush487/flagbot/blob/main/TERMSOFSERVICE.md)\n[Privacy Policy](https://github.com/ayush487/flagbot/blob/main/PRIVACY.md)",
 					false);
@@ -209,6 +210,17 @@ public class InteractionsListener extends ListenerAdapter {
 							Button.link("https://top.gg/bot/1129789320165867662/vote", "❤️Vote"))
 					.queue();
 			return;
+		}
+
+		else if (event.getName().equals("support")) {
+			EmbedBuilder eb = new EmbedBuilder();
+			eb.setColor(Color.YELLOW);
+			eb.addField("Support Server", "[Flag Bot Support Server](https://discord.gg/RqvTRMmVgR)", false);
+			eb.addField("Support Developer",
+					"[<:buymeacoffee:1202183996021415946> Buy me a coffee](https://www.buymeacoffee.com/ayush487)", false);
+			event.getHook().sendMessageEmbeds(eb.build())
+					.addActionRow(Button.link("https://www.buymeacoffee.com/ayush487", Emoji.fromEmote("buymeacoffee", 1202183996021415946l, false)))
+					.queue();
 		}
 
 		// delete_my_data command
@@ -299,7 +311,7 @@ public class InteractionsListener extends ListenerAdapter {
 		}
 
 		// unblock users
-		else if(event.getName().equals("unblock")) {
+		else if (event.getName().equals("unblock")) {
 			String user_id = event.getOption("user_id").getAsString();
 			CaptchaService.getInstance().removeBlock(Long.parseLong(user_id));
 			event.getHook().sendMessage("Unblocked User").queue();
@@ -320,12 +332,11 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
-		if(event.getComponentId().startsWith("punchSelection")) {
+		if (event.getComponentId().startsWith("punchSelection")) {
 			String selectedOptionIso = event.getComponentId().split("-")[1];
 			FightHandler.getInstance().handleSelection(event, Damage.PUNCH, selectedOptionIso);
 			return;
-		}
-		else if (event.getComponentId().startsWith("kickSelection")) {
+		} else if (event.getComponentId().startsWith("kickSelection")) {
 			String selectedOptionIso = event.getComponentId().split("-")[1];
 			FightHandler.getInstance().handleSelection(event, Damage.KICK, selectedOptionIso);
 			return;
@@ -394,7 +405,7 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
-		else if(event.getComponentId().equals("kickInBattle")) {
+		else if (event.getComponentId().equals("kickInBattle")) {
 			FightHandler.getInstance().handleKickButton(event);
 			return;
 		}
