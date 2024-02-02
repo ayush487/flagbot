@@ -14,7 +14,7 @@ import com.ayushtech.flagbot.services.ChannelService;
 public class ChannelDao {
 
 	public static ChannelDao channelDao = null;
-	
+
 	private ChannelDao() {
 	}
 
@@ -96,17 +96,10 @@ public class ChannelDao {
 	}
 
 	private String getQueryToAddMultipleChannels(List<Long> channelIdList) {
-		List<Long> channelsFiltered = channelIdList.stream()
-			.filter(cId -> !ChannelService.getInstance().isChannelDisabled(cId))
-			.collect(Collectors.toList());
-		StringBuilder builder = new StringBuilder("Insert into disabled_channels (channel) values ");
-		for(int i=0;i<channelsFiltered.size();i++) {
-			builder.append("(" + channelsFiltered.get(i) + ")");
-			if(i!=channelsFiltered.size()-1) {
-				builder.append(", ");
-			}
-		}
-		builder.append(";");
-		return builder.toString();
+		String query = channelIdList.stream()
+				.filter(cId -> !ChannelService.getInstance().isChannelDisabled(cId))
+				.map(cid -> "(" + cid + ")")
+				.collect(Collectors.joining(",", "Insert into disabled_channels (channel) values ", ";"));
+		return query;
 	}
 }
