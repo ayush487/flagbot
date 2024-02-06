@@ -11,9 +11,9 @@ import com.ayushtech.flagbot.listeners.InteractionsListener;
 import com.ayushtech.flagbot.listeners.MessageListener;
 import com.ayushtech.flagbot.services.ChannelService;
 
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 public class Main {
 
@@ -32,13 +32,11 @@ public class Main {
 
                 DBInfo.setData(db_host, db_username, db_password);
 
-                JDA jda = JDABuilder.createDefault(bot_token)
-                                .addEventListeners(new MessageListener(), new InteractionsListener(),
-                                                new GuildEventListener())
-                                .setActivity(Activity.playing("/battle"))
-                                .build().awaitReady();
+                DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(bot_token);
+                builder.setActivity(Activity.playing("/battle"));
+                ShardManager manager = builder.build();
+                manager.addEventListener(new MessageListener(), new InteractionsListener(), new GuildEventListener());
                 
-                jda.upsertCommand("support", "Support Flag bot developer").queue();
                 ChannelService.getInstance().loadDisabledChannels();
         }
 }
