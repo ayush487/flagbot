@@ -11,9 +11,11 @@ import com.ayushtech.flagbot.listeners.InteractionsListener;
 import com.ayushtech.flagbot.listeners.MessageListener;
 import com.ayushtech.flagbot.services.ChannelService;
 
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
-import net.dv8tion.jda.api.sharding.ShardManager;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 
 public class Main {
 
@@ -32,11 +34,28 @@ public class Main {
 
                 DBInfo.setData(db_host, db_username, db_password);
 
-                DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(bot_token);
-                builder.setActivity(Activity.playing("/battle"));
-                ShardManager manager = builder.build();
-                manager.addEventListener(new MessageListener(), new InteractionsListener(), new GuildEventListener());
-                
+                // DefaultShardManagerBuilder builder =
+                // DefaultShardManagerBuilder.createDefault(bot_token);
+                // builder.setActivity(Activity.playing("/battle"));
+                // ShardManager manager = builder.build();
+                // manager.addEventListener(new MessageListener(), new InteractionsListener(),
+                // new GuildEventListener());
+
+                JDA jda = JDABuilder.createDefault(bot_token)
+                                .addEventListeners(new MessageListener(), new InteractionsListener(),
+                                                new GuildEventListener())
+                                .setActivity(Activity.playing("/battle"))
+                                .build().awaitReady();
+                                
+                SubcommandData flagCommandData = new SubcommandData("flag", "Guess country name by its flag");
+                flagCommandData.addOption(OptionType.BOOLEAN, "include_non_soverign_countries", "whether include non soverign countries or not", false);
+
+                SubcommandData mapCommandData = new SubcommandData("map", "Guess country name by its map");
+                mapCommandData.addOption(OptionType.BOOLEAN, "include_non_soverign_countries", "whether include non soverign countries or not", false);
+
+                jda.upsertCommand("guess", "Guess the country name")
+                                .addSubcommands(flagCommandData, mapCommandData)
+                                .queue();
                 ChannelService.getInstance().loadDisabledChannels();
         }
 }

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
 public class MapGameHandler {
 
@@ -33,7 +34,9 @@ public class MapGameHandler {
             return false;
         } else {
             event.getHook().sendMessage("Starting game now!").queue();
-            MapGame game = new MapGame(event.getChannel());
+            OptionMapping difficultyOption = event.getOption("include_non_soverign_countries");
+            boolean isHard = difficultyOption == null ? false : difficultyOption.getAsBoolean();
+            MapGame game = new MapGame(event.getChannel(), isHard);
             mapGameMap.put(event.getChannel().getIdLong(), game);
             return true;
         }
@@ -46,7 +49,8 @@ public class MapGameHandler {
             return false;
         } else {
             event.reply("Starting game now!").queue();
-            MapGame game = new MapGame(event.getChannel());
+            boolean isHard = event.getComponentId().split("_")[1].equals("Hard");
+            MapGame game = new MapGame(event.getChannel(), isHard);
             mapGameMap.put(event.getChannel().getIdLong(), game);
             return true;
         }

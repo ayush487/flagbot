@@ -197,7 +197,7 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.setTitle("Commands");
 			eb.setColor(new Color(255, 153, 51)); // rgb (255,153,51)
 			eb.setDescription(
-					"`/guess` : Start a flag guessing game in the channel\n`/guessmap` : Start a map guessing game in the channel\n`/leaderboards` : Check the global leaderboard (Top 5)\n`/invite` : Invite the bot to your server\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank\n`/vote` : Vote for us and get rewards");
+					"`/guess flag` : Start a flag guessing game in the channel\n`/guess map` : Start a map guessing game in the channel\n`/leaderboards` : Check the global leaderboard (Top 5)\n`/invite` : Invite the bot to your server\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank\n`/vote` : Vote for us and get rewards");
 			eb.addField("__Battle Command__",
 					"`/battle` : Start a 1v1 battle between two users.\n**__Options__**\n**opponent** : Mention the user with whom you wanna battle.\n**bet** : Amout to bet in the battle (optional)",
 					false);
@@ -219,7 +219,8 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.addField("Support Developer",
 					"[<:buymeacoffee:1202183996021415946> Buy me a coffee](https://www.buymeacoffee.com/ayush487)", false);
 			event.getHook().sendMessageEmbeds(eb.build())
-					.addActionRow(Button.link("https://www.buymeacoffee.com/ayush487", Emoji.fromEmote("buymeacoffee", 1202183996021415946l, false)))
+					.addActionRow(Button.link("https://www.buymeacoffee.com/ayush487",
+							Emoji.fromEmote("buymeacoffee", 1202183996021415946l, false)))
 					.queue();
 		}
 
@@ -265,27 +266,27 @@ public class InteractionsListener extends ListenerAdapter {
 
 		// guess command
 		else if (event.getName().equals("guess")) {
-			boolean isAdded = FlagGameHandler.getInstance().addGame(event);
-			if (isAdded) {
-				gameEndService.schedule(new FlagGameEndRunnable(
-						FlagGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()),
-						event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
+			String commandName = event.getSubcommandName();
+			if (commandName != null && commandName.equals("map")) {
+				boolean isAdded = MapGameHandler.getInstance().addGame(event);
+				if (isAdded) {
+					gameEndService.schedule(
+							new MapGameEndRunnable(
+									MapGameHandler.getInstance().getGameMap()
+											.get(event.getChannel().getIdLong()),
+									event.getChannel().getIdLong()),
+							30, TimeUnit.SECONDS);
+				}
+				return;
+			} else {
+				boolean isAdded = FlagGameHandler.getInstance().addGame(event);
+				if (isAdded) {
+					gameEndService.schedule(new FlagGameEndRunnable(
+							FlagGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()),
+							event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
+				}
+				return;
 			}
-			return;
-		}
-
-		// guessmap command
-		else if (event.getName().equals("guessmap")) {
-			boolean isAdded = MapGameHandler.getInstance().addGame(event);
-			if (isAdded) {
-				gameEndService.schedule(
-						new MapGameEndRunnable(
-								MapGameHandler.getInstance().getGameMap()
-										.get(event.getChannel().getIdLong()),
-								event.getChannel().getIdLong()),
-						30, TimeUnit.SECONDS);
-			}
-			return;
 		}
 
 		// Admin commands
@@ -421,7 +422,7 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
-		else if (event.getComponentId().equals("playAgainButton")) {
+		else if (event.getComponentId().startsWith("playAgainFlag")) {
 			boolean isAdded = FlagGameHandler.getInstance().addGame(event);
 			if (isAdded) {
 				gameEndService.schedule(new FlagGameEndRunnable(
@@ -431,7 +432,7 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
-		else if (event.getComponentId().equals("playAgainMap")) {
+		else if (event.getComponentId().startsWith("playAgainMap")) {
 			boolean isAdded = MapGameHandler.getInstance().addGame(event);
 			if (isAdded) {
 				gameEndService.schedule(

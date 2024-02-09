@@ -2,7 +2,9 @@ package com.ayushtech.flagbot.game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 
@@ -11,12 +13,14 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public abstract class Game {
 
     public static HashMap<String, String> countryMap = new HashMap<>(256);
+    protected static Set<String> nonSoverignCountries = new HashSet<>();
     protected static List<String> isoList;
     protected static final String flagLink = "https://flagcdn.com/256x192/";
     protected static final String suffix = ".png";
 
     static {
         Game.loadCountries();
+        Game.loadNonSoverignCountries();
         isoList = new ArrayList<>(countryMap.keySet());
     }
 
@@ -292,4 +296,66 @@ public abstract class Game {
         countryMap.put("zm", "Zambia");
         countryMap.put("zw", "Zimbabwe");
     }
+
+    public static void loadNonSoverignCountries() {
+        nonSoverignCountries.add("ad");
+        nonSoverignCountries.add("ag");
+        nonSoverignCountries.add("ai");
+        nonSoverignCountries.add("aq");
+        nonSoverignCountries.add("as");
+        nonSoverignCountries.add("aw");
+        nonSoverignCountries.add("ax");
+        nonSoverignCountries.add("ba");
+        nonSoverignCountries.add("bm");
+        nonSoverignCountries.add("bl");
+        nonSoverignCountries.add("bq");
+        nonSoverignCountries.add("bv");
+        nonSoverignCountries.add("cc");
+        nonSoverignCountries.add("ck");
+        nonSoverignCountries.add("cw");
+        nonSoverignCountries.add("cx");
+        nonSoverignCountries.add("eh");
+        nonSoverignCountries.add("fk");
+        nonSoverignCountries.add("fo");
+        nonSoverignCountries.add("gb-eng");
+        nonSoverignCountries.add("gb-nir");
+        nonSoverignCountries.add("gb-sct");
+        nonSoverignCountries.add("gb-wls");
+        nonSoverignCountries.add("gg");
+        nonSoverignCountries.add("gi");
+        nonSoverignCountries.add("gp");
+        nonSoverignCountries.add("gf");
+        nonSoverignCountries.add("gs");
+        nonSoverignCountries.add("gu");
+        nonSoverignCountries.add("hk");
+        nonSoverignCountries.add("hm");
+        nonSoverignCountries.add("im");
+        nonSoverignCountries.add("io");
+        nonSoverignCountries.add("je");
+        nonSoverignCountries.add("ky");
+        nonSoverignCountries.add("mo");
+        nonSoverignCountries.add("mf");
+        nonSoverignCountries.add("mp");
+        nonSoverignCountries.add("mq");
+        nonSoverignCountries.add("ms");
+        nonSoverignCountries.add("nc");
+        nonSoverignCountries.add("nf");
+        nonSoverignCountries.add("nu");
+        nonSoverignCountries.add("pf");
+        nonSoverignCountries.add("pm");
+        nonSoverignCountries.add("pn");
+        nonSoverignCountries.add("re");
+        nonSoverignCountries.add("sh");
+        nonSoverignCountries.add("sj");
+        nonSoverignCountries.add("sx");
+        nonSoverignCountries.add("tc");
+        nonSoverignCountries.add("tf");
+        nonSoverignCountries.add("tk");
+        nonSoverignCountries.add("um");
+        nonSoverignCountries.add("wf");
+        nonSoverignCountries.add("xk");
+        nonSoverignCountries.add("yt");
+    }
+
+
 }
