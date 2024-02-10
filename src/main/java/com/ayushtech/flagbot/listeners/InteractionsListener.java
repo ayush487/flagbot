@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -168,9 +169,11 @@ public class InteractionsListener extends ListenerAdapter {
 				optInt = optSize.getAsInt();
 			}
 			int lbSize = optInt >= 25 ? 25 : (optInt <= 5) ? 5 : optInt;
-			String temp = LeaderboardHandler.getInstance().getLeaderboard(jda, lbSize);
-			String leaderboard = temp != null ? temp : "Something went wrong!";
-			event.getHook().sendMessage(leaderboard).queue();
+			CompletableFuture.runAsync(() -> {
+				String temp = LeaderboardHandler.getInstance().getLeaderboard(jda, lbSize);
+				String leaderboard = temp != null ? temp : "Something went wrong!";
+				event.getHook().sendMessage(leaderboard).queue();
+			});
 			return;
 		}
 
