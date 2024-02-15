@@ -5,19 +5,24 @@ import java.sql.DriverManager;
 
 public class ConnectionProvider {
 
+    private static Connection connection = null;
+
     public static Connection getConnection() {
-        Connection conn = null;
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-			conn = DriverManager.getConnection(
-	                DBInfo.url,
-	                DBInfo.user,
-	                DBInfo.password
-	            );
-			return conn;
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (connection==null) {
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                connection = DriverManager.getConnection(
+                        DBInfo.url,
+                        DBInfo.user,
+                        DBInfo.password
+                    );
+                return connection;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        } else {
+            return connection;
         }
-        return null;
     }
 }

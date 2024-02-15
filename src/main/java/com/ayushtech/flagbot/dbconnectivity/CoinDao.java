@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 
 public class CoinDao {
 	
-	public static CoinDao coinDao = null;
+	private static CoinDao coinDao = null;
 	
 	private CoinDao() {}
 	

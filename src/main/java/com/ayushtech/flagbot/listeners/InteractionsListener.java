@@ -23,6 +23,8 @@ import com.ayushtech.flagbot.game.map.MapGameEndRunnable;
 import com.ayushtech.flagbot.game.map.MapGameHandler;
 import com.ayushtech.flagbot.services.CaptchaService;
 import com.ayushtech.flagbot.services.ChannelService;
+import com.ayushtech.flagbot.stocks.Company;
+import com.ayushtech.flagbot.stocks.StocksHandler;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -204,6 +206,9 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.addField("__Battle Command__",
 					"`/battle` : Start a 1v1 battle between two users.\n**__Options__**\n**opponent** : Mention the user with whom you wanna battle.\n**bet** : Amout to bet in the battle (optional)",
 					false);
+			eb.addField("__Stocks__",
+					"`/stocks list` : View Available Stocks with current market prices\n`/stocks owned` : View your portfolio\n`/stocks buy` : Buy Shares of different companies\n`/stocks sell` : Sell Shares which you own for coins",
+					false);
 			eb.addField("Other Information",
 					"[Terms of Services](https://github.com/ayush487/flagbot/blob/main/TERMSOFSERVICE.md)\n[Privacy Policy](https://github.com/ayush487/flagbot/blob/main/PRIVACY.md)",
 					false);
@@ -259,6 +264,68 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.setColor(Color.YELLOW);
 			eb.setThumbnail(user.getAvatarUrl());
 			event.getHook().sendMessageEmbeds(eb.build()).setEphemeral(false).queue();
+			return;
+		}
+
+		// stock command
+		else if (event.getName().equals("stocks")) {
+			String subcommandName = event.getSubcommandName();
+
+			// List Stocks Command
+			if (subcommandName.equals("list")) {
+				event.getHook().sendMessageEmbeds(StocksHandler.getInstance().getStockList()).queue();
+				return;
+			}
+
+			else if (subcommandName.equals("owned")) {
+				event.getHook().sendMessageEmbeds(StocksHandler.getInstance().getStocksOwned(event.getUser())).queue();
+				return;
+			}
+
+			// Buy Stocks Command
+			else if (subcommandName.equals("buy")) {
+				String companyName = event.getOption("company").getAsString().toUpperCase();
+				if (StocksHandler.getInstance().isCompanyValid(companyName)) {
+					Company selectedCompany = Company.valueOf(companyName);
+					int amountOfStocks = event.getOption("amount").getAsInt();
+					int[] returnArray = StocksHandler.getInstance().buyStocks(selectedCompany, amountOfStocks,
+							event.getUser().getIdLong());
+					if (returnArray[0] == 1) {
+						event.getHook()
+								.sendMessage("You bought `" + amountOfStocks + "` shares of **" + selectedCompany.toString()
+										+ "** spending `" + (returnArray[1] * amountOfStocks) + "` :coin:")
+								.queue();
+					} else {
+						event.getHook().sendMessage("Something went wrong!\nCheck your balance or Try Again!").queue();
+					}
+				} else {
+					event.getHook().sendMessage("Company not valid!").queue();
+					return;
+				}
+			}
+
+			// Sell Stocks Command
+			else if (subcommandName.equals("sell")) {
+				String companyName = event.getOption("company").getAsString().toUpperCase();
+				if (StocksHandler.getInstance().isCompanyValid(companyName)) {
+					Company selectedCompany = Company.valueOf(companyName);
+					int amountOfStocks = event.getOption("amount").getAsInt();
+					int[] returnArray = StocksHandler.getInstance().sellStock(selectedCompany, amountOfStocks,
+							event.getUser().getIdLong());
+					if (returnArray[0] == 1) {
+						event.getHook()
+								.sendMessage("You sold `" + amountOfStocks + "` shares of **" + selectedCompany.toString()
+										+ "** getting `" + (returnArray[1] * amountOfStocks) + "` :coin:")
+								.queue();
+
+					} else {
+						event.getHook().sendMessage("Something went wrong!\nCheck your portfolio and Try again!").queue();
+					}
+				} else {
+					event.getHook().sendMessage("Company not valid!").queue();
+					return;
+				}
+			}
 			return;
 		}
 

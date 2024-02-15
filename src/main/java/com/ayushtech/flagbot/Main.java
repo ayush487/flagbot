@@ -10,6 +10,7 @@ import com.ayushtech.flagbot.listeners.GuildEventListener;
 import com.ayushtech.flagbot.listeners.InteractionsListener;
 import com.ayushtech.flagbot.listeners.MessageListener;
 import com.ayushtech.flagbot.services.ChannelService;
+import com.ayushtech.flagbot.stocks.StocksHandler;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -33,6 +34,7 @@ public class Main {
                 final String db_password = properties.getProperty("database_password");
 
                 DBInfo.setData(db_host, db_username, db_password);
+                StocksHandler.loadInitialPriceMap();
 
                 // DefaultShardManagerBuilder builder =
                 // DefaultShardManagerBuilder.createDefault(bot_token);
@@ -40,22 +42,27 @@ public class Main {
                 // ShardManager manager = builder.build();
                 // manager.addEventListener(new MessageListener(), new InteractionsListener(),
                 // new GuildEventListener());
-
                 JDA jda = JDABuilder.createDefault(bot_token)
                                 .addEventListeners(new MessageListener(), new InteractionsListener(),
                                                 new GuildEventListener())
                                 .setActivity(Activity.playing("/battle"))
                                 .build().awaitReady();
                                 
-                SubcommandData flagCommandData = new SubcommandData("flag", "Guess country name by its flag");
-                flagCommandData.addOption(OptionType.BOOLEAN, "include_non_soverign_countries", "whether include non soverign countries or not", false);
 
-                SubcommandData mapCommandData = new SubcommandData("map", "Guess country name by its map");
-                mapCommandData.addOption(OptionType.BOOLEAN, "include_non_soverign_countries", "whether include non soverign countries or not", false);
+                SubcommandData stockListCommand = new SubcommandData("list", "List the stocks with the current prices");
+                SubcommandData stockbuyCommand = new SubcommandData("buy", "Buy stocks")
+                        .addOption(OptionType.STRING, "company", "Enter company name", true, true)
+                        .addOption(OptionType.INTEGER, "amount", "Enter amount of shares you want to buy", true);
+                SubcommandData stockSellCommand = new SubcommandData("sell", "Sell stocks")
+                        .addOption(OptionType.STRING, "company", "Enter company name", true, true)
+                        .addOption(OptionType.INTEGER, "amount", "Enter amount of shares you want to buy", true);
+                SubcommandData stocksViewCommand = new SubcommandData("owned", "View your owned stocks");
 
-                jda.upsertCommand("guess", "Guess the country name")
-                                .addSubcommands(flagCommandData, mapCommandData)
-                                .queue();
+                jda.upsertCommand("stocks", "Stock Related Commands")
+                        .addSubcommands(stockListCommand, stockbuyCommand, stockSellCommand, stocksViewCommand)
+                        .queue();
+                        
+                
                 ChannelService.getInstance().loadDisabledChannels();
         }
 }
