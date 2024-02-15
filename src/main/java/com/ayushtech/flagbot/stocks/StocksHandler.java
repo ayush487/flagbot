@@ -43,8 +43,7 @@ public class StocksHandler {
         stocksMap.get(c).setChange(change);
       });
       StocksDao.getInstance().setStockValue(initialStockPriceMap);
-      // }, 10, 10, TimeUnit.MINUTES);
-    }, 20, 20, TimeUnit.SECONDS);
+      }, 10, 10, TimeUnit.MINUTES);
   }
 
   public static synchronized StocksHandler getInstance() {
