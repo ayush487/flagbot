@@ -49,7 +49,8 @@ public class StocksDao {
       while (coinRS.next()) {
         coin = coinRS.getLong("coins");
       }
-      int cost = count * price;
+      long cost = (long)count * price;
+      if(cost < 0) return false;
       if (coin < cost) {
         return false;
       }
@@ -78,10 +79,14 @@ public class StocksDao {
       if (numberOfStocksOwned < stocksCount) {
         return false;
       }
+      long costReceieved = (long)stockPrice * (long)stocksCount;
+      if (costReceieved < 0) {
+        return false;
+      }
       stmt.executeUpdate(
           String.format("UPDATE stocks SET %s=%s - %d WHERE user_id=%d;", company, company, stocksCount, userId));
       stmt.executeUpdate(String.format("UPDATE coin_table SET coins = coins + %d where user_id=%d;",
-          stockPrice * stocksCount, userId));
+          costReceieved, userId));
       return true;
     } catch (SQLException e) {
       e.printStackTrace();

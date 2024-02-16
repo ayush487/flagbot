@@ -43,7 +43,7 @@ public class StocksHandler {
         stocksMap.get(c).setChange(change);
       });
       StocksDao.getInstance().setStockValue(initialStockPriceMap);
-      }, 10, 10, TimeUnit.MINUTES);
+    }, 1, 1, TimeUnit.MINUTES);
   }
 
   public static synchronized StocksHandler getInstance() {
@@ -66,6 +66,7 @@ public class StocksHandler {
           cSb.append("**" + c.toString() + "**\n");
           pSb.append(stocksMap.get(c).getValue() + getEmoji(stocksMap.get(c).getChange()) + "\n");
         });
+
     eb.addField("__Company__", cSb.toString(), true);
     eb.addField("__Price__", pSb.toString(), true);
     eb.setFooter("'/stocks buy' to buy stocks.");
@@ -80,7 +81,7 @@ public class StocksHandler {
     
     boolean isUserOwnAnyStock = false;
     int totalInvestment = 0;
-    for(int i=0;i<companyArray.length;i++) {
+    for (int i = 0; i < companyArray.length; i++) {
       if (stocksOwnedData[i] > 0) {
         eb.addField(companyArray[i], stocksOwnedData[i] + "", true);
         isUserOwnAnyStock = true;
@@ -90,7 +91,7 @@ public class StocksHandler {
     if (isUserOwnAnyStock) {
       eb.setDescription("Stocks owned");
       eb.setColor(Color.green);
-      eb.addField("__Total Investments__", totalInvestment + " :coin:" , false);
+      eb.addField("__Total Investments__", totalInvestment + " :coin:", false);
     } else {
       eb.setDescription("You don't own any stocks, `/stocks list` to view available stocks.");
       eb.setColor(Color.red);
@@ -104,14 +105,14 @@ public class StocksHandler {
   public int[] buyStocks(Company company, int count, long userId) {
     int priceOfStock = stocksMap.get(company).getValue();
     boolean isBought = StocksDao.getInstance().buyStocks(userId, company.toString(), count,
-    priceOfStock);
+        priceOfStock);
     if (isBought) {
       stocksMap.get(company).buyStock(count);
       return new int[] { 1, priceOfStock };
     }
     return new int[] { 0 };
   }
-  
+
   public int[] sellStock(Company company, int count, long userId) {
     int priceOfStock = stocksMap.get(company).getValue();
     boolean isSold = StocksDao.getInstance().sellStocks(userId, company.toString(), count, priceOfStock);
@@ -121,7 +122,7 @@ public class StocksHandler {
     }
     return new int[] { 0 };
   }
-  
+
   private void loadStocksMap() {
     stocksMap.put(Company.DISKORD, new StockData(Company.DISKORD, initialStockPriceMap.get("DISKORD")));
     stocksMap.put(Company.DOOGLE, new StockData(Company.DOOGLE, initialStockPriceMap.get("DOOGLE")));
@@ -134,6 +135,7 @@ public class StocksHandler {
     stocksMap.put(Company.STARMUCKS, new StockData(Company.STARMUCKS, initialStockPriceMap.get("STARMUCKS")));
     stocksMap.put(Company.TWEETER, new StockData(Company.TWEETER, initialStockPriceMap.get("TWEETER")));
   }
+
   public static void loadInitialPriceMap() {
     initialStockPriceMap = StocksDao.getInstance().getStocksValue();
   }

@@ -22,8 +22,8 @@ public class StockData {
     int soldInt = sold.get();
     int boughtInt = bought.get();
     int fluctuation = (boughtInt - soldInt) >= 0
-        ? (boughtInt - soldInt) >= 100 ? 100 : (boughtInt - soldInt)
-        : (boughtInt - soldInt) <= -100 ? -100 : (boughtInt - soldInt);
+        ? (boughtInt - soldInt) >= 5 ? 5 : (boughtInt - soldInt)
+        : (boughtInt - soldInt) <= -5 ? -5 : (boughtInt - soldInt);
     return fluctuation;
   }
 

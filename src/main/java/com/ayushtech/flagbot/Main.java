@@ -12,11 +12,9 @@ import com.ayushtech.flagbot.listeners.MessageListener;
 import com.ayushtech.flagbot.services.ChannelService;
 import com.ayushtech.flagbot.stocks.StocksHandler;
 
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 public class Main {
 
@@ -36,31 +34,12 @@ public class Main {
                 DBInfo.setData(db_host, db_username, db_password);
                 StocksHandler.loadInitialPriceMap();
 
-                // DefaultShardManagerBuilder builder =
-                // DefaultShardManagerBuilder.createDefault(bot_token);
-                // builder.setActivity(Activity.playing("/battle"));
-                // ShardManager manager = builder.build();
-                // manager.addEventListener(new MessageListener(), new InteractionsListener(),
-                // new GuildEventListener());
-                JDA jda = JDABuilder.createDefault(bot_token)
-                                .addEventListeners(new MessageListener(), new InteractionsListener(),
-                                                new GuildEventListener())
-                                .setActivity(Activity.playing("/battle"))
-                                .build().awaitReady();
-                                
-
-                SubcommandData stockListCommand = new SubcommandData("list", "List the stocks with the current prices");
-                SubcommandData stockbuyCommand = new SubcommandData("buy", "Buy stocks")
-                        .addOption(OptionType.STRING, "company", "Enter company name", true, true)
-                        .addOption(OptionType.INTEGER, "amount", "Enter amount of shares you want to buy", true);
-                SubcommandData stockSellCommand = new SubcommandData("sell", "Sell stocks")
-                        .addOption(OptionType.STRING, "company", "Enter company name", true, true)
-                        .addOption(OptionType.INTEGER, "amount", "Enter amount of shares you want to buy", true);
-                SubcommandData stocksViewCommand = new SubcommandData("owned", "View your owned stocks");
-
-                jda.upsertCommand("stocks", "Stock Related Commands")
-                        .addSubcommands(stockListCommand, stockbuyCommand, stockSellCommand, stocksViewCommand)
-                        .queue();
+                DefaultShardManagerBuilder builder =
+                DefaultShardManagerBuilder.createDefault(bot_token);
+                builder.setActivity(Activity.playing("/battle"));
+                ShardManager manager = builder.build();
+                manager.addEventListener(new MessageListener(), new InteractionsListener(),
+                new GuildEventListener());
                         
                 
                 ChannelService.getInstance().loadDisabledChannels();

@@ -287,7 +287,17 @@ public class InteractionsListener extends ListenerAdapter {
 				String companyName = event.getOption("company").getAsString().toUpperCase();
 				if (StocksHandler.getInstance().isCompanyValid(companyName)) {
 					Company selectedCompany = Company.valueOf(companyName);
-					int amountOfStocks = event.getOption("amount").getAsInt();
+					int amountOfStocks = 0;
+					try {
+						amountOfStocks = event.getOption("amount").getAsInt();
+					} catch (Exception e) {
+						event.getHook().sendMessage("Something went wrong!").queue();
+						return;
+					}
+					if (amountOfStocks <= 0) {
+						event.getHook().sendMessage("You can't buy negative numbers of stocks :face_with_raised_eyebrow:").queue();
+						return;
+					}
 					int[] returnArray = StocksHandler.getInstance().buyStocks(selectedCompany, amountOfStocks,
 							event.getUser().getIdLong());
 					if (returnArray[0] == 1) {
@@ -309,7 +319,17 @@ public class InteractionsListener extends ListenerAdapter {
 				String companyName = event.getOption("company").getAsString().toUpperCase();
 				if (StocksHandler.getInstance().isCompanyValid(companyName)) {
 					Company selectedCompany = Company.valueOf(companyName);
-					int amountOfStocks = event.getOption("amount").getAsInt();
+					int amountOfStocks = 0;
+					try {
+						amountOfStocks = event.getOption("amount").getAsInt();
+					} catch (Exception e) {
+						event.getHook().sendMessage("You can't sell that much number of stocks").queue();
+						return;
+					}
+					if (amountOfStocks <= 0) {
+						event.getHook().sendMessage("You can't sell negative numbers of stocks :face_with_raised_eyebrow:").queue();
+						return;
+					}
 					int[] returnArray = StocksHandler.getInstance().sellStock(selectedCompany, amountOfStocks,
 							event.getUser().getIdLong());
 					if (returnArray[0] == 1) {
