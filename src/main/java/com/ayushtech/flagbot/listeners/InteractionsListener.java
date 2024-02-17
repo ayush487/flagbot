@@ -153,7 +153,7 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.setTitle("Vote for Flag Bot");
 			eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
 			eb.setDescription("Vote for Flag bot on top.gg\n[here](https://top.gg/bot/1129789320165867662/vote)");
-			eb.addField("Rewards", "**•** Each vote gets you 1000 :coin: ", false);
+			eb.addField("Rewards", "> Each vote gets you 1000 :coin:\n> You will get double rewards during weekends", false);
 			eb.setFooter("You can vote every 12 hours");
 			eb.setColor(Color.GREEN);
 			event.getHook().sendMessageEmbeds(eb.build())
@@ -191,7 +191,10 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.addBlankField(true);
 			eb.addField("Support Server", "[here](https://discord.gg/MASMYsNCT9)", true);
 			event.getHook().sendMessageEmbeds(eb.build())
-					.addActionRow(Button.link("https://top.gg/bot/1129789320165867662/vote", "❤️Vote")).queue();
+					.addActionRow(Button.link(
+							"https://discord.com/api/oauth2/authorize?client_id=1129789320165867662&permissions=85056&scope=bot+applications.commands",
+							"Add Flag bot to your server"), Button.link("https://top.gg/bot/1129789320165867662/vote", "❤️Vote"))
+					.queue();
 			return;
 		}
 
