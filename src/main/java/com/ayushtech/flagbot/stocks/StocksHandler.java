@@ -58,17 +58,14 @@ public class StocksHandler {
     eb.setTitle("Stock Market");
     eb.setThumbnail(
         "https://media.discordapp.net/attachments/1133277774010925206/1207270561785319424/stock_market_image.jpg?ex=65df0953&is=65cc9453&hm=a26c6292faca229755619ab63cfb05a2070c6d8ffef3d453c7a5c8cf4017f4b2&=&format=webp&width=150&height=150");
-    StringBuilder cSb = new StringBuilder();
-    StringBuilder pSb = new StringBuilder();
+    StringBuilder sSb = new StringBuilder();
     Arrays.stream(companyArray)
         .map(Company::valueOf)
         .forEach(c -> {
-          cSb.append("**" + c.toString() + "**\n");
-          pSb.append(stocksMap.get(c).getValue() + getEmoji(stocksMap.get(c).getChange()) + "\n");
+          sSb.append("**" + c.toString() + "** (`" + stocksMap.get(c).getValue() + "`)"
+              + getEmoji(stocksMap.get(c).getChange()) + "\n");
         });
-
-    eb.addField("__Company__", cSb.toString(), true);
-    eb.addField("__Price__", pSb.toString(), true);
+    eb.addField("__**Company** (`Price`)__", sSb.toString(), false);
     eb.setFooter("'/stocks buy' to buy stocks.");
     eb.setColor(Color.YELLOW);
     return eb.build();
@@ -78,7 +75,7 @@ public class StocksHandler {
     int[] stocksOwnedData = StocksDao.getInstance().getUserStocks(user.getIdLong(), companyArray);
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle(user.getName() + "'s Portfolio");
-    
+
     boolean isUserOwnAnyStock = false;
     int totalInvestment = 0;
     for (int i = 0; i < companyArray.length; i++) {
@@ -101,7 +98,6 @@ public class StocksHandler {
     return eb.build();
   }
 
-  
   public int[] buyStocks(Company company, int count, long userId) {
     int priceOfStock = stocksMap.get(company).getValue();
     boolean isBought = StocksDao.getInstance().buyStocks(userId, company.toString(), count,
