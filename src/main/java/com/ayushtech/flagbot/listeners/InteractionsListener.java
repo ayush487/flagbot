@@ -39,6 +39,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.utils.TimeFormat;
 
 public class InteractionsListener extends ListenerAdapter {
 
@@ -276,7 +277,9 @@ public class InteractionsListener extends ListenerAdapter {
 
 			// List Stocks Command
 			if (subcommandName.equals("list")) {
-				event.getHook().sendMessageEmbeds(StocksHandler.getInstance().getStockList()).queue();
+				event.getHook().sendMessageEmbeds(StocksHandler.getInstance().getStockList())
+						.addActionRow(Button.primary("refreshMarket_" + System.currentTimeMillis(), Emoji.fromEmote("refresh", 1209076086185656340l, false)))
+						.queue();
 				return;
 			}
 
@@ -433,6 +436,17 @@ public class InteractionsListener extends ListenerAdapter {
 		} else if (event.getComponentId().startsWith("kickSelection")) {
 			String selectedOptionIso = event.getComponentId().split("-")[1];
 			FightHandler.getInstance().handleSelection(event, Damage.KICK, selectedOptionIso);
+			return;
+		} else if (event.getComponentId().startsWith("refreshMarket")) {
+			long lastUpdatedSince = Long.parseLong(event.getComponentId().split("_")[1]);
+			long curentTime = System.currentTimeMillis();
+			if (curentTime - lastUpdatedSince < 30_000) {
+				event.reply("Try again in " + TimeFormat.RELATIVE.atTimestamp(lastUpdatedSince + 30_000)).setEphemeral(true)
+						.queue();
+			} else {
+				event.editMessageEmbeds(StocksHandler.getInstance().getStockList())
+						.setActionRow(Button.primary("refreshMarket_" + System.currentTimeMillis(), Emoji.fromEmote("refresh", 1209076086185656340l, false))).queue();
+			}
 			return;
 		}
 

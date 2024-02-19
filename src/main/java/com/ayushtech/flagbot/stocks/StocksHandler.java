@@ -14,6 +14,7 @@ import com.ayushtech.flagbot.dbconnectivity.StocksDao;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.utils.TimeFormat;
 
 public class StocksHandler {
 
@@ -66,6 +67,7 @@ public class StocksHandler {
               + getEmoji(stocksMap.get(c).getChange()) + "\n");
         });
     eb.addField("__**Company** (`Price`)__", sSb.toString(), false);
+    eb.addField("__Last Updated__", TimeFormat.TIME_SHORT.now() + "" , false);
     eb.setFooter("'/stocks buy' to buy stocks.");
     eb.setColor(Color.YELLOW);
     return eb.build();
