@@ -32,6 +32,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -283,8 +284,11 @@ public class InteractionsListener extends ListenerAdapter {
 				return;
 			}
 
+			// View Owned Stocks Command
 			else if (subcommandName.equals("owned")) {
-				event.getHook().sendMessageEmbeds(StocksHandler.getInstance().getStocksOwned(event.getUser())).queue();
+				event.getHook().sendMessageEmbeds(StocksHandler.getInstance().getStocksOwned(event.getUser()))
+				.addActionRow(Button.secondary("stockTransactions_0", "View Transactions"))
+				.queue();
 				return;
 			}
 
@@ -416,6 +420,10 @@ public class InteractionsListener extends ListenerAdapter {
 		}
 	}
 
+	/*
+	 * Button Interactions Listener
+	 */
+	@Override
 	public void onButtonInteraction(@Nonnull ButtonInteractionEvent event) {
 		super.onButtonInteraction(event);
 
@@ -433,11 +441,13 @@ public class InteractionsListener extends ListenerAdapter {
 			String selectedOptionIso = event.getComponentId().split("-")[1];
 			FightHandler.getInstance().handleSelection(event, Damage.PUNCH, selectedOptionIso);
 			return;
-		} else if (event.getComponentId().startsWith("kickSelection")) {
+		} 
+		else if (event.getComponentId().startsWith("kickSelection")) {
 			String selectedOptionIso = event.getComponentId().split("-")[1];
 			FightHandler.getInstance().handleSelection(event, Damage.KICK, selectedOptionIso);
 			return;
-		} else if (event.getComponentId().startsWith("refreshMarket")) {
+		} 
+		else if (event.getComponentId().startsWith("refreshMarket")) {
 			long lastUpdatedSince = Long.parseLong(event.getComponentId().split("_")[1]);
 			long curentTime = System.currentTimeMillis();
 			if (curentTime - lastUpdatedSince < 30_000) {
@@ -447,6 +457,12 @@ public class InteractionsListener extends ListenerAdapter {
 				event.editMessageEmbeds(StocksHandler.getInstance().getStockList())
 						.setActionRow(Button.primary("refreshMarket_" + System.currentTimeMillis(), Emoji.fromEmote("refresh", 1209076086185656340l, false))).queue();
 			}
+			return;
+		}
+		else if(event.getComponentId().startsWith("stockTransactions")) {
+			int page = Integer.parseInt(event.getComponentId().split("_")[1]);
+			MessageEmbed eb = StocksHandler.getInstance().getTransactionsEmbed(event.getUser().getIdLong(), page);
+			event.replyEmbeds(eb).setEphemeral(true).queue();
 			return;
 		}
 

@@ -3,6 +3,7 @@ package com.ayushtech.flagbot.stocks;
 import java.awt.Color;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
@@ -10,6 +11,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import com.ayushtech.flagbot.dbconnectivity.StocksDao;
+import com.ayushtech.flagbot.dbconnectivity.StocksTransactionsDao;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -67,7 +69,7 @@ public class StocksHandler {
               + getEmoji(stocksMap.get(c).getChange()) + "\n");
         });
     eb.addField("__**Company** (`Price`)__", sSb.toString(), false);
-    eb.addField("__Last Updated__", TimeFormat.TIME_SHORT.now() + "" , false);
+    eb.addField("__Last Updated__", TimeFormat.TIME_SHORT.now() + "", false);
     eb.setFooter("'/stocks buy' to buy stocks.");
     eb.setColor(Color.YELLOW);
     return eb.build();
@@ -106,6 +108,9 @@ public class StocksHandler {
         priceOfStock);
     if (isBought) {
       stocksMap.get(company).buyStock(count);
+      StocksTransactionsDao.getInstance().addTransactionData(
+          new StocksTransaction(userId, TransactionType.Bought, company, count, System.currentTimeMillis(),
+              priceOfStock));
       return new int[] { 1, priceOfStock };
     }
     return new int[] { 0 };
@@ -116,9 +121,31 @@ public class StocksHandler {
     boolean isSold = StocksDao.getInstance().sellStocks(userId, company.toString(), count, priceOfStock);
     if (isSold) {
       stocksMap.get(company).sellStock(count);
+      StocksTransactionsDao.getInstance().addTransactionData(
+          new StocksTransaction(userId, TransactionType.Sold, company, count, System.currentTimeMillis(),
+              priceOfStock));
       return new int[] { 1, priceOfStock };
     }
     return new int[] { 0 };
+  }
+
+  public MessageEmbed getTransactionsEmbed(long userId, int page) {
+    List<StocksTransaction> list = StocksTransactionsDao.getInstance().getTransactions(userId, page, 10);
+    System.out.println(list.size());
+    EmbedBuilder eb = new EmbedBuilder();
+    if (list.size() == 0) {
+      eb.setColor(Color.red);
+      eb.setTitle("No Transaction Data Available");
+    } else {
+      eb.setColor(Color.green);
+      eb.setTitle(String.format("__Your last %d transactions__", list.size()));
+      StringBuilder sb = new StringBuilder();
+      list.stream()
+          .map(StocksTransaction::getTransactionMessage)
+          .forEach(m -> sb.append(m));
+      eb.setDescription(sb.toString());
+    }
+    return eb.build();
   }
 
   private void loadStocksMap() {
