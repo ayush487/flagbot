@@ -1,4 +1,5 @@
 # Flag Bot
+> Verified Discord Bot which offers multiple game modes like Guess the flag, Guess the map, Battling Other players, Investing in a Virtual Share Market.
 
 <a href="https://top.gg/bot/1129789320165867662">
   <img src="https://top.gg/api/widget/servers/1129789320165867662.svg">
@@ -15,7 +16,8 @@ This is source code of the Discord Bot (<a href="https://discord.gg/MASMYsNCT9">
 
 <b>/guess flag</b> -> Will start a Flag Guessing game in the current channel<br />
 <b>/guess map</b> -> Will start a Map Guessing game in the current channel><br />
-<b>/battle</a> -> A Battle of Flags and Maps<br />
+<b>/battle</b> -> A Battle of Flags and Maps<br />
+<b>/stocks</b> -> Commands releated to Investing
 <b>/help</b> -> Show's all the commands of the bot<br />
 <b>/leaderboards</b> -> Will show list of top players of the bot<br />
 <b>/disable</b> -> Moderation Command to disable the commands in a specific channel<br />
