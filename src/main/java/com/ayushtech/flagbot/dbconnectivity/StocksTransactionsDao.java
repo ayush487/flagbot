@@ -65,4 +65,14 @@ public class StocksTransactionsDao {
       return null;
     }
   }
+
+  public void deleteTransactionData(long user_id) {
+    try {
+      Connection conn = ConnectionProvider.getConnection();
+      Statement stmt = conn.createStatement();
+      stmt.executeUpdate("DELETE FROM stocks_transactions WHERE user_id=" + user_id + ";");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 }

@@ -21,10 +21,7 @@ public class StockData {
   public int getStockFluctuation() {
     int soldInt = sold.get();
     int boughtInt = bought.get();
-    int fluctuation = (boughtInt - soldInt) >= 0
-        ? (boughtInt - soldInt) >= 5 ? 5 : (boughtInt - soldInt)
-        : (boughtInt - soldInt) <= -5 ? -5 : (boughtInt - soldInt);
-    return fluctuation;
+    return getFluctuation(boughtInt - soldInt);
   }
 
   public void sellStock(int amount) {
@@ -58,5 +55,18 @@ public class StockData {
 
   public int getChange() {
     return this.change;
+  }
+
+  private static int getFluctuation(int difference) {
+    if (difference == 0) {
+      return 0;
+    } else if (difference >= 10000) {
+      return 100;
+    } else if (difference <= -10000) {
+      return -100;
+    } else {
+      int x = (int) Math.round(Math.sqrt(Math.abs(difference)));
+      return difference > 0 ? x : x * -1;
+    }
   }
 }

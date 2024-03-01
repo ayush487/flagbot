@@ -13,6 +13,8 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
+import com.ayushtech.flagbot.dbconnectivity.StocksDao;
+import com.ayushtech.flagbot.dbconnectivity.StocksTransactionsDao;
 import com.ayushtech.flagbot.game.LeaderboardHandler;
 import com.ayushtech.flagbot.game.fight.Damage;
 import com.ayushtech.flagbot.game.fight.FightHandler;
@@ -23,6 +25,7 @@ import com.ayushtech.flagbot.game.map.MapGameEndRunnable;
 import com.ayushtech.flagbot.game.map.MapGameHandler;
 import com.ayushtech.flagbot.services.CaptchaService;
 import com.ayushtech.flagbot.services.ChannelService;
+import com.ayushtech.flagbot.services.CoinTransferService;
 import com.ayushtech.flagbot.stocks.Company;
 import com.ayushtech.flagbot.stocks.StocksHandler;
 
@@ -47,7 +50,7 @@ public class InteractionsListener extends ListenerAdapter {
 	private ScheduledExecutorService gameEndService;
 	private ChannelService channelService;
 	private Random random;
-	private final int BOUND = 125;
+	private final int BOUND = 200;
 
 	public InteractionsListener() {
 		super();
@@ -207,7 +210,7 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.setTitle("Commands");
 			eb.setColor(new Color(255, 153, 51)); // rgb (255,153,51)
 			eb.setDescription(
-					"`/guess flag` : Start a flag guessing game in the channel\n`/guess map` : Start a map guessing game in the channel\n`/leaderboards` : Check the global leaderboard (Top 5)\n`/invite` : Invite the bot to your server\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank\n`/vote` : Vote for us and get rewards");
+					"`/guess flag` : Start a flag guessing game in the channel\n`/guess map` : Start a map guessing game in the channel\n`/leaderboards` : Check the global leaderboard (Top 5)\n`/invite` : Invite the bot to your server\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank\n`/give coins` : Send coins to other users.\n`/vote` : Vote for us and get rewards");
 			eb.addField("__Battle Command__",
 					"`/battle` : Start a 1v1 battle between two users.\n**__Options__**\n**opponent** : Mention the user with whom you wanna battle.\n**bet** : Amout to bet in the battle (optional)",
 					false);
@@ -250,7 +253,7 @@ public class InteractionsListener extends ListenerAdapter {
 			eb2.setColor(Color.RED);
 			eb2.setTitle("Confirm Data deletion");
 			eb2.setDescription(
-					"Click on the **Delete My Data** button to delete your data permanetly.\nNote : It will wipe all your coins permanently.");
+					"Click on the **Delete My Data** button to delete your data permanetly.\nNote : It will wipe all your coins, stocks permanently.");
 			;
 			user.openPrivateChannel()
 					.flatMap(channel -> channel.sendMessageEmbeds(eb2.build())
@@ -272,6 +275,17 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
+		// Give Command
+		else if (event.getName().equals("give")) {
+			String subCommandName = event.getSubcommandName();
+
+			// Give Coins Command
+			if (subCommandName.equals("coins")) {
+				CompletableFuture.runAsync(() -> CoinTransferService.getInstance().handleGiveCoinsCommand(event));
+				return;
+			}
+		}
+
 		// stock command
 		else if (event.getName().equals("stocks")) {
 			String subcommandName = event.getSubcommandName();
@@ -279,7 +293,8 @@ public class InteractionsListener extends ListenerAdapter {
 			// List Stocks Command
 			if (subcommandName.equals("list")) {
 				event.getHook().sendMessageEmbeds(StocksHandler.getInstance().getStockList())
-						.addActionRow(Button.primary("refreshMarket_" + System.currentTimeMillis(), Emoji.fromEmote("refresh", 1209076086185656340l, false)))
+						.addActionRow(Button.primary("refreshMarket_" + System.currentTimeMillis(),
+								Emoji.fromEmote("refresh", 1209076086185656340l, false)))
 						.queue();
 				return;
 			}
@@ -287,8 +302,8 @@ public class InteractionsListener extends ListenerAdapter {
 			// View Owned Stocks Command
 			else if (subcommandName.equals("owned")) {
 				event.getHook().sendMessageEmbeds(StocksHandler.getInstance().getStocksOwned(event.getUser()))
-				.addActionRow(Button.secondary("stockTransactions_0", "View Transactions"))
-				.queue();
+						.addActionRow(Button.secondary("stockTransactions_0", "View Transactions"))
+						.queue();
 				return;
 			}
 
@@ -441,13 +456,11 @@ public class InteractionsListener extends ListenerAdapter {
 			String selectedOptionIso = event.getComponentId().split("-")[1];
 			FightHandler.getInstance().handleSelection(event, Damage.PUNCH, selectedOptionIso);
 			return;
-		} 
-		else if (event.getComponentId().startsWith("kickSelection")) {
+		} else if (event.getComponentId().startsWith("kickSelection")) {
 			String selectedOptionIso = event.getComponentId().split("-")[1];
 			FightHandler.getInstance().handleSelection(event, Damage.KICK, selectedOptionIso);
 			return;
-		} 
-		else if (event.getComponentId().startsWith("refreshMarket")) {
+		} else if (event.getComponentId().startsWith("refreshMarket")) {
 			long lastUpdatedSince = Long.parseLong(event.getComponentId().split("_")[1]);
 			long curentTime = System.currentTimeMillis();
 			if (curentTime - lastUpdatedSince < 30_000) {
@@ -455,11 +468,12 @@ public class InteractionsListener extends ListenerAdapter {
 						.queue();
 			} else {
 				event.editMessageEmbeds(StocksHandler.getInstance().getStockList())
-						.setActionRow(Button.primary("refreshMarket_" + System.currentTimeMillis(), Emoji.fromEmote("refresh", 1209076086185656340l, false))).queue();
+						.setActionRow(Button.primary("refreshMarket_" + System.currentTimeMillis(),
+								Emoji.fromEmote("refresh", 1209076086185656340l, false)))
+						.queue();
 			}
 			return;
-		}
-		else if(event.getComponentId().startsWith("stockTransactions")) {
+		} else if (event.getComponentId().startsWith("stockTransactions")) {
 			int page = Integer.parseInt(event.getComponentId().split("_")[1]);
 			MessageEmbed eb = StocksHandler.getInstance().getTransactionsEmbed(event.getUser().getIdLong(), page);
 			event.replyEmbeds(eb).setEphemeral(true).queue();
@@ -479,6 +493,8 @@ public class InteractionsListener extends ListenerAdapter {
 				event.replyEmbeds(eb.build()).queue();
 			} else {
 				CoinDao.getInstance().deleteData(event.getUser().getIdLong());
+				StocksDao.getInstance().deleteStocksData(event.getUser().getIdLong());
+				StocksTransactionsDao.getInstance().deleteTransactionData(event.getUser().getIdLong());
 				EmbedBuilder eb = new EmbedBuilder();
 				eb.setTitle("Delete Confirmed");
 				eb.setDescription("Data deleted");
@@ -568,5 +584,4 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 	}
-
 }

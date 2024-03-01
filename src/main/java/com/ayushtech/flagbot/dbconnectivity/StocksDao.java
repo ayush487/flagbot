@@ -122,6 +122,16 @@ public class StocksDao {
     }
   }
 
+  public void deleteStocksData(long userId) {
+    Connection conn = ConnectionProvider.getConnection();
+    try {
+      Statement stmt = conn.createStatement();
+      stmt.executeUpdate("DELETE FROM stocks WHERE user_id=" + userId + ";");
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
   private String getQueryToUpdateAllStocks(Map<String, Integer> map) {
     String query = map.keySet().stream()
         .map(c -> " when company='" + c + "' then " + map.get(c))

@@ -36,12 +36,11 @@ public class Main {
 
                 DefaultShardManagerBuilder builder =
                 DefaultShardManagerBuilder.createDefault(bot_token);
-                builder.setActivity(Activity.playing("/battle"));
+                builder.setActivity(Activity.playing("/stocks"));
                 ShardManager manager = builder.build();
                 manager.addEventListener(new MessageListener(), new InteractionsListener(),
                 new GuildEventListener());
-                        
-                
+
                 ChannelService.getInstance().loadDisabledChannels();
         }
 }
