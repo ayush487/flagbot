@@ -131,7 +131,6 @@ public class StocksHandler {
 
   public MessageEmbed getTransactionsEmbed(long userId, int page) {
     List<StocksTransaction> list = StocksTransactionsDao.getInstance().getTransactions(userId, page, 10);
-    System.out.println(list.size());
     EmbedBuilder eb = new EmbedBuilder();
     if (list.size() == 0) {
       eb.setColor(Color.red);

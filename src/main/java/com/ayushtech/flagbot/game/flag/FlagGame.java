@@ -80,7 +80,7 @@ public class FlagGame extends Game {
 		disableButtons();
 	}
 
-	// @Override
+	@Override
 	public void disableButtons() {
 		this.channel.retrieveMessageById(this.getMessageId()).complete().editMessageEmbeds(getMessageEmbed())
 				.setActionRow(Button.primary("skipButton", "Skip").asDisabled(),
@@ -89,11 +89,7 @@ public class FlagGame extends Game {
 	}
 
 	public boolean guess(String guessCountry) {
-		if (countryMap.get(countryCode).equalsIgnoreCase(guessCountry)) {
-			return true;
-		} else {
-			return false;
-		}
+		return countryMap.get(countryCode).equalsIgnoreCase(guessCountry);
 	}
 
 	public String getCountryCode() {

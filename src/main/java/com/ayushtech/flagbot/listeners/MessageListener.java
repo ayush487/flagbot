@@ -3,6 +3,7 @@ package com.ayushtech.flagbot.listeners;
 import javax.annotation.Nonnull;
 
 import com.ayushtech.flagbot.game.flag.FlagGameHandler;
+import com.ayushtech.flagbot.game.logo.LogoGameHandler;
 import com.ayushtech.flagbot.game.map.MapGameHandler;
 import com.ayushtech.flagbot.services.CaptchaService;
 import com.ayushtech.flagbot.services.VotingService;
@@ -46,7 +47,10 @@ public class MessageListener extends ListenerAdapter {
             if (MapGameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())) {
                 MapGameHandler.getInstance().handleGuess(messageText, event);
             }
-
+            if (LogoGameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())) {
+                LogoGameHandler.getInstance().handleGuess(messageText, event);
+            }
+            return;
         }
 
     }
