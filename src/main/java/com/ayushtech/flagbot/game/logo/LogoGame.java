@@ -311,8 +311,8 @@ public class LogoGame {
     brandMap.put("acm", "AC Milan");
     brandMap.put("juv", "Juventus");
     brandMap.put("ars", "Arsenal");
-    brandMap.put("rcb", "Royal Challengers Bangaluru");
-    brandMap.put("csk", "Channai Super Kings");
+    brandMap.put("rcb", "Royal Challengers Bangalore");
+    brandMap.put("csk", "Chennai Super Kings");
     brandMap.put("mis", "Mumbai Indians");
     brandMap.put("wps", "Wordpress");
     brandMap.put("sla", "Slack");
@@ -432,6 +432,32 @@ public class LogoGame {
     brandMap.put("bur", "Burberry");
     brandMap.put("rei", "Reid & Taylor");
     brandMap.put("one", "Oneplus");
+    brandMap.put("wen", "Wendy's");
+    brandMap.put("sby", "Subway");
+    brandMap.put("van", "Van Heusen");
+    brandMap.put("all", "Allen Solly");
+    brandMap.put("mob", "Montblanc");
+    brandMap.put("vca", "Van Cleef & Arpels");
+    brandMap.put("jae", "Jaeger-LeCoultre");
+    brandMap.put("aud", "Audemars Piguet");
+    brandMap.put("fre", "Frederique Constant");
+    brandMap.put("pia", "Piaget");
+    brandMap.put("car", "Cartier");
+    brandMap.put("har", "Harry Winston");
+    brandMap.put("bla", "Blancpain");
+    brandMap.put("lon", "Longines");
+    brandMap.put("zen", "Zenith");
+    brandMap.put("tud", "Tudor");
+    brandMap.put("omg", "Omega");
+    brandMap.put("pap", "Patek Philippe");
+    brandMap.put("vac", "Vacheron Constantin");
+    brandMap.put("tag", "Tag Heuer");
+    brandMap.put("hot", "Hublot");
+    brandMap.put("bre", "Breitling");
+    brandMap.put("cho", "Chopard");
+    brandMap.put("mei", "MeisterSinger");
+    brandMap.put("bvl", "Bulgari");
+    brandMap.put("brg", "Breguet");
   }
 
   
