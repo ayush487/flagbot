@@ -222,6 +222,9 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.addField("__Battle Command__",
 					"`/battle` : Start a 1v1 battle between two users.\n**__Options__**\n**opponent** : Mention the user with whom you wanna battle.\n**bet** : Amout to bet in the battle (optional)",
 					false);
+			eb.addField("__Race Command__",
+					"`/race flags` : Start a race in the following channel of Flag mode\n`/race maps` : Start a race in the following channel of Flag mode\n`/race logo` : Start a race in the following channel of Logo mode\n`/race maths` : Start a race in the following channel of maths mode",
+					false);
 			eb.addField("__Stocks__",
 					"`/stocks list` : View Available Stocks with current market prices\n`/stocks owned` : View your portfolio\n`/stocks buy` : Buy Shares of different companies\n`/stocks sell` : Sell Shares which you own for coins",
 					false);
