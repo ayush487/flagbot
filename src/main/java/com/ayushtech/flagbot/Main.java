@@ -40,6 +40,7 @@ public class Main {
                 ShardManager manager = builder.build();
                 manager.addEventListener(new MessageListener(), new InteractionsListener(),
                 new GuildEventListener());
+
                 
                 ChannelService.getInstance().loadDisabledChannels();
         }

@@ -76,7 +76,7 @@ public class FightUtils {
         .queue();
   }
 
-  private String createImageURL(String countryName) {
+  public String createImageURL(String countryName) {
     StringBuffer sb = new StringBuffer("https://maps.lib.utexas.edu/maps/cia16/");
     if (MapGame.countryOverrideMap.containsKey(countryName)) {
       countryName = MapGame.countryOverrideMap.get(countryName);
@@ -88,7 +88,7 @@ public class FightUtils {
     return sb.toString();
   }
 
-  private CountryOptions getOptions() {
+  public CountryOptions getOptions() {
     int[] options = get4randomNumbers(isoList.size());
     int winnerIndex = random.nextInt(4);
     String[] optionsAsCode = new String[4];

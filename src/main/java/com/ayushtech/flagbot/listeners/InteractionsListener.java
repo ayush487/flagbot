@@ -25,6 +25,7 @@ import com.ayushtech.flagbot.game.logo.LogoGameEndRunnable;
 import com.ayushtech.flagbot.game.logo.LogoGameHandler;
 import com.ayushtech.flagbot.game.map.MapGameEndRunnable;
 import com.ayushtech.flagbot.game.map.MapGameHandler;
+import com.ayushtech.flagbot.race.RaceHandler;
 import com.ayushtech.flagbot.services.CaptchaService;
 import com.ayushtech.flagbot.services.ChannelService;
 import com.ayushtech.flagbot.services.CoinTransferService;
@@ -150,6 +151,11 @@ public class InteractionsListener extends ListenerAdapter {
 
 		if (event.getName().equals("battle")) {
 			FightHandler.getInstance().handleFightCommand(event);
+			return;
+		}
+
+		else if (event.getName().equals("race")) {
+			RaceHandler.getInstance().handleRaceCommand(event);
 			return;
 		}
 
@@ -465,6 +471,17 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
+		if (event.getComponentId().equals("raceCancel")) {
+			RaceHandler.getInstance().handleCancelRace(event);
+			return;
+		} else if (event.getComponentId().equals("raceJoin")) {
+			RaceHandler.getInstance().handleJoinRace(event);
+			return;
+		} else if (event.getComponentId().equals("raceStart")) {
+			RaceHandler.getInstance().handleStartRace(event);
+			return;
+		}
+
 		if (event.getComponentId().startsWith("punchSelection")) {
 			String selectedOptionIso = event.getComponentId().split("-")[1];
 			FightHandler.getInstance().handleSelection(event, Damage.PUNCH, selectedOptionIso);
@@ -490,6 +507,15 @@ public class InteractionsListener extends ListenerAdapter {
 			int page = Integer.parseInt(event.getComponentId().split("_")[1]);
 			MessageEmbed eb = StocksHandler.getInstance().getTransactionsEmbed(event.getUser().getIdLong(), page);
 			event.replyEmbeds(eb).setEphemeral(true).queue();
+			return;
+		} else if (event.getComponentId().startsWith("accelerate_")) {
+			RaceHandler.getInstance().handleAccelerate(event);
+			return;
+		} else if (event.getComponentId().startsWith("correct")) {
+			RaceHandler.getInstance().handleCorrectSelection(event);
+			return;
+		} else if (event.getComponentId().startsWith("wrong")) {
+			RaceHandler.getInstance().handleWrongSelection(event);
 			return;
 		}
 

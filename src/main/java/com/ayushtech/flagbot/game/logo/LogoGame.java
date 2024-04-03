@@ -19,7 +19,7 @@ public class LogoGame {
 
   private static Random random = new Random();
   private static Map<String, String> brandMap = new HashMap<>();
-  private static List<String> brandList;
+  public static List<String> brandList;
   private MessageChannel channel;
   private String brandCode;
   private MessageEmbed messageEmbed;
@@ -28,6 +28,10 @@ public class LogoGame {
   static {
     LogoGame.loadBrands();
     LogoGame.loadBrandList();
+  }
+
+  public static Map<String,String> getLogoMap() {
+    return brandMap;
   }
 
   public LogoGame(MessageChannel channel) {
@@ -342,7 +346,7 @@ public class LogoGame {
     brandMap.put("mda", "Mazda");
     brandMap.put("mus", "Mustang");
     brandMap.put("nis", "Nissan");
-    brandMap.put("bug", "Bugati");
+    brandMap.put("bug", "Bugatti");
     brandMap.put("alf", "Alfa Romeo");
     brandMap.put("bui", "Buick");
     brandMap.put("lex", "Lexus");
@@ -458,6 +462,20 @@ public class LogoGame {
     brandMap.put("mei", "MeisterSinger");
     brandMap.put("bvl", "Bulgari");
     brandMap.put("brg", "Breguet");
+    brandMap.put("csl", "Counter Strike");
+    brandMap.put("mok", "Mortal Combat");
+    brandMap.put("hal", "Halo");
+    brandMap.put("iro", "Ironman");
+    brandMap.put("fla", "Flash");
+    brandMap.put("cap", "Captain America");
+    brandMap.put("wow", "World of Warcraft");
+    brandMap.put("ass", "Assassin's Creed");
+    brandMap.put("gta", "GTA 5");
+    brandMap.put("var", "Valorant");
+    brandMap.put("pub", "Pubg");
+    brandMap.put("pfm", "Pocket FM");
+    brandMap.put("xio", "Xiaomi");
+    
   }
 
   
