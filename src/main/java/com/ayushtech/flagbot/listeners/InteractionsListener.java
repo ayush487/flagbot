@@ -53,7 +53,7 @@ public class InteractionsListener extends ListenerAdapter {
 	private ScheduledExecutorService gameEndService;
 	private ChannelService channelService;
 	private Random random;
-	private final int BOUND = 200;
+	private final int BOUND = 500;
 
 	public InteractionsListener() {
 		super();

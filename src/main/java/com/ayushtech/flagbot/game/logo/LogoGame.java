@@ -475,7 +475,6 @@ public class LogoGame {
     brandMap.put("pub", "Pubg");
     brandMap.put("pfm", "Pocket FM");
     brandMap.put("xio", "Xiaomi");
-    
   }
 
   
