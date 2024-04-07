@@ -36,7 +36,7 @@ public class Main {
 
                 DefaultShardManagerBuilder builder =
                 DefaultShardManagerBuilder.createDefault(bot_token);
-                builder.setActivity(Activity.playing("/help"));
+                builder.setActivity(Activity.playing("/race"));
                 ShardManager manager = builder.build();
                 manager.addEventListener(new MessageListener(), new InteractionsListener(),
                 new GuildEventListener());

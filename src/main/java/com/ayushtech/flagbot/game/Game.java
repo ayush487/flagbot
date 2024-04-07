@@ -12,10 +12,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public abstract class Game {
 
-    public static HashMap<String, String> countryMap = new HashMap<>(256);
+    public static HashMap<String, String> countryMap = new HashMap<>(257);
     protected static Set<String> nonSoverignCountries = new HashSet<>();
     protected static List<String> isoList;
-    protected static final String flagLink = "https://flagcdn.com/256x192/";
+    protected static final String flagLink = "https://raw.githubusercontent.com/ayush487/image-library/main/flags/";
     protected static final String suffix = ".png";
 
     static {
@@ -243,7 +243,7 @@ public abstract class Game {
         countryMap.put("sd", "Sudan");
         countryMap.put("se", "Sweden");
         countryMap.put("sg", "Singapore");
-        countryMap.put("sh", "Saint Helena, Ascension and Tristan da Cunha");
+        countryMap.put("sh", "Saint Helena");
         countryMap.put("si", "Slovenia");
         countryMap.put("sj", "Svalbard and Jan Mayen");
         countryMap.put("sk", "Slovakia");
@@ -295,9 +295,13 @@ public abstract class Game {
         countryMap.put("za", "South Africa");
         countryMap.put("zm", "Zambia");
         countryMap.put("zw", "Zimbabwe");
+        countryMap.put("ac", "Ascension");
+        countryMap.put("ti", "Tristan da Cunha");
     }
 
     public static void loadNonSoverignCountries() {
+        nonSoverignCountries.add("ac");
+        nonSoverignCountries.add("ti");
         nonSoverignCountries.add("ad");
         nonSoverignCountries.add("ag");
         nonSoverignCountries.add("ai");

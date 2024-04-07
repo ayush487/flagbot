@@ -475,6 +475,30 @@ public class LogoGame {
     brandMap.put("pub", "Pubg");
     brandMap.put("pfm", "Pocket FM");
     brandMap.put("xio", "Xiaomi");
+    brandMap.put("blu", "Bluestacks");
+    brandMap.put("res","Residental Evil");
+    brandMap.put("vlc","VLC");
+    brandMap.put("win","WinRAR");
+    brandMap.put("mys","MySQL");
+    brandMap.put("ppp","PPSSPP");
+    brandMap.put("out","Outlast");
+    brandMap.put("ctr","Citra");
+    brandMap.put("geo","Geometry Dash");
+    brandMap.put("dmm","DeSmuME");
+    brandMap.put("sne","Snes9x");
+    brandMap.put("pcs","PCSX2");
+    brandMap.put("lau","LaunchBox");
+    brandMap.put("dol","Dolphin Emulator");
+    brandMap.put("ret","RetroArch");
+    brandMap.put("jav","Java");
+    brandMap.put("pyt","Python");
+    brandMap.put("rub","Ruby");
+    brandMap.put("csh","C#");
+    brandMap.put("cpp","C++");
+    brandMap.put("c","C");
+    brandMap.put("phl","PHP");
+    brandMap.put("rus","Rust");
+    brandMap.put("per","Perl");
   }
 
   
