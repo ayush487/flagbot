@@ -14,7 +14,6 @@ import com.ayushtech.flagbot.stocks.StocksHandler;
 
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
-import net.dv8tion.jda.api.sharding.ShardManager;
 
 public class Main {
 
@@ -36,12 +35,12 @@ public class Main {
 
                 DefaultShardManagerBuilder builder =
                 DefaultShardManagerBuilder.createDefault(bot_token);
+                builder.setShardsTotal(2);
                 builder.setActivity(Activity.playing("/race"));
-                ShardManager manager = builder.build();
-                manager.addEventListener(new MessageListener(), new InteractionsListener(),
+                builder.addEventListeners(new MessageListener(), new InteractionsListener(),
                 new GuildEventListener());
+                builder.build();
 
-                
                 ChannelService.getInstance().loadDisabledChannels();
         }
 }

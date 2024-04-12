@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import com.ayushtech.flagbot.game.Game;
+import com.ayushtech.flagbot.services.GameEndService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -24,18 +26,20 @@ public class LogoGame {
   private String brandCode;
   private MessageEmbed messageEmbed;
   private long messageId;
+  private int rounds;
 
   static {
     LogoGame.loadBrands();
     LogoGame.loadBrandList();
   }
 
-  public static Map<String,String> getLogoMap() {
+  public static Map<String, String> getLogoMap() {
     return brandMap;
   }
 
-  public LogoGame(MessageChannel channel) {
+  public LogoGame(MessageChannel channel, int rounds) {
     this.channel = channel;
+    this.rounds = rounds;
     this.brandCode = getRandomBrand();
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Guess the Brand");
@@ -57,24 +61,42 @@ public class LogoGame {
     eb.setThumbnail(
         String.format("https://raw.githubusercontent.com/ayush487/image-library/main/logo/%s.png", brandCode));
     eb.setColor(new Color(13, 240, 52));
-    msgEvent.getChannel().sendMessageEmbeds(eb.build())
-        .setActionRow(Button.primary("playAgainLogo", "Play Again")).queue();
-    Game.increaseCoins(msgEvent.getAuthor().getIdLong(), 100l);
+    if (rounds <= 1) {
+      msgEvent.getChannel().sendMessageEmbeds(eb.build())
+          .setActionRow(Button.primary("playAgainLogo", "Play Again")).queue();
+    } else {
+      msgEvent.getChannel().sendMessageEmbeds(eb.build()).queue();
+      startAgain(channel, rounds - 1);
+    }
     disableButton();
+    Game.increaseCoins(msgEvent.getAuthor().getIdLong(), 100l);
   }
 
   public void endGameAsLose() {
+    LogoGameHandler.getInstance().endGame(channel.getIdLong());
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("No one guessed the logo!");
     eb.setDescription("**Correct Answer :** \n" + brandMap.get(brandCode));
     eb.setThumbnail(
         String.format("https://raw.githubusercontent.com/ayush487/image-library/main/logo/%s.png", brandCode));
     eb.setColor(new Color(240, 13, 52));
-    this.channel.sendMessageEmbeds(eb.build())
-        .setActionRow(Button.primary("playAgainLogo", "Play Again"))
-        .queue();
-    LogoGameHandler.getInstance().endGame(channel.getIdLong());
+    if (rounds <= 1) {
+      this.channel.sendMessageEmbeds(eb.build())
+          .setActionRow(Button.primary("playAgainLogo", "Play Again"))
+          .queue();
+    } else {
+      this.channel.sendMessageEmbeds(eb.build())
+          .queue();
+      startAgain(channel, rounds - 1);
+    }
     disableButton();
+  }
+
+  public static void startAgain(MessageChannel channel, int rounds) {
+    LogoGame game = new LogoGame(channel, rounds);
+    LogoGameHandler.getInstance().getGameMap().put(channel.getIdLong(), game);
+    GameEndService.getInstance().scheduleEndGame(
+        new LogoGameEndRunnable(game, channel.getIdLong()), 30, TimeUnit.SECONDS);
   }
 
   private String getRandomBrand() {
@@ -476,30 +498,29 @@ public class LogoGame {
     brandMap.put("pfm", "Pocket FM");
     brandMap.put("xio", "Xiaomi");
     brandMap.put("blu", "Bluestacks");
-    brandMap.put("res","Residental Evil");
-    brandMap.put("vlc","VLC");
-    brandMap.put("win","WinRAR");
-    brandMap.put("mys","MySQL");
-    brandMap.put("ppp","PPSSPP");
-    brandMap.put("out","Outlast");
-    brandMap.put("ctr","Citra");
-    brandMap.put("geo","Geometry Dash");
-    brandMap.put("dmm","DeSmuME");
-    brandMap.put("sne","Snes9x");
-    brandMap.put("pcs","PCSX2");
-    brandMap.put("lau","LaunchBox");
-    brandMap.put("dol","Dolphin Emulator");
-    brandMap.put("ret","RetroArch");
-    brandMap.put("jav","Java");
-    brandMap.put("pyt","Python");
-    brandMap.put("rub","Ruby");
-    brandMap.put("csh","C#");
-    brandMap.put("cpp","C++");
-    brandMap.put("c","C");
-    brandMap.put("phl","PHP");
-    brandMap.put("rus","Rust");
-    brandMap.put("per","Perl");
+    brandMap.put("res", "Residental Evil");
+    brandMap.put("vlc", "VLC");
+    brandMap.put("win", "WinRAR");
+    brandMap.put("mys", "MySQL");
+    brandMap.put("ppp", "PPSSPP");
+    brandMap.put("out", "Outlast");
+    brandMap.put("ctr", "Citra");
+    brandMap.put("geo", "Geometry Dash");
+    brandMap.put("dmm", "DeSmuME");
+    brandMap.put("sne", "Snes9x");
+    brandMap.put("pcs", "PCSX2");
+    brandMap.put("lau", "LaunchBox");
+    brandMap.put("dol", "Dolphin Emulator");
+    brandMap.put("ret", "RetroArch");
+    brandMap.put("jav", "Java");
+    brandMap.put("pyt", "Python");
+    brandMap.put("rub", "Ruby");
+    brandMap.put("csh", "C#");
+    brandMap.put("cpp", "C++");
+    brandMap.put("c", "C");
+    brandMap.put("phl", "PHP");
+    brandMap.put("rus", "Rust");
+    brandMap.put("per", "Perl");
   }
 
-  
 }

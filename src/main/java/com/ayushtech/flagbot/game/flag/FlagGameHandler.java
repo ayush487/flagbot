@@ -36,8 +36,11 @@ public class FlagGameHandler {
         } else {
             event.getHook().sendMessage("Starting game now!").queue();
             OptionMapping difficultyOption = event.getOption("include_non_soverign_countries");
+            OptionMapping roundsOption = event.getOption("rounds");
             boolean isHard = difficultyOption == null ? false : difficultyOption.getAsBoolean();
-            FlagGame game = new FlagGame(event.getChannel(), isHard);
+            int rounds = roundsOption == null ? 0 : roundsOption.getAsInt();
+            rounds = (rounds <= 0) ? 0 : (rounds > 25) ? 25 : rounds;
+            FlagGame game = new FlagGame(event.getChannel(), isHard, rounds);
             gameMap.put(event.getChannel().getIdLong(), game);
             return true;
         }
@@ -51,7 +54,7 @@ public class FlagGameHandler {
         } else {
             event.reply("Starting game now!").queue();
             boolean isHard = event.getComponentId().split("_")[1].equals("Hard");
-            FlagGame game = new FlagGame(event.getChannel(), isHard);
+            FlagGame game = new FlagGame(event.getChannel(), isHard,0);
             gameMap.put(event.getChannel().getIdLong(), game);
             return true;
         }

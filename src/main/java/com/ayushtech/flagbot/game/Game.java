@@ -284,7 +284,7 @@ public abstract class Game {
         countryMap.put("vc", "Saint Vincent and the Grenadines");
         countryMap.put("ve", "Venezuela");
         countryMap.put("vg", "British Virgin Islands");
-        countryMap.put("vi", "Virgin Islands");
+        countryMap.put("vi", "US Virgin Islands");
         countryMap.put("vn", "Vietnam");
         countryMap.put("vu", "Vanuatu");
         countryMap.put("wf", "Wallis and Futuna");

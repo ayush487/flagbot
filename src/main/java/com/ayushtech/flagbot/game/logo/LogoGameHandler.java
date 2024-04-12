@@ -6,6 +6,7 @@ import java.util.Map;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
 public class LogoGameHandler {
   private static LogoGameHandler logoGameHandler = null;
@@ -33,22 +34,25 @@ public class LogoGameHandler {
       return false;
     } else {
       event.getHook().sendMessage("Starting game now!").queue();
-      LogoGame game = new LogoGame(event.getChannel());
+      OptionMapping roundsOption = event.getOption("rounds");
+      int rounds = roundsOption == null ? 0 : roundsOption.getAsInt();
+      rounds = (rounds <= 0) ? 0 : (rounds > 25) ? 25 : rounds;
+      LogoGame game = new LogoGame(event.getChannel(), rounds);
       gameMap.put(event.getChannel().getIdLong(), game);
       return true;
     }
   }
 
   public boolean addGame(ButtonInteractionEvent event) {
-    if(gameMap.containsKey(event.getChannel().getIdLong())) {
+    if (gameMap.containsKey(event.getChannel().getIdLong())) {
       event.reply("There is already a game running in this channel!").queue();
       return false;
-  } else {
+    } else {
       event.reply("Starting game now!").queue();
-      LogoGame game = new LogoGame(event.getChannel());
+      LogoGame game = new LogoGame(event.getChannel(), 0);
       gameMap.put(event.getChannel().getIdLong(), game);
       return true;
-  }
+    }
   }
 
   public void endGame(Long channelId) {
@@ -58,15 +62,15 @@ public class LogoGameHandler {
   }
 
   public void handleGuess(String guessWord, MessageReceivedEvent event) {
-    if(gameMap.containsKey(event.getChannel().getIdLong())) {
+    if (gameMap.containsKey(event.getChannel().getIdLong())) {
       Long channelId = event.getChannel().getIdLong();
-      if(gameMap.get(channelId).guess(guessWord)) {
-          event.getMessage().addReaction("U+1F389").queue();
-          gameMap.get(channelId).endGameAsWin(event);
+      if (gameMap.get(channelId).guess(guessWord)) {
+        event.getMessage().addReaction("U+1F389").queue();
+        gameMap.get(channelId).endGameAsWin(event);
       } else {
-          event.getMessage().addReaction("U+274C").queue();
+        event.getMessage().addReaction("U+274C").queue();
       }
-  }
-  
+    }
+
   }
 }

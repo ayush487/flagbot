@@ -6,8 +6,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
@@ -29,6 +27,7 @@ import com.ayushtech.flagbot.race.RaceHandler;
 import com.ayushtech.flagbot.services.CaptchaService;
 import com.ayushtech.flagbot.services.ChannelService;
 import com.ayushtech.flagbot.services.CoinTransferService;
+import com.ayushtech.flagbot.services.GameEndService;
 import com.ayushtech.flagbot.stocks.Company;
 import com.ayushtech.flagbot.stocks.StocksHandler;
 
@@ -50,14 +49,12 @@ import net.dv8tion.jda.api.utils.TimeFormat;
 
 public class InteractionsListener extends ListenerAdapter {
 
-	private ScheduledExecutorService gameEndService;
 	private ChannelService channelService;
 	private Random random;
 	private final int BOUND = 500;
 
 	public InteractionsListener() {
 		super();
-		gameEndService = new ScheduledThreadPoolExecutor(50);
 		channelService = ChannelService.getInstance();
 		random = new Random();
 	}
@@ -396,7 +393,7 @@ public class InteractionsListener extends ListenerAdapter {
 			if (commandName != null && commandName.equals("map")) {
 				boolean isAdded = MapGameHandler.getInstance().addGame(event);
 				if (isAdded) {
-					gameEndService.schedule(
+					GameEndService.getInstance().scheduleEndGame(
 							new MapGameEndRunnable(
 									MapGameHandler.getInstance().getGameMap()
 											.get(event.getChannel().getIdLong()),
@@ -407,7 +404,7 @@ public class InteractionsListener extends ListenerAdapter {
 			} else if (commandName != null && commandName.equals("logo")) {
 				boolean isAdded = LogoGameHandler.getInstance().addGame(event);
 				if (isAdded) {
-					gameEndService.schedule(
+					GameEndService.getInstance().scheduleEndGame(
 							new LogoGameEndRunnable(
 									LogoGameHandler.getInstance().getGameMap()
 											.get(event.getChannel().getIdLong()),
@@ -418,7 +415,7 @@ public class InteractionsListener extends ListenerAdapter {
 			} else {
 				boolean isAdded = FlagGameHandler.getInstance().addGame(event);
 				if (isAdded) {
-					gameEndService.schedule(new FlagGameEndRunnable(
+					GameEndService.getInstance().scheduleEndGame(new FlagGameEndRunnable(
 							FlagGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()),
 							event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
 				}
@@ -615,7 +612,7 @@ public class InteractionsListener extends ListenerAdapter {
 		else if (event.getComponentId().startsWith("playAgainFlag")) {
 			boolean isAdded = FlagGameHandler.getInstance().addGame(event);
 			if (isAdded) {
-				gameEndService.schedule(new FlagGameEndRunnable(
+				GameEndService.getInstance().scheduleEndGame(new FlagGameEndRunnable(
 						FlagGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()),
 						event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
 			}
@@ -625,7 +622,7 @@ public class InteractionsListener extends ListenerAdapter {
 		else if (event.getComponentId().startsWith("playAgainMap")) {
 			boolean isAdded = MapGameHandler.getInstance().addGame(event);
 			if (isAdded) {
-				gameEndService.schedule(
+				GameEndService.getInstance().scheduleEndGame(
 						new MapGameEndRunnable(
 								MapGameHandler.getInstance().getGameMap()
 										.get(event.getChannel().getIdLong()),
@@ -638,7 +635,7 @@ public class InteractionsListener extends ListenerAdapter {
 		else if (event.getComponentId().equals("playAgainLogo")) {
 			boolean isAdded = LogoGameHandler.getInstance().addGame(event);
 			if (isAdded) {
-				gameEndService.schedule(
+				GameEndService.getInstance().scheduleEndGame(
 						new LogoGameEndRunnable(
 								LogoGameHandler.getInstance().getGameMap()
 										.get(event.getChannel().getIdLong()),

@@ -6,8 +6,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import com.ayushtech.flagbot.game.Game;
+import com.ayushtech.flagbot.services.GameEndService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -26,6 +28,7 @@ public class MapGame extends Game {
 	private String countryCode;
 	private Long messageId;
 	private boolean isHard;
+	private int rounds;
 
 	static {
 		random = new Random();
@@ -35,9 +38,10 @@ public class MapGame extends Game {
 		loadCountryOverrideMap();
 	}
 
-	public MapGame(MessageChannel channel, boolean isHard) {
+	public MapGame(MessageChannel channel, boolean isHard, int rounds) {
 		this.channel = channel;
 		this.isHard = isHard;
+		this.rounds = rounds;
 		this.countryCode = getRandomCountryCode(isHard);
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setTitle("Guess the country");
@@ -64,10 +68,15 @@ public class MapGame extends Game {
 						countryMap.get(countryCode));
 		eb.setThumbnail(flagLink + countryCode + suffix);
 		eb.setColor(new Color(13, 240, 52));
-		msgEvent.getChannel().sendMessageEmbeds(eb.build())
-				.setActionRow(Button.primary("playAgainMap_" + (isHard ? "Hard" : "Easy"), "Play Again"))
-				.queue();
 		MapGameHandler.getInstance().getGameMap().remove(channel.getIdLong());
+		if (rounds <= 1) {
+			msgEvent.getChannel().sendMessageEmbeds(eb.build())
+			.setActionRow(Button.primary("playAgainMap_" + (isHard ? "Hard" : "Easy"), "Play Again"))
+			.queue();
+		} else {
+			msgEvent.getChannel().sendMessageEmbeds(eb.build()).queue();
+			startAgain(channel, isHard, rounds - 1);
+		}
 		Game.increaseCoins(msgEvent.getAuthor().getIdLong(), 100l);
 		disableButtons();
 	}
@@ -79,10 +88,15 @@ public class MapGame extends Game {
 		eb.setDescription("**Correct Answer :** \n" + countryMap.get(countryCode));
 		eb.setThumbnail(flagLink + countryCode + suffix);
 		eb.setColor(new Color(240, 13, 52));
-		this.channel.sendMessageEmbeds(eb.build())
-				.setActionRow(Button.primary("playAgainMap_" + (isHard ? "Hard" : "Easy"), "Play Again"))
-				.queue();
 		MapGameHandler.getInstance().endGame(channel.getIdLong());
+		if (rounds <= 1) {
+			this.channel.sendMessageEmbeds(eb.build())
+			.setActionRow(Button.primary("playAgainMap_" + (isHard ? "Hard" : "Easy"), "Play Again"))
+			.queue();
+		} else {
+			this.channel.sendMessageEmbeds(eb.build()).queue();
+			startAgain(channel, isHard, rounds - 1);
+		}
 		disableButtons();
 	}
 
@@ -91,6 +105,13 @@ public class MapGame extends Game {
 				.complete().editMessageEmbeds(getMessageEmbed())
 				.setActionRow(Button.primary("skipButton", "Skip").asDisabled())
 				.queue();
+	}
+
+	public static void startAgain(MessageChannel channel, boolean isHard, int rounds) {
+		MapGame game = new MapGame(channel, isHard, rounds);
+		MapGameHandler.getInstance().getGameMap().put(channel.getIdLong(), game);
+		GameEndService.getInstance().scheduleEndGame(
+				new MapGameEndRunnable(game,channel.getIdLong()),30, TimeUnit.SECONDS);
 	}
 
 	@Override
@@ -166,14 +187,6 @@ public class MapGame extends Game {
 		this.messageEmbed = messageEmbed;
 	}
 
-	public Long getMessageId() {
-		return messageId;
-	}
-
-	public void setMessageId(Long messageId) {
-		this.messageId = messageId;
-	}
-
 	private static String getRandomCountryCode(boolean isHard) {
 		String countryCode = isoList.get(random.nextInt(isoList.size()));
 		if (!isHard) {
@@ -185,6 +198,14 @@ public class MapGame extends Game {
 			countryCode = isoList.get(random.nextInt(isoList.size()));
 		}
 		return countryCode;
+	}
+
+	public Long getMessageId() {
+		return messageId;
+	}
+
+	public void setMessageId(Long messageId) {
+		this.messageId = messageId;
 	}
 
 }

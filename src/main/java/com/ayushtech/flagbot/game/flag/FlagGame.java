@@ -2,10 +2,12 @@ package com.ayushtech.flagbot.game.flag;
 
 import java.awt.Color;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
 
 import com.ayushtech.flagbot.game.Game;
+import com.ayushtech.flagbot.services.GameEndService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -22,15 +24,17 @@ public class FlagGame extends Game {
 	private Long messageId;
 	private MessageEmbed messageEmbed;
 	private boolean isHard;
+	private int rounds;
 
 	static {
 		random = new Random();
 	}
 
-	public FlagGame(MessageChannel channel, boolean isHard) {
+	public FlagGame(MessageChannel channel, boolean isHard, int rounds) {
 		super();
 		this.channel = channel;
 		this.isHard = isHard;
+		this.rounds = rounds;
 		this.countryCode = getRandomCountryCode(isHard);
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setTitle("Guess the Country Flag");
@@ -60,10 +64,15 @@ public class FlagGame extends Game {
 				+ "  \n **Correct Answer :** " + countryMap.get(countryCode));
 		eb.setThumbnail(flagLink + countryCode + suffix);
 		eb.setColor(new Color(13, 240, 52));
-		msgEvent.getChannel().sendMessageEmbeds(eb.build())
-				.setActionRow(Button.primary("playAgainFlag_" + (isHard ? "Hard" : "Easy"), "Play Again")).queue();
-		Game.increaseCoins(msgEvent.getAuthor().getIdLong(), 100l);
+		if (rounds <= 1) {
+			msgEvent.getChannel().sendMessageEmbeds(eb.build())
+					.setActionRow(Button.primary("playAgainFlag_" + (isHard ? "Hard" : "Easy"), "Play Again")).queue();
+		} else {
+			msgEvent.getChannel().sendMessageEmbeds(eb.build()).queue();
+			startAgain(channel, isHard, rounds - 1);
+		}
 		disableButtons();
+		Game.increaseCoins(msgEvent.getAuthor().getIdLong(), 100l);
 	}
 
 	@Override
@@ -73,11 +82,23 @@ public class FlagGame extends Game {
 		eb.setDescription("**Correct Answer :** \n" + countryMap.get(countryCode));
 		eb.setThumbnail(flagLink + countryCode + suffix);
 		eb.setColor(new Color(240, 13, 52));
-		this.channel.sendMessageEmbeds(eb.build())
-				.setActionRow(Button.primary("playAgainFlag_" + (isHard ? "Hard" : "Easy"), "Play Again"))
-				.queue();
 		FlagGameHandler.getInstance().endGame(channel.getIdLong());
+		if (rounds <= 1) {
+			this.channel.sendMessageEmbeds(eb.build())
+					.setActionRow(Button.primary("playAgainFlag_" + (isHard ? "Hard" : "Easy"), "Play Again"))
+					.queue();
+		} else {
+			this.channel.sendMessageEmbeds(eb.build()).queue();
+			startAgain(channel, isHard, rounds);
+		}
 		disableButtons();
+	}
+
+	public static void startAgain(MessageChannel channel, boolean isHard, int rounds) {
+		FlagGame game = new FlagGame(channel, isHard, rounds);
+		FlagGameHandler.getInstance().getGameMap().put(channel.getIdLong(), game);
+		GameEndService.getInstance().scheduleEndGame(
+				new FlagGameEndRunnable(game, channel.getIdLong()), 30, TimeUnit.SECONDS);
 	}
 
 	@Override
