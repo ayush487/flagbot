@@ -89,7 +89,7 @@ public class FlagGame extends Game {
 					.queue();
 		} else {
 			this.channel.sendMessageEmbeds(eb.build()).queue();
-			startAgain(channel, isHard, rounds);
+			startAgain(channel, isHard, rounds - 1);
 		}
 		disableButtons();
 	}
