@@ -29,6 +29,7 @@ public class MapGame extends Game {
 	private Long messageId;
 	private boolean isHard;
 	private int rounds;
+	private int roundSize;
 
 	static {
 		random = new Random();
@@ -38,10 +39,11 @@ public class MapGame extends Game {
 		loadCountryOverrideMap();
 	}
 
-	public MapGame(MessageChannel channel, boolean isHard, int rounds) {
+	public MapGame(MessageChannel channel, boolean isHard, int rounds, int roundSize) {
 		this.channel = channel;
 		this.isHard = isHard;
 		this.rounds = rounds;
+		this.roundSize = roundSize;
 		this.countryCode = getRandomCountryCode(isHard);
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setTitle("Guess the country");
@@ -71,11 +73,12 @@ public class MapGame extends Game {
 		MapGameHandler.getInstance().getGameMap().remove(channel.getIdLong());
 		if (rounds <= 1) {
 			msgEvent.getChannel().sendMessageEmbeds(eb.build())
-			.setActionRow(Button.primary("playAgainMap_" + (isHard ? "Hard" : "Easy"), "Play Again"))
-			.queue();
+					.setActionRow(Button.primary("playAgainMap_" + (isHard ? "Hard" : "Easy") + "_" + roundSize,
+							roundSize <= 1 ? "Play Again" : "Start Round Again"))
+					.queue();
 		} else {
 			msgEvent.getChannel().sendMessageEmbeds(eb.build()).queue();
-			startAgain(channel, isHard, rounds - 1);
+			startAgain(channel, isHard, rounds - 1, roundSize);
 		}
 		Game.increaseCoins(msgEvent.getAuthor().getIdLong(), 100l);
 		disableButtons();
@@ -91,11 +94,12 @@ public class MapGame extends Game {
 		MapGameHandler.getInstance().endGame(channel.getIdLong());
 		if (rounds <= 1) {
 			this.channel.sendMessageEmbeds(eb.build())
-			.setActionRow(Button.primary("playAgainMap_" + (isHard ? "Hard" : "Easy"), "Play Again"))
-			.queue();
+					.setActionRow(Button.primary("playAgainMap_" + (isHard ? "Hard" : "Easy") + "_" + roundSize,
+							roundSize <= 1 ? "Play Again" : "Start Round Again"))
+					.queue();
 		} else {
 			this.channel.sendMessageEmbeds(eb.build()).queue();
-			startAgain(channel, isHard, rounds - 1);
+			startAgain(channel, isHard, rounds - 1, roundSize);
 		}
 		disableButtons();
 	}
@@ -107,11 +111,11 @@ public class MapGame extends Game {
 				.queue();
 	}
 
-	public static void startAgain(MessageChannel channel, boolean isHard, int rounds) {
-		MapGame game = new MapGame(channel, isHard, rounds);
+	public static void startAgain(MessageChannel channel, boolean isHard, int rounds, int roundSize) {
+		MapGame game = new MapGame(channel, isHard, rounds, roundSize);
 		MapGameHandler.getInstance().getGameMap().put(channel.getIdLong(), game);
 		GameEndService.getInstance().scheduleEndGame(
-				new MapGameEndRunnable(game,channel.getIdLong()),30, TimeUnit.SECONDS);
+				new MapGameEndRunnable(game, channel.getIdLong()), 30, TimeUnit.SECONDS);
 	}
 
 	@Override

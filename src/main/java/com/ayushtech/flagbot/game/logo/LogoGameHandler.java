@@ -36,8 +36,8 @@ public class LogoGameHandler {
       event.getHook().sendMessage("Starting game now!").queue();
       OptionMapping roundsOption = event.getOption("rounds");
       int rounds = roundsOption == null ? 0 : roundsOption.getAsInt();
-      rounds = (rounds <= 0) ? 0 : (rounds > 25) ? 25 : rounds;
-      LogoGame game = new LogoGame(event.getChannel(), rounds);
+      rounds = (rounds <= 0) ? 0 : (rounds > 15) ? 15 : rounds;
+      LogoGame game = new LogoGame(event.getChannel(), rounds, rounds);
       gameMap.put(event.getChannel().getIdLong(), game);
       return true;
     }
@@ -49,7 +49,9 @@ public class LogoGameHandler {
       return false;
     } else {
       event.reply("Starting game now!").queue();
-      LogoGame game = new LogoGame(event.getChannel(), 0);
+      String[] commandData = event.getComponentId().split("_");
+      int rounds = Integer.parseInt(commandData[1]);
+      LogoGame game = new LogoGame(event.getChannel(), rounds, rounds);
       gameMap.put(event.getChannel().getIdLong(), game);
       return true;
     }

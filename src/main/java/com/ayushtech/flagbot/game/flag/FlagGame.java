@@ -25,16 +25,18 @@ public class FlagGame extends Game {
 	private MessageEmbed messageEmbed;
 	private boolean isHard;
 	private int rounds;
+	private int roundSize;
 
 	static {
 		random = new Random();
 	}
 
-	public FlagGame(MessageChannel channel, boolean isHard, int rounds) {
+	public FlagGame(MessageChannel channel, boolean isHard, int rounds, int roundSize) {
 		super();
 		this.channel = channel;
 		this.isHard = isHard;
 		this.rounds = rounds;
+		this.roundSize = roundSize;
 		this.countryCode = getRandomCountryCode(isHard);
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setTitle("Guess the Country Flag");
@@ -66,10 +68,12 @@ public class FlagGame extends Game {
 		eb.setColor(new Color(13, 240, 52));
 		if (rounds <= 1) {
 			msgEvent.getChannel().sendMessageEmbeds(eb.build())
-					.setActionRow(Button.primary("playAgainFlag_" + (isHard ? "Hard" : "Easy"), "Play Again")).queue();
+					.setActionRow(Button.primary("playAgainFlag_" + (isHard ? "Hard" : "Easy") + "_" + roundSize,
+							roundSize <= 1 ? "Play Again" : "Start Round Again"))
+					.queue();
 		} else {
 			msgEvent.getChannel().sendMessageEmbeds(eb.build()).queue();
-			startAgain(channel, isHard, rounds - 1);
+			startAgain(channel, isHard, rounds - 1, roundSize);
 		}
 		disableButtons();
 		Game.increaseCoins(msgEvent.getAuthor().getIdLong(), 100l);
@@ -85,17 +89,18 @@ public class FlagGame extends Game {
 		FlagGameHandler.getInstance().endGame(channel.getIdLong());
 		if (rounds <= 1) {
 			this.channel.sendMessageEmbeds(eb.build())
-					.setActionRow(Button.primary("playAgainFlag_" + (isHard ? "Hard" : "Easy"), "Play Again"))
+					.setActionRow(Button.primary("playAgainFlag_" + (isHard ? "Hard" : "Easy") + "_" + roundSize,
+							roundSize <= 1 ? "Play Again" : "Start Round Again"))
 					.queue();
 		} else {
 			this.channel.sendMessageEmbeds(eb.build()).queue();
-			startAgain(channel, isHard, rounds - 1);
+			startAgain(channel, isHard, rounds - 1, roundSize);
 		}
 		disableButtons();
 	}
 
-	public static void startAgain(MessageChannel channel, boolean isHard, int rounds) {
-		FlagGame game = new FlagGame(channel, isHard, rounds);
+	public static void startAgain(MessageChannel channel, boolean isHard, int rounds, int roundSize) {
+		FlagGame game = new FlagGame(channel, isHard, rounds, roundSize);
 		FlagGameHandler.getInstance().getGameMap().put(channel.getIdLong(), game);
 		GameEndService.getInstance().scheduleEndGame(
 				new FlagGameEndRunnable(game, channel.getIdLong()), 30, TimeUnit.SECONDS);

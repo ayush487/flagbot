@@ -38,8 +38,8 @@ public class MapGameHandler {
             OptionMapping roundsOption = event.getOption("rounds");
             boolean isHard = difficultyOption == null ? false : difficultyOption.getAsBoolean();
             int rounds = roundsOption == null ? 0 : roundsOption.getAsInt();
-            rounds = (rounds <= 0) ? 0 : (rounds > 25) ? 25 : rounds;
-            MapGame game = new MapGame(event.getChannel(), isHard, rounds);
+            rounds = (rounds <= 0) ? 0 : (rounds > 15) ? 15 : rounds;
+            MapGame game = new MapGame(event.getChannel(), isHard, rounds, rounds);
             mapGameMap.put(event.getChannel().getIdLong(), game);
             return true;
         }
@@ -51,8 +51,10 @@ public class MapGameHandler {
             return false;
         } else {
             event.reply("Starting game now!").queue();
-            boolean isHard = event.getComponentId().split("_")[1].equals("Hard");
-            MapGame game = new MapGame(event.getChannel(), isHard, 0);
+            String[] commandData = event.getComponentId().split("_");
+            boolean isHard = commandData[1].equals("Hard");
+            int rounds = Integer.parseInt(commandData[2]);
+            MapGame game = new MapGame(event.getChannel(), isHard, rounds, rounds);
             mapGameMap.put(event.getChannel().getIdLong(), game);
             return true;
         }

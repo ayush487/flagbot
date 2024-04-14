@@ -41,6 +41,8 @@ public abstract class Game {
     }
 
     public static void loadCountries() {
+
+        countryMap.put("aa", "Saba");
         countryMap.put("ad", "Andorra");
         countryMap.put("ae", "United Arab Emirates");
         countryMap.put("af", "Afghanistan");
@@ -50,6 +52,7 @@ public abstract class Game {
         countryMap.put("am", "Armenia");
         countryMap.put("ao", "Angola");
         countryMap.put("aq", "Antarctica");
+        countryMap.put("an", "Antarctica");
         countryMap.put("ar", "Argentina");
         countryMap.put("as", "American Samoa");
         countryMap.put("at", "Austria");
@@ -107,6 +110,7 @@ public abstract class Game {
         countryMap.put("ee", "Estonia");
         countryMap.put("eg", "Egypt");
         countryMap.put("eh", "Western Sahara");
+        countryMap.put("ei", "Sint Eustatius");
         countryMap.put("er", "Eritrea");
         countryMap.put("es", "Spain");
         countryMap.put("et", "Ethiopia");
@@ -134,7 +138,7 @@ public abstract class Game {
         countryMap.put("gp", "Guadeloupe");
         countryMap.put("gq", "Equatorial Guinea");
         countryMap.put("gr", "Greece");
-        countryMap.put("gs", "South Georgia");
+        countryMap.put("gs", "South Georgia and the South Sandwich Islands");
         countryMap.put("gt", "Guatemala");
         countryMap.put("gu", "Guam");
         countryMap.put("gw", "Guinea-Bissau");
@@ -195,6 +199,7 @@ public abstract class Game {
         countryMap.put("mo", "Macau");
         countryMap.put("mp", "Northern Mariana Islands");
         countryMap.put("mq", "Martinique");
+        countryMap.put("mi", "Martinique");
         countryMap.put("mr", "Mauritania");
         countryMap.put("ms", "Montserrat");
         countryMap.put("mt", "Malta");
@@ -300,7 +305,10 @@ public abstract class Game {
     }
 
     public static void loadNonSoverignCountries() {
+        nonSoverignCountries.add("aa");
+        nonSoverignCountries.add("ei");
         nonSoverignCountries.add("ac");
+        nonSoverignCountries.add("an");
         nonSoverignCountries.add("ti");
         nonSoverignCountries.add("ad");
         nonSoverignCountries.add("ag");
@@ -341,6 +349,7 @@ public abstract class Game {
         nonSoverignCountries.add("mf");
         nonSoverignCountries.add("mp");
         nonSoverignCountries.add("mq");
+        nonSoverignCountries.add("mi");
         nonSoverignCountries.add("ms");
         nonSoverignCountries.add("nc");
         nonSoverignCountries.add("nf");

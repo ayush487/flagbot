@@ -215,7 +215,10 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.setTitle("Commands");
 			eb.setColor(new Color(255, 153, 51)); // rgb (255,153,51)
 			eb.setDescription(
-					"`/guess flag` : Start a flag guessing game in the channel\n`/guess map` : Start a map guessing game in the channel\n`/guess logo` : Start a logo guessing game in the channel\n`/leaderboards` : Check the global leaderboard (Top 5)\n`/invite` : Invite the bot to your server\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank\n`/give coins` : Send coins to other users.\n`/vote` : Vote for us and get rewards");
+					"**__Guess Commands__**\n`/guess flag` : Start a flag guessing game in the channel\n`/guess map` : Start a map guessing game in the channel\n`/guess logo` : Start a logo guessing game in the channel\n__Options__ :\n`rounds` : Enter the number of rounds you want to play (maximum it would be 15) (optional)\n`include_non_soverign_countries` : True or False to include non soverign countries (false if not selected)");
+			eb.addField("__General Commands__",
+					"`/leaderboards` : Check the global leaderboard (Top 5)\n`/invite` : Invite the bot to your server\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank\n`/give coins` : Send coins to other users.\n`/vote` : Vote for us and get rewards",
+					false);
 			eb.addField("__Battle Command__",
 					"`/battle` : Start a 1v1 battle between two users.\n**__Options__**\n**opponent** : Mention the user with whom you wanna battle.\n**bet** : Amout to bet in the battle (optional)",
 					false);
@@ -632,7 +635,7 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
-		else if (event.getComponentId().equals("playAgainLogo")) {
+		else if (event.getComponentId().startsWith("playAgainLogo")) {
 			boolean isAdded = LogoGameHandler.getInstance().addGame(event);
 			if (isAdded) {
 				GameEndService.getInstance().scheduleEndGame(

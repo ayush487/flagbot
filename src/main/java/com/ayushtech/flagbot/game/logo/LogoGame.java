@@ -27,6 +27,7 @@ public class LogoGame {
   private MessageEmbed messageEmbed;
   private long messageId;
   private int rounds;
+  private int roundSize;
 
   static {
     LogoGame.loadBrands();
@@ -37,9 +38,10 @@ public class LogoGame {
     return brandMap;
   }
 
-  public LogoGame(MessageChannel channel, int rounds) {
+  public LogoGame(MessageChannel channel, int rounds, int roundSize) {
     this.channel = channel;
     this.rounds = rounds;
+    this.roundSize = roundSize;
     this.brandCode = getRandomBrand();
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Guess the Brand");
@@ -63,10 +65,12 @@ public class LogoGame {
     eb.setColor(new Color(13, 240, 52));
     if (rounds <= 1) {
       msgEvent.getChannel().sendMessageEmbeds(eb.build())
-          .setActionRow(Button.primary("playAgainLogo", "Play Again")).queue();
+          .setActionRow(
+              Button.primary("playAgainLogo_" + roundSize, roundSize <= 1 ? "Play Again" : "Start Round Again"))
+          .queue();
     } else {
       msgEvent.getChannel().sendMessageEmbeds(eb.build()).queue();
-      startAgain(channel, rounds - 1);
+      startAgain(channel, rounds - 1, roundSize);
     }
     disableButton();
     Game.increaseCoins(msgEvent.getAuthor().getIdLong(), 100l);
@@ -82,18 +86,19 @@ public class LogoGame {
     eb.setColor(new Color(240, 13, 52));
     if (rounds <= 1) {
       this.channel.sendMessageEmbeds(eb.build())
-          .setActionRow(Button.primary("playAgainLogo", "Play Again"))
+          .setActionRow(
+              Button.primary("playAgainLogo_" + roundSize, roundSize <= 1 ? "Play Again" : "Start Round Again"))
           .queue();
     } else {
       this.channel.sendMessageEmbeds(eb.build())
           .queue();
-      startAgain(channel, rounds - 1);
+      startAgain(channel, rounds - 1, roundSize);
     }
     disableButton();
   }
 
-  public static void startAgain(MessageChannel channel, int rounds) {
-    LogoGame game = new LogoGame(channel, rounds);
+  public static void startAgain(MessageChannel channel, int rounds, int roundSize) {
+    LogoGame game = new LogoGame(channel, rounds, roundSize);
     LogoGameHandler.getInstance().getGameMap().put(channel.getIdLong(), game);
     GameEndService.getInstance().scheduleEndGame(
         new LogoGameEndRunnable(game, channel.getIdLong()), 30, TimeUnit.SECONDS);
