@@ -23,7 +23,7 @@ public class FlagGame extends Game {
 	private MessageChannel channel;
 	private Long messageId;
 	private MessageEmbed messageEmbed;
-	private boolean isHard;
+	private byte difficulty;
 	private int rounds;
 	private int roundSize;
 
@@ -31,21 +31,30 @@ public class FlagGame extends Game {
 		random = new Random();
 	}
 
-	public FlagGame(MessageChannel channel, boolean isHard, int rounds, int roundSize) {
+	public FlagGame(MessageChannel channel, byte difficulty, int rounds, int roundSize) {
 		super();
 		this.channel = channel;
-		this.isHard = isHard;
+		this.difficulty = difficulty;
 		this.rounds = rounds;
 		this.roundSize = roundSize;
-		this.countryCode = getRandomCountryCode(isHard);
+		this.countryCode = getRandomCountryCode(difficulty);
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setTitle("Guess the Country Flag");
 		eb.setImage(flagLink + countryCode + suffix);
 		eb.setColor(new Color(38, 187, 237));
-		eb.setFooter((isHard ? "*Regions not available in the mode" : "*See Region will cost you 60 coins"));
+		String mode;
+		if (difficulty==0) {
+			mode = "Soverign Countries Only";
+		} else if (difficulty==1) {
+			mode = "Non-Soverign Countries Only";
+		} else {
+			mode = "All Countries";
+		}
+		eb.setDescription(String.format("**Mode** : `%s`", mode));
+		eb.setFooter((difficulty!=0 ? "*Regions not available in the mode" : "*See Region will cost you 60 coins"));
 		MessageEmbed embed = eb.build();
 		setMessageEmbed(embed);
-		if (isHard) {
+		if (difficulty!=0) {
 			channel.sendMessageEmbeds(embed)
 					.setActionRow(Button.primary("skipButton", "Skip"))
 					.queue(message -> setMessageId(message.getIdLong()));
@@ -68,12 +77,12 @@ public class FlagGame extends Game {
 		eb.setColor(new Color(13, 240, 52));
 		if (rounds <= 1) {
 			msgEvent.getChannel().sendMessageEmbeds(eb.build())
-					.setActionRow(Button.primary("playAgainFlag_" + (isHard ? "Hard" : "Easy") + "_" + roundSize,
+					.setActionRow(Button.primary("playAgainFlag_" + difficulty + "_" + roundSize,
 							roundSize <= 1 ? "Play Again" : "Start Round Again"))
 					.queue();
 		} else {
 			msgEvent.getChannel().sendMessageEmbeds(eb.build()).queue();
-			startAgain(channel, isHard, rounds - 1, roundSize);
+			startAgain(channel, difficulty, rounds - 1, roundSize);
 		}
 		disableButtons();
 		Game.increaseCoins(msgEvent.getAuthor().getIdLong(), 100l);
@@ -89,18 +98,18 @@ public class FlagGame extends Game {
 		FlagGameHandler.getInstance().endGame(channel.getIdLong());
 		if (rounds <= 1) {
 			this.channel.sendMessageEmbeds(eb.build())
-					.setActionRow(Button.primary("playAgainFlag_" + (isHard ? "Hard" : "Easy") + "_" + roundSize,
+					.setActionRow(Button.primary("playAgainFlag_" + difficulty + "_" + roundSize,
 							roundSize <= 1 ? "Play Again" : "Start Round Again"))
 					.queue();
 		} else {
 			this.channel.sendMessageEmbeds(eb.build()).queue();
-			startAgain(channel, isHard, rounds - 1, roundSize);
+			startAgain(channel, difficulty, rounds - 1, roundSize);
 		}
 		disableButtons();
 	}
 
-	public static void startAgain(MessageChannel channel, boolean isHard, int rounds, int roundSize) {
-		FlagGame game = new FlagGame(channel, isHard, rounds, roundSize);
+	public static void startAgain(MessageChannel channel, byte difficulty, int rounds, int roundSize) {
+		FlagGame game = new FlagGame(channel, difficulty, rounds, roundSize);
 		FlagGameHandler.getInstance().getGameMap().put(channel.getIdLong(), game);
 		GameEndService.getInstance().scheduleEndGame(
 				new FlagGameEndRunnable(game, channel.getIdLong()), 30, TimeUnit.SECONDS);
@@ -138,14 +147,22 @@ public class FlagGame extends Game {
 		return messageEmbed;
 	}
 
-	private static String getRandomCountryCode(boolean isHard) {
-		String countryCode = isoList.get(random.nextInt(isoList.size()));
-		if (!isHard) {
-			while (nonSoverignCountries.contains(countryCode)) {
-				countryCode = isoList.get(random.nextInt(isoList.size()));
+	private static String getRandomCountryCode(byte difficulty) {
+		String countryCode = isoList.get(random.nextInt(isoList.size()));;
+		if (difficulty==2) {
+			return countryCode;
+		} else {
+			if (difficulty==1) {
+				while (!nonSoverignCountries.contains(countryCode)) {
+					countryCode = isoList.get(random.nextInt(isoList.size()));
+				}
+			} else {
+				while (nonSoverignCountries.contains(countryCode)) {
+					countryCode = isoList.get(random.nextInt(isoList.size()));
+				}
 			}
+			return countryCode;
 		}
-		return countryCode;
 	}
 
 }

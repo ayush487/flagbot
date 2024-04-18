@@ -310,7 +310,6 @@ public abstract class Game {
         nonSoverignCountries.add("ac");
         nonSoverignCountries.add("an");
         nonSoverignCountries.add("ti");
-        nonSoverignCountries.add("ad");
         nonSoverignCountries.add("ag");
         nonSoverignCountries.add("ai");
         nonSoverignCountries.add("aq");

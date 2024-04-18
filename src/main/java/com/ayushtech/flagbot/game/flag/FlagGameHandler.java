@@ -35,12 +35,22 @@ public class FlagGameHandler {
             return false;
         } else {
             event.getHook().sendMessage("Starting game now!").queue();
-            OptionMapping difficultyOption = event.getOption("include_non_soverign_countries");
+            OptionMapping difficultyOption = event.getOption("mode");
             OptionMapping roundsOption = event.getOption("rounds");
-            boolean isHard = difficultyOption == null ? false : difficultyOption.getAsBoolean();
+            String difficultyString = difficultyOption == null ? "sovereign countries only" : difficultyOption.getAsString().toLowerCase();
+            byte difficulty = 0;
+            if (difficultyString.startsWith("sovereign")) {
+                difficulty = 0;
+            } else if (difficultyString.startsWith("non")) {
+                difficulty = 1;             
+            } else if (difficultyString.startsWith("all")) {
+                difficulty = 2;
+            } else {
+                difficulty = 0;
+            }
             int rounds = roundsOption == null ? 0 : roundsOption.getAsInt();
             rounds = (rounds <= 0) ? 0 : (rounds > 15) ? 15 : rounds;
-            FlagGame game = new FlagGame(event.getChannel(), isHard, rounds, rounds);
+            FlagGame game = new FlagGame(event.getChannel(), difficulty, rounds, rounds);
             gameMap.put(event.getChannel().getIdLong(), game);
             return true;
         }
@@ -53,9 +63,9 @@ public class FlagGameHandler {
         } else {
             event.reply("Starting game now!").queue();
             String[] commandData = event.getComponentId().split("_");
-            boolean isHard = commandData[1].equals("Hard");
+            byte difficulty = Byte.parseByte(commandData[1]);
             int rounds = Integer.parseInt(commandData[2]);
-            FlagGame game = new FlagGame(event.getChannel(), isHard, rounds, rounds);
+            FlagGame game = new FlagGame(event.getChannel(), difficulty, rounds, rounds);
             gameMap.put(event.getChannel().getIdLong(), game);
             return true;
         }

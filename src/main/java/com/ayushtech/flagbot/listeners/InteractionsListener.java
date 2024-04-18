@@ -215,7 +215,7 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.setTitle("Commands");
 			eb.setColor(new Color(255, 153, 51)); // rgb (255,153,51)
 			eb.setDescription(
-					"**__Guess Commands__**\n`/guess flag` : Start a flag guessing game in the channel\n`/guess map` : Start a map guessing game in the channel\n`/guess logo` : Start a logo guessing game in the channel\n__Options__ :\n`rounds` : Enter the number of rounds you want to play (maximum it would be 15) (optional)\n`include_non_soverign_countries` : True or False to include non soverign countries (false if not selected)");
+					"**__Guess Commands__**\n`/guess flag` : Start a flag guessing game in the channel\n`/guess map` : Start a map guessing game in the channel\n`/guess logo` : Start a logo guessing game in the channel\n__Options__ :\n`mode` : Choose the mode you want to play :Soverign Only, Non-Soverign Only, All Countries (Soverign Only if not selected)\n`rounds` : Enter the number of rounds you want to play (maximum it would be 15) (optional)\n`include_non_soverign_countries` : True or False to include non soverign countries (false if not selected)");
 			eb.addField("__General Commands__",
 					"`/leaderboards` : Check the global leaderboard (Top 5)\n`/invite` : Invite the bot to your server\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank\n`/give coins` : Send coins to other users.\n`/vote` : Vote for us and get rewards",
 					false);
@@ -244,10 +244,10 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.setColor(Color.YELLOW);
 			eb.addField("Support Server", "[Flag Bot Support Server](https://discord.gg/RqvTRMmVgR)", false);
 			eb.addField("Support Developer",
-					"[<:buymeacoffee:1202183996021415946> Buy me a coffee](https://www.buymeacoffee.com/ayush487)", false);
+					"[<:paypal:1226208018094358528> Paypal](https://www.paypal.me/ayush487)", false);
 			event.getHook().sendMessageEmbeds(eb.build())
-					.addActionRow(Button.link("https://www.buymeacoffee.com/ayush487",
-							Emoji.fromEmote("buymeacoffee", 1202183996021415946l, false)))
+					.addActionRow(Button.link("https://www.paypal.me/ayush487",
+							Emoji.fromEmote("paypal", 1226208018094358528l, false)))
 					.queue();
 		}
 
