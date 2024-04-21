@@ -526,6 +526,16 @@ public class LogoGame {
     brandMap.put("phl", "PHP");
     brandMap.put("rus", "Rust");
     brandMap.put("per", "Perl");
+    brandMap.put("hpc", "HP");
+    brandMap.put("ace", "Acer");
+    brandMap.put("ase", "Asus");
+    brandMap.put("tos", "Toshiba");
+    brandMap.put("msi", "MSI");
+    brandMap.put("len", "Lenovo");
+    brandMap.put("fuj", "Fujitsu");
+    brandMap.put("log", "Logitech");
+    brandMap.put("raz", "Razer");
+    brandMap.put("hyp", "HyperX");
   }
 
 }

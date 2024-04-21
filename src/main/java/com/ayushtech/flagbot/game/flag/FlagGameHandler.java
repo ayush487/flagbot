@@ -83,8 +83,6 @@ public class FlagGameHandler {
             if (gameMap.get(channelId).guess(guessWord)) {
                 event.getMessage().addReaction("U+1F389").queue();
                 gameMap.get(channelId).endGameAsWin(event);
-            } else {
-                event.getMessage().addReaction("U+274C").queue();
             }
         }
 

@@ -74,6 +74,7 @@ public abstract class Game {
         countryMap.put("bn", "Brunei");
         countryMap.put("bo", "Bolivia");
         countryMap.put("bq", "Caribbean Netherlands");
+        countryMap.put("baq", "British Antarctic");
         countryMap.put("br", "Brazil");
         countryMap.put("bs", "Bahamas");
         countryMap.put("bt", "Bhutan");
@@ -305,18 +306,17 @@ public abstract class Game {
     }
 
     public static void loadNonSoverignCountries() {
+        nonSoverignCountries.add("baq");
         nonSoverignCountries.add("aa");
         nonSoverignCountries.add("ei");
         nonSoverignCountries.add("ac");
         nonSoverignCountries.add("an");
         nonSoverignCountries.add("ti");
-        nonSoverignCountries.add("ag");
         nonSoverignCountries.add("ai");
         nonSoverignCountries.add("aq");
         nonSoverignCountries.add("as");
         nonSoverignCountries.add("aw");
         nonSoverignCountries.add("ax");
-        nonSoverignCountries.add("ba");
         nonSoverignCountries.add("bm");
         nonSoverignCountries.add("bl");
         nonSoverignCountries.add("bq");
