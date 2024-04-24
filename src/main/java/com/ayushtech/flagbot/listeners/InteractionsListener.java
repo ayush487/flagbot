@@ -23,6 +23,7 @@ import com.ayushtech.flagbot.game.logo.LogoGameEndRunnable;
 import com.ayushtech.flagbot.game.logo.LogoGameHandler;
 import com.ayushtech.flagbot.game.map.MapGameEndRunnable;
 import com.ayushtech.flagbot.game.map.MapGameHandler;
+import com.ayushtech.flagbot.memoflip.MemoflipHandler;
 import com.ayushtech.flagbot.race.RaceHandler;
 import com.ayushtech.flagbot.services.CaptchaService;
 import com.ayushtech.flagbot.services.ChannelService;
@@ -158,7 +159,13 @@ public class InteractionsListener extends ListenerAdapter {
 
 		event.deferReply().queue();
 
-		if (event.getName().equals("vote")) {
+		// MemoFlip command
+		if (event.getName().equals("memoflip")) {
+			MemoflipHandler.getInstance().handleMemoflipCommand(event);
+			return;
+		}
+
+		else if (event.getName().equals("vote")) {
 			EmbedBuilder eb = new EmbedBuilder();
 			eb.setTitle("Vote for Flag Bot");
 			eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
@@ -222,6 +229,9 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.addField("__Battle Command__",
 					"`/battle` : Start a 1v1 battle between two users.\n**__Options__**\n**opponent** : Mention the user with whom you wanna battle.\n**bet** : Amout to bet in the battle (optional)",
 					false);
+			eb.addField("__Memoflip Game__",
+					"`/memoflip easy` : Start a memoflip game in easy mode (8 cards)\n`/memoflip medium` : Start a memoflip game in medium mode (16 cards)\n`/memoflip hard` : Start a memoflip game in hard mode (24 cards)",
+					false);
 			eb.addField("__Race Command__",
 					"`/race flags` : Start a race in the following channel of Flag mode\n`/race maps` : Start a race in the following channel of Flag mode\n`/race logo` : Start a race in the following channel of Logo mode\n`/race maths` : Start a race in the following channel of maths mode",
 					false);
@@ -265,7 +275,6 @@ public class InteractionsListener extends ListenerAdapter {
 			eb2.setTitle("Confirm Data deletion");
 			eb2.setDescription(
 					"Click on the **Delete My Data** button to delete your data permanetly.\nNote : It will wipe all your coins, stocks permanently.");
-			;
 			user.openPrivateChannel()
 					.flatMap(channel -> channel.sendMessageEmbeds(eb2.build())
 							.setActionRows(ActionRow.of(Button.primary("delete_data", "Delete My Data"))))
@@ -519,6 +528,9 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		} else if (event.getComponentId().startsWith("wrong")) {
 			RaceHandler.getInstance().handleWrongSelection(event);
+			return;
+		} else if (event.getComponentId().startsWith("cardButton")) {
+			MemoflipHandler.getInstance().handleCardButton(event);
 			return;
 		}
 

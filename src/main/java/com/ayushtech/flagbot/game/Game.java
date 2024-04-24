@@ -41,8 +41,12 @@ public abstract class Game {
     }
 
     public static void loadCountries() {
-
         countryMap.put("aa", "Saba");
+        countryMap.put("ab", "Abkhazia");
+        countryMap.put("ay", "Adygea");
+        countryMap.put("aj", "Adjara");
+        countryMap.put("ald", "Alderney");
+        countryMap.put("alr", "Altai Republic");
         countryMap.put("ad", "Andorra");
         countryMap.put("ae", "United Arab Emirates");
         countryMap.put("af", "Afghanistan");
@@ -308,6 +312,11 @@ public abstract class Game {
     public static void loadNonSoverignCountries() {
         nonSoverignCountries.add("baq");
         nonSoverignCountries.add("aa");
+        nonSoverignCountries.add("ab");
+        nonSoverignCountries.add("ay");
+        nonSoverignCountries.add("ald");
+        nonSoverignCountries.add("alr");
+        nonSoverignCountries.add("aj");
         nonSoverignCountries.add("ei");
         nonSoverignCountries.add("ac");
         nonSoverignCountries.add("an");

@@ -166,6 +166,11 @@ public class MapGame extends Game {
 		ignoreSet.add("gb-wls");
 		ignoreSet.add("gb-eng");
 		ignoreSet.add("mq");
+		ignoreSet.add("ay");
+		ignoreSet.add("aj");
+		ignoreSet.add("alr");
+		ignoreSet.add("ab");
+		ignoreSet.add("ald");
 	}
 
 	private static void loadCountryOverrideMap() {

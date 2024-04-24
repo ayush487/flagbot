@@ -23,6 +23,7 @@ public class MessageListener extends ListenerAdapter {
     private Map<String, String> alternateNamesMap;
     private String[] keywords = { "link", "games", "download game" };
     private long privateServerId = 835384407368007721l;
+    private long webhook_channel = 1118507065439174677l;
 
     public MessageListener() {
         super();
@@ -36,6 +37,11 @@ public class MessageListener extends ListenerAdapter {
         if (event.getChannel().getIdLong() == vote_notifs_channel) {
             String voter_id = event.getMessage().getContentDisplay();
             VotingService.getInstance().voteUser(event.getJDA(), voter_id);
+            return;
+        } else if (event.getChannel().getIdLong() == webhook_channel) {
+            event.getMessage().addReaction("U+1F44D").queue();
+            event.getMessage().addReaction("U+1F937").queue();
+            event.getMessage().addReaction("U+1F44E").queue();
             return;
         }
 
