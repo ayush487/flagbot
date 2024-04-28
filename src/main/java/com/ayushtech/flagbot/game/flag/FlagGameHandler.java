@@ -1,6 +1,9 @@
 package com.ayushtech.flagbot.game.flag;
 
 import java.util.HashMap;
+import java.util.Optional;
+
+import com.ayushtech.flagbot.services.LanguageService;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -50,7 +53,8 @@ public class FlagGameHandler {
             }
             int rounds = roundsOption == null ? 0 : roundsOption.getAsInt();
             rounds = (rounds <= 0) ? 0 : (rounds > 15) ? 15 : rounds;
-            FlagGame game = new FlagGame(event.getChannel(), difficulty, rounds, rounds);
+            Optional<String> langOptional = LanguageService.getInstance().getLanguageSelected(event.getGuild().getIdLong());
+            FlagGame game = new FlagGame(event.getChannel(), difficulty, rounds, rounds, langOptional.orElse(null));
             gameMap.put(event.getChannel().getIdLong(), game);
             return true;
         }
@@ -65,7 +69,8 @@ public class FlagGameHandler {
             String[] commandData = event.getComponentId().split("_");
             byte difficulty = Byte.parseByte(commandData[1]);
             int rounds = Integer.parseInt(commandData[2]);
-            FlagGame game = new FlagGame(event.getChannel(), difficulty, rounds, rounds);
+            Optional<String> langOptional = LanguageService.getInstance().getLanguageSelected(event.getGuild().getIdLong());
+            FlagGame game = new FlagGame(event.getChannel(), difficulty, rounds, rounds, langOptional.orElse(null));
             gameMap.put(event.getChannel().getIdLong(), game);
             return true;
         }

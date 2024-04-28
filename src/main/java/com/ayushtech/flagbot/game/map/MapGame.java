@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.ayushtech.flagbot.game.Game;
 import com.ayushtech.flagbot.services.GameEndService;
+import com.ayushtech.flagbot.services.LanguageService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -30,6 +31,7 @@ public class MapGame extends Game {
 	private boolean isHard;
 	private int rounds;
 	private int roundSize;
+	private String lang;
 
 	static {
 		random = new Random();
@@ -39,11 +41,12 @@ public class MapGame extends Game {
 		loadCountryOverrideMap();
 	}
 
-	public MapGame(MessageChannel channel, boolean isHard, int rounds, int roundSize) {
+	public MapGame(MessageChannel channel, boolean isHard, int rounds, int roundSize, String lang) {
 		this.channel = channel;
 		this.isHard = isHard;
 		this.rounds = rounds;
 		this.roundSize = roundSize;
+		this.lang = lang;
 		this.countryCode = getRandomCountryCode(isHard);
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setTitle("Guess the country");
@@ -61,13 +64,20 @@ public class MapGame extends Game {
 	public void endGameAsWin(MessageReceivedEvent msgEvent) {
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setTitle("Correct!");
+		String answerString;
+		if (lang==null) {
+			answerString = countryMap.get(countryCode);
+		} else {
+			String altGuess = LanguageService.getInstance().getCorrectGuess(lang, countryCode);
+			answerString = String.format("%s (`%s`)", countryMap.get(countryCode), altGuess);
+		}
 		eb.setDescription(
 				msgEvent.getAuthor().getAsMention() +
 						" is correct!\n**Coins :** `" +
 						Game.getAmount(msgEvent.getAuthor().getIdLong()) +
 						"(+100)` " + ":coin:" +
 						"  \n **Correct Answer :** " +
-						countryMap.get(countryCode));
+						answerString);
 		eb.setThumbnail(flagLink + countryCode + suffix);
 		eb.setColor(new Color(13, 240, 52));
 		MapGameHandler.getInstance().getGameMap().remove(channel.getIdLong());
@@ -78,7 +88,7 @@ public class MapGame extends Game {
 					.queue();
 		} else {
 			msgEvent.getChannel().sendMessageEmbeds(eb.build()).queue();
-			startAgain(channel, isHard, rounds - 1, roundSize);
+			startAgain(channel, isHard, rounds - 1, roundSize, lang);
 		}
 		Game.increaseCoins(msgEvent.getAuthor().getIdLong(), 100l);
 		disableButtons();
@@ -88,7 +98,14 @@ public class MapGame extends Game {
 	public void endGameAsLose() {
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setTitle("No one guessed the map!");
-		eb.setDescription("**Correct Answer :** \n" + countryMap.get(countryCode));
+		String answerString;
+		if (lang==null) {
+			answerString = countryMap.get(countryCode);
+		} else {
+			String altGuess = LanguageService.getInstance().getCorrectGuess(lang, countryCode);
+			answerString = String.format("%s (`%s`)", countryMap.get(countryCode), altGuess);
+		}
+		eb.setDescription("**Correct Answer :** \n" + answerString);
 		eb.setThumbnail(flagLink + countryCode + suffix);
 		eb.setColor(new Color(240, 13, 52));
 		MapGameHandler.getInstance().endGame(channel.getIdLong());
@@ -99,7 +116,7 @@ public class MapGame extends Game {
 					.queue();
 		} else {
 			this.channel.sendMessageEmbeds(eb.build()).queue();
-			startAgain(channel, isHard, rounds - 1, roundSize);
+			startAgain(channel, isHard, rounds - 1, roundSize, lang);
 		}
 		disableButtons();
 	}
@@ -111,8 +128,8 @@ public class MapGame extends Game {
 				.queue();
 	}
 
-	public static void startAgain(MessageChannel channel, boolean isHard, int rounds, int roundSize) {
-		MapGame game = new MapGame(channel, isHard, rounds, roundSize);
+	public static void startAgain(MessageChannel channel, boolean isHard, int rounds, int roundSize, String lang) {
+		MapGame game = new MapGame(channel, isHard, rounds, roundSize, lang);
 		MapGameHandler.getInstance().getGameMap().put(channel.getIdLong(), game);
 		GameEndService.getInstance().scheduleEndGame(
 				new MapGameEndRunnable(game, channel.getIdLong()), 30, TimeUnit.SECONDS);
@@ -120,11 +137,8 @@ public class MapGame extends Game {
 
 	@Override
 	public boolean guess(String guessCountry) {
-		if (countryMap.get(countryCode).equalsIgnoreCase(guessCountry)) {
-			return true;
-		} else {
-			return false;
-		}
+		return countryMap.get(countryCode).equalsIgnoreCase(guessCountry) ||
+				LanguageService.getInstance().isGuessRight(lang, guessCountry, countryCode);
 	}
 
 	public String getCountryCode() {

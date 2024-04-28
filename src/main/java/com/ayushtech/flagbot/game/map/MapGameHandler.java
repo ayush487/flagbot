@@ -1,6 +1,9 @@
 package com.ayushtech.flagbot.game.map;
 
 import java.util.HashMap;
+import java.util.Optional;
+
+import com.ayushtech.flagbot.services.LanguageService;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -39,7 +42,8 @@ public class MapGameHandler {
             boolean isHard = difficultyOption == null ? false : difficultyOption.getAsBoolean();
             int rounds = roundsOption == null ? 0 : roundsOption.getAsInt();
             rounds = (rounds <= 0) ? 0 : (rounds > 15) ? 15 : rounds;
-            MapGame game = new MapGame(event.getChannel(), isHard, rounds, rounds);
+            Optional<String> langOption = LanguageService.getInstance().getLanguageSelected(event.getGuild().getIdLong());
+            MapGame game = new MapGame(event.getChannel(), isHard, rounds, rounds, langOption.orElse(null));
             mapGameMap.put(event.getChannel().getIdLong(), game);
             return true;
         }
@@ -54,7 +58,8 @@ public class MapGameHandler {
             String[] commandData = event.getComponentId().split("_");
             boolean isHard = commandData[1].equals("Hard");
             int rounds = Integer.parseInt(commandData[2]);
-            MapGame game = new MapGame(event.getChannel(), isHard, rounds, rounds);
+            Optional<String> langOption = LanguageService.getInstance().getLanguageSelected(event.getGuild().getIdLong());
+            MapGame game = new MapGame(event.getChannel(), isHard, rounds, rounds, langOption.orElse(null));
             mapGameMap.put(event.getChannel().getIdLong(), game);
             return true;
         }

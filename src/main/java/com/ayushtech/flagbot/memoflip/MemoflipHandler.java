@@ -7,14 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import com.ayushtech.flagbot.dbconnectivity.MemoflipDao;
 import com.ayushtech.flagbot.services.GameEndService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emoji;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
@@ -70,8 +68,46 @@ public class MemoflipHandler {
     eb.setTitle("Memory Flip");
     eb.setColor(Color.CYAN);
     int[] scores = MemoflipDao.getInstance().getScores(event.getUser().getIdLong());
-    eb.addField("__Best Scores__",String.format("**Easy Mode** : `%d turns`\n**Medium Mode** : `%d turns`\n**Hard Mode** : `%d turns`", scores[0], scores[1], scores[2]) , false);
+    eb.addField("__Best Scores__",
+        String.format("**Easy Mode** : `%d turns`\n**Medium Mode** : `%d turns`\n**Hard Mode** : `%d turns`", scores[0],
+            scores[1], scores[2]),
+        false);
     event.getHook().sendMessageEmbeds(eb.build()).queue();
+  }
+
+  private void startEasyGame(SlashCommandInteractionEvent event) {
+    Collections.shuffle(easyCardList);
+    Card[][] gameCards = new Card[3][3];
+    int index = 0;
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < 3; j++) {
+        if (i == 1 && j == 1) {
+          gameCards[i][j] = new Card(69, Emoji.fromEmote("flagbot", 1230836096548601907l, false));
+        } else {
+          Card c = easyCardList.get(index);
+          gameCards[i][j] = new Card(c.getId(), c.getEmoji());
+          index++;
+        }
+      }
+    }
+    EmbedBuilder eb = new EmbedBuilder();
+    eb.setTitle("Memory Flip");
+    eb.setDescription("**Difficulty** : `Easy`\n__Rewards__ : `300` :coin:");
+    eb.setColor(Color.BLUE);
+    ActionRow[] rows = getButtons(gameCards, event.getUser().getIdLong());
+    event.getHook().sendMessageEmbeds(eb.build())
+        .addActionRows(rows[0], rows[1], rows[2])
+        .queue(m -> {
+          long messageId = m.getIdLong();
+          Memoflip game = new Memoflip(event.getUser().getIdLong(), gameCards, m, Difficulty.EASY, 300);
+          memoflipGameMap.put(messageId, game);
+          GameEndService.getInstance().scheduleEndGame(() -> {
+            if (memoflipGameMap.containsKey(messageId)) {
+              game.endGame(true);
+              memoflipGameMap.remove(messageId);
+            }
+          }, 150, TimeUnit.SECONDS);
+        });
   }
 
   private void startMediumGame(SlashCommandInteractionEvent event) {
@@ -140,41 +176,6 @@ public class MemoflipHandler {
         });
   }
 
-  private void startEasyGame(SlashCommandInteractionEvent event) {
-    Collections.shuffle(easyCardList);
-    Card[][] gameCards = new Card[3][3];
-    int index = 0;
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
-        if (i == 1 && j == 1) {
-          gameCards[i][j] = new Card(69, Emoji.fromEmote("flagbot", 1230836096548601907l, false));
-        } else {
-          Card c = easyCardList.get(index);
-          gameCards[i][j] = new Card(c.getId(), c.getEmoji());
-          index++;
-        }
-      }
-    }
-    EmbedBuilder eb = new EmbedBuilder();
-    eb.setTitle("Memory Flip");
-    eb.setDescription("**Difficulty** : `Easy`\n__Rewards__ : `300` :coin:");
-    eb.setColor(Color.BLUE);
-    ActionRow[] rows = getButtons(gameCards, event.getUser().getIdLong());
-    event.getHook().sendMessageEmbeds(eb.build())
-        .addActionRows(rows[0], rows[1], rows[2])
-        .queue(m -> {
-          long messageId = m.getIdLong();
-          Memoflip game = new Memoflip(event.getUser().getIdLong(), gameCards, m, Difficulty.EASY, 300);
-          memoflipGameMap.put(messageId, game);
-          GameEndService.getInstance().scheduleEndGame(() -> {
-            if (memoflipGameMap.containsKey(messageId)) {
-              game.endGame(true);
-              memoflipGameMap.remove(messageId);
-            }
-          }, 150, TimeUnit.SECONDS);
-        });
-  }
-
   public void handleCardButton(ButtonInteractionEvent event) {
     String[] cmdData = event.getComponentId().split("_");
     String id = cmdData[3];
@@ -190,7 +191,8 @@ public class MemoflipHandler {
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Memory Flip");
     eb.setDescription(String.format("**Difficulty** : `%s`\n**Turns** : `%d`", game.getDifficulty(), game.getTurns()));
-    eb.setDescription(String.format("**Difficulty** : `%s`\n**Turns** : `%d`\n__Reward__ : `%d` :coin:", game.getDifficulty(), game.getTurns(), game.getRewards()));
+    eb.setDescription(String.format("**Difficulty** : `%s`\n**Turns** : `%d`\n__Reward__ : `%d` :coin:",
+        game.getDifficulty(), game.getTurns(), game.getRewards()));
     eb.setColor(Color.BLUE);
     if (game.isCardSelected()) {
       Card selectedCard = game.getSelectedCard();
@@ -232,13 +234,6 @@ public class MemoflipHandler {
           .queue();
     }
 
-  }
-
-  // TODO : For testing purposes only
-  public void showActiveGames(MessageChannel channel) {
-    String s = memoflipGameMap.keySet().stream().map(l -> l + "")
-        .collect(Collectors.joining(" , "));
-    channel.sendMessage(s).queue();
   }
 
   public ActionRow[] getButtons(Card[][] cards, long userId) {

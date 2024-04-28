@@ -29,6 +29,7 @@ import com.ayushtech.flagbot.services.CaptchaService;
 import com.ayushtech.flagbot.services.ChannelService;
 import com.ayushtech.flagbot.services.CoinTransferService;
 import com.ayushtech.flagbot.services.GameEndService;
+import com.ayushtech.flagbot.services.LanguageService;
 import com.ayushtech.flagbot.stocks.Company;
 import com.ayushtech.flagbot.stocks.StocksHandler;
 
@@ -224,7 +225,7 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.setDescription(
 					"**__Guess Commands__**\n`/guess flag` : Start a flag guessing game in the channel\n`/guess map` : Start a map guessing game in the channel\n`/guess logo` : Start a logo guessing game in the channel\n__Options__ :\n`mode` : Choose the mode you want to play :Soverign Only, Non-Soverign Only, All Countries (Soverign Only if not selected)\n`rounds` : Enter the number of rounds you want to play (maximum it would be 15) (optional)\n`include_non_soverign_countries` : True or False to include non soverign countries (false if not selected)");
 			eb.addField("__General Commands__",
-					"`/leaderboards` : Check the global leaderboard (Top 5)\n`/invite` : Invite the bot to your server\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank\n`/give coins` : Send coins to other users.\n`/vote` : Vote for us and get rewards",
+					"`/leaderboards` : Check the global leaderboard (Upto top 25)\n`/invite` : Invite the bot to your server\n`/language set` : Set language for the server (Only work for flag and map guessers)\n`/language info` : See your server language and other supported languages\n`/language remove` : Remove server language\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank\n`/give coins` : Send coins to other users.\n`/vote` : Vote for us and get rewards",
 					false);
 			eb.addField("__Battle Command__",
 					"`/battle` : Start a 1v1 battle between two users.\n**__Options__**\n**opponent** : Mention the user with whom you wanna battle.\n**bet** : Amout to bet in the battle (optional)",
@@ -259,6 +260,11 @@ public class InteractionsListener extends ListenerAdapter {
 					.addActionRow(Button.link("https://www.paypal.me/ayush487",
 							Emoji.fromEmote("paypal", 1226208018094358528l, false)))
 					.queue();
+		}
+
+		else if(event.getName().equals("language")) {
+			LanguageService.getInstance().handleLanguageCommand(event);
+			return;
 		}
 
 		// delete_my_data command

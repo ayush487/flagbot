@@ -16,10 +16,11 @@ public class GuildEventListener extends ListenerAdapter {
   public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent event) {
     if (event.getSubcommandName().equals("flag")) {
       event.replyChoiceStrings("Sovereign Countries Only", "Non-Sovereign Countries Only", "All Countries").queue();
-    }
-    else if (event.getSubcommandName().equals("buy") || event.getSubcommandName().equals("sell")) {
+    } else if (event.getSubcommandName().equals("buy") || event.getSubcommandName().equals("sell")) {
       event.replyChoiceStrings("DOOGLE", "MAPPLE", "RAMSUNG", "MICROLOFT", "LOCKSTAR", "SEPSICO", "LETFLIX",
           "STARMUCKS", "TWEETER", "DISKORD").queue();
+    } else if (event.getSubcommandName().equals("set")) {
+      event.replyChoiceStrings("Arabic", "Japanese", "Korean", "Portuguese", "Spanish", "Turkish").queue();
     }
   }
 
