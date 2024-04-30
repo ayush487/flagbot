@@ -47,9 +47,9 @@ public class FlagGame extends Game {
 		eb.setColor(new Color(38, 187, 237));
 		String mode;
 		if (difficulty == 0) {
-			mode = "Soverign Countries Only";
+			mode = "Sovereign Countries Only";
 		} else if (difficulty == 1) {
-			mode = "Non-Soverign Countries Only";
+			mode = "Non-Sovereign Countries Only";
 		} else {
 			mode = "All Countries";
 		}

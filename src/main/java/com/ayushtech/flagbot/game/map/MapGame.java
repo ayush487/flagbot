@@ -65,7 +65,7 @@ public class MapGame extends Game {
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setTitle("Correct!");
 		String answerString;
-		if (lang==null) {
+		if (lang == null) {
 			answerString = countryMap.get(countryCode);
 		} else {
 			String altGuess = LanguageService.getInstance().getCorrectGuess(lang, countryCode);
@@ -99,7 +99,7 @@ public class MapGame extends Game {
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setTitle("No one guessed the map!");
 		String answerString;
-		if (lang==null) {
+		if (lang == null) {
 			answerString = countryMap.get(countryCode);
 		} else {
 			String altGuess = LanguageService.getInstance().getCorrectGuess(lang, countryCode);
@@ -185,6 +185,14 @@ public class MapGame extends Game {
 		ignoreSet.add("alr");
 		ignoreSet.add("ab");
 		ignoreSet.add("ald");
+		ignoreSet.add("bas");
+		ignoreSet.add("bia");
+		ignoreSet.add("bri");
+		ignoreSet.add("bur");
+		ignoreSet.add("cri");
+		ignoreSet.add("che");
+		ignoreSet.add("chu");
+		ignoreSet.add("crm");
 	}
 
 	private static void loadCountryOverrideMap() {

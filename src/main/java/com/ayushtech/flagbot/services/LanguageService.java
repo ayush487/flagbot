@@ -75,14 +75,14 @@ public class LanguageService {
   }
 
   public boolean isGuessRight(String language, String guess, String countryCode) {
-    if (language==null) {
+    if (language == null) {
       return false;
     }
     return languageMap.get(language).get(countryCode).equalsIgnoreCase(guess);
   }
 
   public Optional<String> getLanguageSelected(long serverId) {
-    if(serverLanguageMapping.containsKey(serverId)) {
+    if (serverLanguageMapping.containsKey(serverId)) {
       return Optional.of(serverLanguageMapping.get(serverId));
     } else {
       return Optional.empty();
@@ -435,6 +435,14 @@ public class LanguageService {
     turkishMap.put("zw", "Zimbabve");
     turkishMap.put("ac", "Yükseliş");
     turkishMap.put("ti", "Tristan da Cunha");
+    turkishMap.put("bas", "Başkurdistan");
+    turkishMap.put("bia", "Bikini Mercan Adası");
+    turkishMap.put("bri", "Britanya");
+    turkishMap.put("bur", "Buryatia");
+    turkishMap.put("cri", "Çeçen İçkerya Cumhuriyeti");
+    turkishMap.put("che", "Çeçen Cumhuriyeti");
+    turkishMap.put("chu", "Çuvaşistan");
+    turkishMap.put("crm", "Kırım");
   }
 
   private void loadKoreanCountries() {
@@ -704,6 +712,14 @@ public class LanguageService {
     koreanMap.put("zw", "짐바브웨");
     koreanMap.put("ac", "승천");
     koreanMap.put("ti", "트리스탄 다 쿠냐");
+    koreanMap.put("bas", "바슈코르토스탄");
+    koreanMap.put("bia", "비키니 환초");
+    koreanMap.put("bri", "브리트니");
+    koreanMap.put("bur", "부랴티아");
+    koreanMap.put("cri", "체첸 이케리아 공화국");
+    koreanMap.put("che", "체첸 공화국");
+    koreanMap.put("chu", "추바시아");
+    koreanMap.put("crm", "크리미아");
   }
 
   private void loadJapaneseCountries() {
@@ -973,6 +989,14 @@ public class LanguageService {
     japaneseMap.put("zw", "ジンバブエ");
     japaneseMap.put("ac", "上昇");
     japaneseMap.put("ti", "トリスタン ダ クーニャ");
+    japaneseMap.put("bas", "バシコルトスタン");
+    japaneseMap.put("bia", "ビキニ環礁");
+    japaneseMap.put("bri", "ブルターニュ");
+    japaneseMap.put("bur", "ブリヤート");
+    japaneseMap.put("cri", "チェチェン・イチケリア共和国");
+    japaneseMap.put("che", "チェチェン共和国");
+    japaneseMap.put("chu", "チュバシア");
+    japaneseMap.put("crm", "クリミア");
   }
 
   private void loadPortugueseCountries() {
@@ -1242,6 +1266,14 @@ public class LanguageService {
     portugueseMap.put("zw", "Zimbábue");
     portugueseMap.put("ac", "Ascensão");
     portugueseMap.put("ti", "Tristão da Cunha");
+    portugueseMap.put("bas", "Bascortostão");
+    portugueseMap.put("bia", "Atol do Biquíni");
+    portugueseMap.put("bri", "Bretanha");
+    portugueseMap.put("bur", "Buryatia");
+    portugueseMap.put("cri", "República Chechena da Ichkeria");
+    portugueseMap.put("che", "República da Chechênia");
+    portugueseMap.put("chu", "Chuvashia");
+    portugueseMap.put("crm", "Crimeia");
   }
 
   private void loadSpanishCountries() {
@@ -1511,6 +1543,14 @@ public class LanguageService {
     spanishMap.put("zw", "Zimbabue");
     spanishMap.put("ac", "Ascensión");
     spanishMap.put("ti", "Tristán da Cunha");
+    spanishMap.put("bas", "Bashkortostán");
+    spanishMap.put("bia", "Atolón de Bikini");
+    spanishMap.put("bri", "Bretaña");
+    spanishMap.put("bur", "Buriatia");
+    spanishMap.put("cri", "República Chechena de Ichkeria");
+    spanishMap.put("che", "República de Chechenia");
+    spanishMap.put("chu", "Chuvashia");
+    spanishMap.put("crm", "Crimea");
   }
 
   private void loadArabicCountries() {
@@ -1518,28 +1558,28 @@ public class LanguageService {
     arabicMap.put("ab", "أبخازيا");
     arabicMap.put("ay", "أديغيا");
     arabicMap.put("aj", "أدجارا");
-    arabicMap.put("ald", "الدرني");
-    arabicMap.put("alr", "جمهورية ألتاي");
+    arabicMap.put("ald", "ألديرني");
+    arabicMap.put("alr", "جمهورية التاي");
     arabicMap.put("ad", "أندورا");
     arabicMap.put("ae", "الإمارات العربية المتحدة");
     arabicMap.put("af", "أفغانستان");
-    arabicMap.put("ag", "أنتيغوا وباربودا");
-    arabicMap.put("ai", "أنجويلا");
+    arabicMap.put("ag", "أنتيغوا وبربودا");
+    arabicMap.put("ai", "أنغيلا");
     arabicMap.put("al", "ألبانيا");
     arabicMap.put("am", "أرمينيا");
-    arabicMap.put("ao", "أنجولا");
-    arabicMap.put("aq", "المنطقة القطبية الجنوبية");
-    arabicMap.put("an", "المنطقة القطبية الجنوبية");
+    arabicMap.put("ao", "أنغولا");
+    arabicMap.put("aq", "القارة القطبية الجنوبية");
+    arabicMap.put("an", "القارة القطبية الجنوبية");
     arabicMap.put("ar", "الأرجنتين");
-    arabicMap.put("as", "ساموا-الأمريكي");
+    arabicMap.put("as", "ساموا الأمريكية");
     arabicMap.put("at", "النمسا");
     arabicMap.put("au", "أستراليا");
     arabicMap.put("aw", "أروبا");
-    arabicMap.put("ax", "أولاند");
+    arabicMap.put("ax", "جزر آلاند");
     arabicMap.put("az", "أذربيجان");
     arabicMap.put("ba", "البوسنة والهرسك");
-    arabicMap.put("bb", "باربادوس");
-    arabicMap.put("bd", "بنجلاديش");
+    arabicMap.put("bb", "بربادوس");
+    arabicMap.put("bd", "بنغلاديش");
     arabicMap.put("be", "بلجيكا");
     arabicMap.put("bf", "بوركينا فاسو");
     arabicMap.put("bg", "بلغاريا");
@@ -1550,89 +1590,89 @@ public class LanguageService {
     arabicMap.put("bm", "برمودا");
     arabicMap.put("bn", "بروناي");
     arabicMap.put("bo", "بوليفيا");
-    arabicMap.put("bq", "جزر الكاريبي الهولندية");
-    arabicMap.put("baq", "أنتاركتيكا البريطانية");
+    arabicMap.put("bq", "هولندا الكاريبية");
+    arabicMap.put("baq", "القطب الجنوبي البريطاني");
     arabicMap.put("br", "البرازيل");
-    arabicMap.put("bs", "باهاماس");
+    arabicMap.put("bs", "جزر البهاما");
     arabicMap.put("bt", "بوتان");
-    arabicMap.put("bv", "جزيرة بوفيت");
+    arabicMap.put("bv", "جزيرة بوفيه");
     arabicMap.put("bw", "بوتسوانا");
-    arabicMap.put("by", "بيلاروس");
-    arabicMap.put("bz", "بيليز");
+    arabicMap.put("by", "بيلاروسيا");
+    arabicMap.put("bz", "بليز");
     arabicMap.put("ca", "كندا");
     arabicMap.put("cc", "جزر كوكوس");
-    arabicMap.put("cd", "جمهورية الكونغو الديمقراطية");
-    arabicMap.put("cf", "جمهورية أفريقيا الوسطى");
-    arabicMap.put("cg", "جمهورية الكونغو");
+    arabicMap.put("cd", "جمهورية الكونغو الديموقراطية");
+    arabicMap.put("cf", "جمهورية افريقيا الوسطى");
+    arabicMap.put("cg", "الكونغو");
     arabicMap.put("ch", "سويسرا");
     arabicMap.put("ci", "ساحل العاج");
     arabicMap.put("ck", "جزر كوك");
-    arabicMap.put("cl", "تشيلي");
-    arabicMap.put("cm", "كاميرون");
+    arabicMap.put("cl", "شيلي");
+    arabicMap.put("cm", "الكاميرون");
     arabicMap.put("cn", "الصين");
     arabicMap.put("co", "كولومبيا");
-    arabicMap.put("cr", "كوستاريكا");
+    arabicMap.put("cr", "كوستا ريكا");
     arabicMap.put("cu", "كوبا");
     arabicMap.put("cv", "الرأس الأخضر");
     arabicMap.put("cw", "كوراكاو");
-    arabicMap.put("cx", "جزيرة كريسماس");
+    arabicMap.put("cx", "جزيرة عيد الميلاد");
     arabicMap.put("cy", "قبرص");
-    arabicMap.put("cz", "التشيك");
+    arabicMap.put("cz", "الجمهورية التشيكية");
     arabicMap.put("de", "ألمانيا");
     arabicMap.put("dj", "جيبوتي");
     arabicMap.put("dk", "الدنمارك");
     arabicMap.put("dm", "دومينيكا");
     arabicMap.put("do", "جمهورية الدومينيكان");
     arabicMap.put("dz", "الجزائر");
-    arabicMap.put("ec", "الإكوادور");
+    arabicMap.put("ec", "الاكوادور");
     arabicMap.put("ee", "إستونيا");
     arabicMap.put("eg", "مصر");
     arabicMap.put("eh", "الصحراء الغربية");
-    arabicMap.put("ei", "سانت أوستاتيوس");
+    arabicMap.put("ei", "سينت اوستاتيوس");
     arabicMap.put("er", "إريتريا");
     arabicMap.put("es", "إسبانيا");
-    arabicMap.put("et", "إثيوبيا");
+    arabicMap.put("et", "أثيوبيا");
     arabicMap.put("fi", "فنلندا");
     arabicMap.put("fj", "فيجي");
     arabicMap.put("fk", "جزر فوكلاند");
-    arabicMap.put("fm", "ولايات ميكرونيسيا المتحدة");
-    arabicMap.put("fo", "جزر فارو");
+    arabicMap.put("fm", "ميكرونيزيا");
+    arabicMap.put("fo", "جزر فاروس");
     arabicMap.put("fr", "فرنسا");
-    arabicMap.put("ga", "الغابون");
+    arabicMap.put("ga", "الجابون");
     arabicMap.put("gb", "المملكة المتحدة");
-    arabicMap.put("gb-eng", "إنجلترا");
-    arabicMap.put("gb-nir", "أيرلندا الشمالية");
+    arabicMap.put("gb-eng", "إنكلترا");
+    arabicMap.put("gb-nir", "إيرلندا الشمالية");
     arabicMap.put("gb-sct", "اسكتلندا");
     arabicMap.put("gb-wls", "ويلز");
     arabicMap.put("gd", "غرينادا");
     arabicMap.put("ge", "جورجيا");
-    arabicMap.put("gf", "غينيا الفرنسية");
-    arabicMap.put("gg", "غيرنزي");
+    arabicMap.put("gf", "غيانا الفرنسية");
+    arabicMap.put("gg", "غيرنسي");
     arabicMap.put("gh", "غانا");
     arabicMap.put("gi", "جبل طارق");
-    arabicMap.put("gl", "جرينلاند");
+    arabicMap.put("gl", "الأرض الخضراء");
     arabicMap.put("gm", "غامبيا");
     arabicMap.put("gn", "غينيا");
-    arabicMap.put("gp", "غوادلوب");
-    arabicMap.put("gq", "غينيا الاستوائية");
+    arabicMap.put("gp", "جوادلوب");
+    arabicMap.put("gq", "غينيا الإستوائية");
     arabicMap.put("gr", "اليونان");
-    arabicMap.put("gs", "جورجيا الجنوبية");
-    arabicMap.put("gt", "غواتيمال");
+    arabicMap.put("gs", "جورجيا الجنوبية وجزر ساندويتش الجنوبية");
+    arabicMap.put("gt", "غواتيمالا");
     arabicMap.put("gu", "غوام");
     arabicMap.put("gw", "غينيا بيساو");
     arabicMap.put("gy", "غيانا");
-    arabicMap.put("hk", "هونغ كونغ");
-    arabicMap.put("hm", "جزيرة هيرد وجزر ماكدونالد");
+    arabicMap.put("hk", "هونج كونج");
+    arabicMap.put("hm", "قلب الجزيرة وجزر ماكدونالز");
     arabicMap.put("hn", "هندوراس");
     arabicMap.put("hr", "كرواتيا");
     arabicMap.put("ht", "هايتي");
-    arabicMap.put("hu", "المجر");
+    arabicMap.put("hu", "هنغاريا");
     arabicMap.put("id", "إندونيسيا");
-    arabicMap.put("ie", "جمهورية أيرلندا");
+    arabicMap.put("ie", "أيرلندا");
     arabicMap.put("il", "إسرائيل");
-    arabicMap.put("im", "جزيرة مان");
+    arabicMap.put("im", "جزيرة آيل أوف مان");
     arabicMap.put("in", "الهند");
-    arabicMap.put("io", "إقليم المحيط الهندي البريطاني");
+    arabicMap.put("io", "إقليم المحيط البريطاني الهندي");
     arabicMap.put("iq", "العراق");
     arabicMap.put("ir", "إيران");
     arabicMap.put("is", "أيسلندا");
@@ -1654,9 +1694,9 @@ public class LanguageService {
     arabicMap.put("kz", "كازاخستان");
     arabicMap.put("la", "لاوس");
     arabicMap.put("lb", "لبنان");
-    arabicMap.put("lc", "سانت لوسيا");
+    arabicMap.put("lc", "القديسة لوسيا");
     arabicMap.put("li", "ليختنشتاين");
-    arabicMap.put("lk", "سريلانكا");
+    arabicMap.put("lk", "سيريلانكا");
     arabicMap.put("lr", "ليبيريا");
     arabicMap.put("ls", "ليسوتو");
     arabicMap.put("lt", "ليتوانيا");
@@ -1666,8 +1706,8 @@ public class LanguageService {
     arabicMap.put("ma", "المغرب");
     arabicMap.put("mc", "موناكو");
     arabicMap.put("md", "مولدوفا");
-    arabicMap.put("me", "الجبل الأسو");
-    arabicMap.put("mf", "سانت مارتن");
+    arabicMap.put("me", "الجبل الأسود");
+    arabicMap.put("mf", "القديس مارتن");
     arabicMap.put("mg", "مدغشقر");
     arabicMap.put("mh", "جزر مارشال");
     arabicMap.put("mk", "مقدونيا الشمالية");
@@ -1675,15 +1715,15 @@ public class LanguageService {
     arabicMap.put("mm", "ميانمار");
     arabicMap.put("mn", "منغوليا");
     arabicMap.put("mo", "ماكاو");
-    arabicMap.put("mp", "جزر ماريانا الشمالية");
+    arabicMap.put("mp", "جزر مريانا الشمالية");
     arabicMap.put("mq", "مارتينيك");
     arabicMap.put("mi", "مارتينيك");
     arabicMap.put("mr", "موريتانيا");
-    arabicMap.put("ms", "مونتسرات");
+    arabicMap.put("ms", "مونتسيرات");
     arabicMap.put("mt", "مالطا");
     arabicMap.put("mu", "موريشيوس");
-    arabicMap.put("mv", "المالديف");
-    arabicMap.put("mw", "مالاوي");
+    arabicMap.put("mv", "جزر المالديف");
+    arabicMap.put("mw", "ملاوي");
     arabicMap.put("mx", "المكسيك");
     arabicMap.put("my", "ماليزيا");
     arabicMap.put("mz", "موزمبيق");
@@ -1692,37 +1732,37 @@ public class LanguageService {
     arabicMap.put("ne", "النيجر");
     arabicMap.put("nf", "جزيرة نورفولك");
     arabicMap.put("ng", "نيجيريا");
-    arabicMap.put("ni", "نيكاراجوا");
+    arabicMap.put("ni", "نيكاراغوا");
     arabicMap.put("nl", "هولندا");
     arabicMap.put("no", "النرويج");
     arabicMap.put("np", "نيبال");
     arabicMap.put("nr", "ناورو");
-    arabicMap.put("nu", "نييوي");
+    arabicMap.put("nu", "نيوي");
     arabicMap.put("nz", "نيوزيلندا");
-    arabicMap.put("om", "عُمان");
+    arabicMap.put("om", "سلطنة عمان");
     arabicMap.put("pa", "بنما");
     arabicMap.put("pe", "بيرو");
     arabicMap.put("pf", "بولينيزيا الفرنسية");
     arabicMap.put("pg", "بابوا غينيا الجديدة");
-    arabicMap.put("ph", "الفلبين");
+    arabicMap.put("ph", "فيلبيني");
     arabicMap.put("pk", "باكستان");
     arabicMap.put("pl", "بولندا");
-    arabicMap.put("pm", "سان بيير وميكلون");
+    arabicMap.put("pm", "سانت بيير وميكلون");
     arabicMap.put("pn", "جزر بيتكيرن");
     arabicMap.put("pr", "بورتوريكو");
-    arabicMap.put("ps", "دولة فلسطين");
+    arabicMap.put("ps", "فلسطين");
     arabicMap.put("pt", "البرتغال");
     arabicMap.put("pw", "بالاو");
-    arabicMap.put("py", "باراغواي");
-    arabicMap.put("qa", "قطر");
-    arabicMap.put("re", "ريونيون");
+    arabicMap.put("py", "باراجواي");
+    arabicMap.put("qa", "دولة قطر");
+    arabicMap.put("re", "جمع شمل");
     arabicMap.put("ro", "رومانيا");
     arabicMap.put("rs", "صربيا");
     arabicMap.put("ru", "روسيا");
     arabicMap.put("rw", "رواندا");
-    arabicMap.put("sa", "السعودية");
+    arabicMap.put("sa", "المملكة العربية السعودية");
     arabicMap.put("sb", "جزر سليمان");
-    arabicMap.put("sc", "سيشل");
+    arabicMap.put("sc", "سيشيل");
     arabicMap.put("sd", "السودان");
     arabicMap.put("se", "السويد");
     arabicMap.put("sg", "سنغافورة");
@@ -1730,21 +1770,21 @@ public class LanguageService {
     arabicMap.put("si", "سلوفينيا");
     arabicMap.put("sj", "سفالبارد وجان ماين");
     arabicMap.put("sk", "سلوفاكيا");
-    arabicMap.put("sl", "سيراليون");
+    arabicMap.put("sl", "سيرا ليون");
     arabicMap.put("sm", "سان مارينو");
     arabicMap.put("sn", "السنغال");
     arabicMap.put("so", "الصومال");
     arabicMap.put("sr", "سورينام");
     arabicMap.put("ss", "جنوب السودان");
-    arabicMap.put("st", "ساو تومي وبرينسيب");
+    arabicMap.put("st", "سان تومي وبرينسيبي");
     arabicMap.put("sv", "السلفادور");
-    arabicMap.put("sx", "سانت مارتن");
+    arabicMap.put("sx", "سينت مارتن");
     arabicMap.put("sy", "سوريا");
-    arabicMap.put("sz", "إسواتيني");
+    arabicMap.put("sz", "إيسواتيني");
     arabicMap.put("tc", "جزر تركس وكايكوس");
     arabicMap.put("td", "تشاد");
-    arabicMap.put("tf", "الأراضي الفرنسية الجنوبية وأنتاركتيكا");
-    arabicMap.put("tg", "توغو");
+    arabicMap.put("tf", "الأراضي الفرنسية الجنوبية والقطبية الجنوبية");
+    arabicMap.put("tg", "توجو");
     arabicMap.put("th", "تايلاند");
     arabicMap.put("tj", "طاجيكستان");
     arabicMap.put("tk", "توكيلاو");
@@ -1753,21 +1793,21 @@ public class LanguageService {
     arabicMap.put("tn", "تونس");
     arabicMap.put("to", "تونغا");
     arabicMap.put("tr", "تركيا");
-    arabicMap.put("tt", "ترينيداد وتوباغو");
+    arabicMap.put("tt", "ترينداد وتوباغو");
     arabicMap.put("tv", "توفالو");
     arabicMap.put("tw", "تايوان");
     arabicMap.put("tz", "تنزانيا");
     arabicMap.put("ua", "أوكرانيا");
     arabicMap.put("ug", "أوغندا");
-    arabicMap.put("um", "جزر الولايات المتحدة الصغيرة النائية");
-    arabicMap.put("us", "الولايات المتحدة");
+    arabicMap.put("um", "جزر الولايات المتحدة البعيدة الصغرى");
+    arabicMap.put("us", "الولايات المتحدة الأمريكية");
     arabicMap.put("uy", "أوروغواي");
     arabicMap.put("uz", "أوزبكستان");
-    arabicMap.put("va", "الفاتيكان");
-    arabicMap.put("vc", "سانت فينسنت والغرينادين");
+    arabicMap.put("va", "مدينة الفاتيكان");
+    arabicMap.put("vc", "سانت فنسنت وجزر غرينادين");
     arabicMap.put("ve", "فنزويلا");
-    arabicMap.put("vg", "جزر العذراء البريطانية");
-    arabicMap.put("vi", "جزر العذراء الأمريكية");
+    arabicMap.put("vg", "جزر فيرجن البريطانية");
+    arabicMap.put("vi", "جزر فيرجن الأمريكية");
     arabicMap.put("vn", "فيتنام");
     arabicMap.put("vu", "فانواتو");
     arabicMap.put("wf", "واليس وفوتونا");
@@ -1778,7 +1818,15 @@ public class LanguageService {
     arabicMap.put("za", "جنوب أفريقيا");
     arabicMap.put("zm", "زامبيا");
     arabicMap.put("zw", "زيمبابوي");
-    arabicMap.put("ac", "جزيرة أسينشين");
+    arabicMap.put("ac", "جزيرة الصعود");
     arabicMap.put("ti", "تريستان دا كونها");
+    arabicMap.put("bas", "باشكورتوستان");
+    arabicMap.put("bia", "بيكيني أتول");
+    arabicMap.put("bri", "بريتاني");
+    arabicMap.put("bur", "بورياتيا");
+    arabicMap.put("cri", "جمهورية إشكيريا الشيشانية");
+    arabicMap.put("che", "جمهورية الشيشان");
+    arabicMap.put("chu", "تشوفاشيا");
+    arabicMap.put("crm", "القرم");
   }
 }

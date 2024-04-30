@@ -307,9 +307,25 @@ public abstract class Game {
         countryMap.put("zw", "Zimbabwe");
         countryMap.put("ac", "Ascension");
         countryMap.put("ti", "Tristan da Cunha");
+        countryMap.put("bas", "Bashkortostan");
+        countryMap.put("bia", "Bikini Atoll");
+        countryMap.put("bri", "Brittany");
+        countryMap.put("bur", "Buryatia");
+        countryMap.put("cri", "Chechen Republic of Ichkeria");
+        countryMap.put("che", "Chechen Republic");
+        countryMap.put("chu", "Chuvashia");
+        countryMap.put("crm", "Crimea");
     }
 
     public static void loadNonSoverignCountries() {
+        nonSoverignCountries.add("bas");
+        nonSoverignCountries.add("bia");
+        nonSoverignCountries.add("bri");
+        nonSoverignCountries.add("bur");
+        nonSoverignCountries.add("cri");
+        nonSoverignCountries.add("che");
+        nonSoverignCountries.add("chu");
+        nonSoverignCountries.add("crm");
         nonSoverignCountries.add("baq");
         nonSoverignCountries.add("aa");
         nonSoverignCountries.add("ab");
