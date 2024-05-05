@@ -443,6 +443,20 @@ public class LanguageService {
     turkishMap.put("che", "Çeçen Cumhuriyeti");
     turkishMap.put("chu", "Çuvaşistan");
     turkishMap.put("crm", "Kırım");
+    turkishMap.put("eai", "Paskalya Adası");
+    turkishMap.put("dag", "Dağıstan");
+    turkishMap.put("eu", "Avrupa Birliği");
+    turkishMap.put("her", "Herm");
+    turkishMap.put("ing", "İnguşetya");
+    turkishMap.put("kpr", "Kuban Halk Cumhuriyeti");
+    turkishMap.put("kab", "Kabardey-Balkar");
+    turkishMap.put("kal", "Kalmıkya");
+    turkishMap.put("kar", "Karaçay-Çerkesya");
+    turkishMap.put("kkp", "Karakalpakstan");
+    turkishMap.put("krl", "Karelya");
+    turkishMap.put("kha", "Hakasya");
+    turkishMap.put("kom", "Komi");
+    turkishMap.put("ala", "Alaska");
   }
 
   private void loadKoreanCountries() {
@@ -720,6 +734,20 @@ public class LanguageService {
     koreanMap.put("che", "체첸 공화국");
     koreanMap.put("chu", "추바시아");
     koreanMap.put("crm", "크리미아");
+    koreanMap.put("eai", "이스터 섬");
+    koreanMap.put("dag", "다게스탄");
+    koreanMap.put("eu", "유럽 연합");
+    koreanMap.put("her", "허름");
+    koreanMap.put("ing", "인구세티아");
+    koreanMap.put("kpr", "쿠반 인민공화국");
+    koreanMap.put("kab", "카바르디노-발카리아");
+    koreanMap.put("kal", "칼미키아");
+    koreanMap.put("kar", "카라차이-체르케시아");
+    koreanMap.put("kkp", "카라칼팍스탄");
+    koreanMap.put("krl", "카렐리아");
+    koreanMap.put("kha", "카카시아");
+    koreanMap.put("kom", "코미");
+    koreanMap.put("ala", "알래스카");
   }
 
   private void loadJapaneseCountries() {
@@ -997,6 +1025,20 @@ public class LanguageService {
     japaneseMap.put("che", "チェチェン共和国");
     japaneseMap.put("chu", "チュバシア");
     japaneseMap.put("crm", "クリミア");
+    japaneseMap.put("eai", "イースター島");
+    japaneseMap.put("dag", "ダゲスタン");
+    japaneseMap.put("eu", "欧州連合");
+    japaneseMap.put("her", "ヘルム");
+    japaneseMap.put("ing", "イングーシ共和国");
+    japaneseMap.put("kpr", "クバン人民共和国");
+    japaneseMap.put("kab", "カバルダ・バルカリア");
+    japaneseMap.put("kal", "カルムイク州");
+    japaneseMap.put("kar", "カラチャイ・チェルケシア");
+    japaneseMap.put("kkp", "カラカルパクスタン");
+    japaneseMap.put("krl", "カレリア");
+    japaneseMap.put("kha", "ハカシア");
+    japaneseMap.put("kom", "コミ");
+    japaneseMap.put("ala", "アラスカ");
   }
 
   private void loadPortugueseCountries() {
@@ -1274,6 +1316,20 @@ public class LanguageService {
     portugueseMap.put("che", "República da Chechênia");
     portugueseMap.put("chu", "Chuvashia");
     portugueseMap.put("crm", "Crimeia");
+    portugueseMap.put("eai", "Ilha de Páscoa");
+    portugueseMap.put("dag", "Daguestão");
+    portugueseMap.put("eu", "União Europeia");
+    portugueseMap.put("her", "Herm");
+    portugueseMap.put("ing", "Inguchétia");
+    portugueseMap.put("kpr", "República Popular de Kuban");
+    portugueseMap.put("kab", "Cabardino-Balcária");
+    portugueseMap.put("kal", "Calmúquia");
+    portugueseMap.put("kar", "Karachai-Cherkessia");
+    portugueseMap.put("kkp", "Caracalpaquistão");
+    portugueseMap.put("krl", "Carélia");
+    portugueseMap.put("kha", "Cacássia");
+    portugueseMap.put("kom", "Komi");
+    portugueseMap.put("ala", "Alasca");
   }
 
   private void loadSpanishCountries() {
@@ -1551,6 +1607,20 @@ public class LanguageService {
     spanishMap.put("che", "República de Chechenia");
     spanishMap.put("chu", "Chuvashia");
     spanishMap.put("crm", "Crimea");
+    spanishMap.put("eai", "Isla de Pascua");
+    spanishMap.put("dag", "Daguestán");
+    spanishMap.put("eu", "Unión Europea");
+    spanishMap.put("her", "Herm");
+    spanishMap.put("ing", "Ingusetia");
+    spanishMap.put("kpr", "República Popular de Kubán");
+    spanishMap.put("kab", "Kabardia-Balkaria");
+    spanishMap.put("kal", "Kalmukia");
+    spanishMap.put("kar", "Karachay-Cherkessia");
+    spanishMap.put("kkp", "Karakalpakstán");
+    spanishMap.put("krl", "Carelia");
+    spanishMap.put("kha", "Jakasia");
+    spanishMap.put("kom", "komi");
+    spanishMap.put("ala", "Alaska");
   }
 
   private void loadArabicCountries() {
@@ -1828,5 +1898,19 @@ public class LanguageService {
     arabicMap.put("che", "جمهورية الشيشان");
     arabicMap.put("chu", "تشوفاشيا");
     arabicMap.put("crm", "القرم");
+    arabicMap.put("dag", "داغستان");
+    arabicMap.put("eai", "جزيرة الفصح");
+    arabicMap.put("eu", "الاتحاد الأوروبي");
+    arabicMap.put("her", "هيرم");
+    arabicMap.put("ing", "إنغوشيا");
+    arabicMap.put("kpr", "جمهورية كوبان الشعبية");
+    arabicMap.put("kab", "قبردينو بلقاريا");
+    arabicMap.put("kal", "كالميكيا");
+    arabicMap.put("kar", "قراتشاي-شركيسيا");
+    arabicMap.put("kkp", "كاراكالباكستان");
+    arabicMap.put("krl", "كاريليا");
+    arabicMap.put("kha", "خاكاسيا");
+    arabicMap.put("kom", "كومي");
+    arabicMap.put("ala", "ألاسكا");
   }
 }

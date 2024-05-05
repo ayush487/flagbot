@@ -164,6 +164,7 @@ public class MapGame extends Game {
 		ignoreSet.add("sz");
 		ignoreSet.add("ps");
 		ignoreSet.add("cd");
+		ignoreSet.add("aa");
 		ignoreSet.add("ag");
 		ignoreSet.add("re");
 		ignoreSet.add("ax");
@@ -193,6 +194,19 @@ public class MapGame extends Game {
 		ignoreSet.add("che");
 		ignoreSet.add("chu");
 		ignoreSet.add("crm");
+		ignoreSet.add("dag");
+		ignoreSet.add("eai");
+		ignoreSet.add("her");
+		ignoreSet.add("ing");
+		ignoreSet.add("kpr");
+		ignoreSet.add("kab");
+		ignoreSet.add("kal");
+		ignoreSet.add("kar");
+		ignoreSet.add("kkp");
+		ignoreSet.add("krl");
+		ignoreSet.add("kha");
+		ignoreSet.add("kom");
+		ignoreSet.add("ala");
 	}
 
 	private static void loadCountryOverrideMap() {

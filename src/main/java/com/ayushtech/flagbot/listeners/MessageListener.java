@@ -108,6 +108,7 @@ public class MessageListener extends ListenerAdapter {
         alternateNamesMap.put("c sharp", "C#");
         alternateNamesMap.put("cpp", "C++");
         alternateNamesMap.put("ea", "Electronic Arts");
+        alternateNamesMap.put("eu", "European Union");
         alternateNamesMap.put("car", "Central African Republic");
         alternateNamesMap.put("south georgia", "South Georgia and the South Sandwich Islands");
         alternateNamesMap.put("الإمارات", "الإمارات العربية المتحدة");

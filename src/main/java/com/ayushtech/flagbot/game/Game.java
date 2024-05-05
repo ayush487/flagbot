@@ -315,9 +315,37 @@ public abstract class Game {
         countryMap.put("che", "Chechen Republic");
         countryMap.put("chu", "Chuvashia");
         countryMap.put("crm", "Crimea");
+        countryMap.put("eai", "Easter Island");
+        countryMap.put("dag", "Dagestan");
+        countryMap.put("eu", "European Union");
+        countryMap.put("her", "Herm");
+        countryMap.put("ing", "Ingushetia");
+        countryMap.put("kpr", "Kuban People's Republic");
+        countryMap.put("kab", "Kabardino-Balkaria");
+        countryMap.put("kal", "Kalmykia");
+        countryMap.put("kar", "Karachay-Cherkessia");
+        countryMap.put("kkp", "Karakalpakstan");
+        countryMap.put("krl", "Karelia");
+        countryMap.put("kha", "Khakassia");
+        countryMap.put("kom", "Komi");
+        countryMap.put("ala", "Alaska");
     }
 
     public static void loadNonSoverignCountries() {
+        nonSoverignCountries.add("her");
+        nonSoverignCountries.add("ing");
+        nonSoverignCountries.add("kpr");
+        nonSoverignCountries.add("kab");
+        nonSoverignCountries.add("kal");
+        nonSoverignCountries.add("kar");
+        nonSoverignCountries.add("kkp");
+        nonSoverignCountries.add("krl");
+        nonSoverignCountries.add("kha");
+        nonSoverignCountries.add("kom");
+        nonSoverignCountries.add("ala");
+        nonSoverignCountries.add("eai");
+        nonSoverignCountries.add("dag");
+        nonSoverignCountries.add("eu");
         nonSoverignCountries.add("bas");
         nonSoverignCountries.add("bia");
         nonSoverignCountries.add("bri");
@@ -389,10 +417,11 @@ public abstract class Game {
         nonSoverignCountries.add("tf");
         nonSoverignCountries.add("tk");
         nonSoverignCountries.add("um");
+        nonSoverignCountries.add("vg");
+        nonSoverignCountries.add("vi");
         nonSoverignCountries.add("wf");
         nonSoverignCountries.add("xk");
         nonSoverignCountries.add("yt");
     }
-
 
 }
