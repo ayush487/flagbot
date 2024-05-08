@@ -207,6 +207,9 @@ public class MapGame extends Game {
 		ignoreSet.add("kha");
 		ignoreSet.add("kom");
 		ignoreSet.add("ala");
+		ignoreSet.add("lad");
+		ignoreSet.add("mar");
+		ignoreSet.add("mor");
 	}
 
 	private static void loadCountryOverrideMap() {

@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public abstract class Game {
 
-    public static HashMap<String, String> countryMap = new HashMap<>(257);
+    public static HashMap<String, String> countryMap = new HashMap<>(300);
     protected static Set<String> nonSoverignCountries = new HashSet<>();
     protected static List<String> isoList;
     protected static final String flagLink = "https://raw.githubusercontent.com/ayush487/image-library/main/flags/";
@@ -329,9 +329,15 @@ public abstract class Game {
         countryMap.put("kha", "Khakassia");
         countryMap.put("kom", "Komi");
         countryMap.put("ala", "Alaska");
+        countryMap.put("lad", "Ladonia");
+        countryMap.put("mar", "Mari El");
+        countryMap.put("mor", "Mordovia");
     }
 
     public static void loadNonSoverignCountries() {
+        nonSoverignCountries.add("lad");
+        nonSoverignCountries.add("mar");
+        nonSoverignCountries.add("mor");
         nonSoverignCountries.add("her");
         nonSoverignCountries.add("ing");
         nonSoverignCountries.add("kpr");
