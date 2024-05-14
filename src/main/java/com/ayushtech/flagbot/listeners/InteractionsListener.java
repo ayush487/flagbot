@@ -32,6 +32,7 @@ import com.ayushtech.flagbot.services.ChannelService;
 import com.ayushtech.flagbot.services.CoinTransferService;
 import com.ayushtech.flagbot.services.GameEndService;
 import com.ayushtech.flagbot.services.LanguageService;
+import com.ayushtech.flagbot.services.MetricService;
 import com.ayushtech.flagbot.stocks.Company;
 import com.ayushtech.flagbot.stocks.StocksHandler;
 
@@ -65,6 +66,8 @@ public class InteractionsListener extends ListenerAdapter {
 
 	@Override
 	public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
+
+		MetricService.getInstance().registerCommandData(event);
 
 		if (CaptchaService.getInstance().isUserBanned(event.getUser().getIdLong())) {
 			event.reply("You are banned from using bot").setEphemeral(true).queue();
@@ -478,6 +481,9 @@ public class InteractionsListener extends ListenerAdapter {
 			CaptchaService.getInstance().removeBlock(Long.parseLong(user_id));
 			event.getHook().sendMessage("Unblocked User").queue();
 			return;
+		} else if(event.getName().equals("metrics")) {
+			MetricService.getInstance().handleMetricCommand(event);
+			return;
 		}
 	}
 
@@ -487,6 +493,8 @@ public class InteractionsListener extends ListenerAdapter {
 	@Override
 	public void onButtonInteraction(@Nonnull ButtonInteractionEvent event) {
 		super.onButtonInteraction(event);
+
+		MetricService.getInstance().registerCommandData(event);
 
 		if (CaptchaService.getInstance().isUserBanned(event.getUser().getIdLong())) {
 			event.reply("You are banned from using bot").setEphemeral(true).queue();
