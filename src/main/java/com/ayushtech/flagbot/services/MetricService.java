@@ -80,6 +80,7 @@ public class MetricService {
       }
       case "battle":
         commandMetricMap.get("battle").incrementAndGet();
+        return;
       case "race": {
         switch (event.getSubcommandName()) {
           case "flags":
@@ -127,16 +128,22 @@ public class MetricService {
       }
       case "invite":
         commandMetricMap.get("invite").incrementAndGet();
+        return;
       case "leaderboards":
         commandMetricMap.get("leaderboards").incrementAndGet();
+        return;
       case "vote":
         commandMetricMap.get("vote").incrementAndGet();
+        return;
       case "help":
         commandMetricMap.get("help").incrementAndGet();
+        return;
       case "give":
         commandMetricMap.get("give_coins").incrementAndGet();
+        return;
       case "balance":
         commandMetricMap.get("balance").incrementAndGet();
+        return;
       default:
         return;
     }
