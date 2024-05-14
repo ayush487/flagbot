@@ -8,12 +8,12 @@ import javax.annotation.Nonnull;
 import com.ayushtech.flagbot.game.flag.FlagGameHandler;
 import com.ayushtech.flagbot.game.logo.LogoGameHandler;
 import com.ayushtech.flagbot.game.map.MapGameHandler;
+import com.ayushtech.flagbot.game.place.PlaceGameHandler;
 import com.ayushtech.flagbot.services.CaptchaService;
 import com.ayushtech.flagbot.services.PrivateServerService;
 import com.ayushtech.flagbot.services.VotingService;
 
 import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -33,12 +33,13 @@ public class MessageListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
-
-        if (event.getChannel().getIdLong() == vote_notifs_channel) {
+        
+        long channelId = event.getChannel().getIdLong();
+        if (channelId == vote_notifs_channel) {
             String voter_id = event.getMessage().getContentDisplay();
             VotingService.getInstance().voteUser(event.getJDA(), voter_id);
             return;
-        } else if (event.getChannel().getIdLong() == webhook_channel) {
+        } else if (channelId == webhook_channel) {
             event.getMessage().addReaction("U+1F44D").queue();
             event.getMessage().addReaction("U+1F937").queue();
             event.getMessage().addReaction("U+1F44E").queue();
@@ -56,29 +57,31 @@ public class MessageListener extends ListenerAdapter {
         if (CaptchaService.getInstance().isUserBanned(event.getAuthor().getIdLong())) {
             return;
         }
-        Message message = event.getMessage();
+        String messageText = event.getMessage().getContentDisplay();
 
         if (CaptchaService.getInstance().userHasCaptched(event.getAuthor().getIdLong())) {
             if (event.isFromType(ChannelType.PRIVATE)) {
-                CaptchaService.getInstance().handleCaptchaAnswer(event, message.getContentDisplay());
+                CaptchaService.getInstance().handleCaptchaAnswer(event, messageText);
                 return;
             } else {
                 return;
             }
         }
-        String messageText = message.getContentDisplay();
 
         if (alternateNamesMap.containsKey(messageText.toLowerCase())) {
             messageText = alternateNamesMap.get(messageText.toLowerCase());
         }
-        if (FlagGameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())) {
+        if (FlagGameHandler.getInstance().getGameMap().containsKey(channelId)) {
             FlagGameHandler.getInstance().handleGuess(messageText, event);
         }
-        if (MapGameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())) {
+        if (MapGameHandler.getInstance().getGameMap().containsKey(channelId)) {
             MapGameHandler.getInstance().handleGuess(messageText, event);
         }
-        if (LogoGameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())) {
+        if (LogoGameHandler.getInstance().getGameMap().containsKey(channelId)) {
             LogoGameHandler.getInstance().handleGuess(messageText, event);
+        }
+        if (PlaceGameHandler.getInstance().getGameMap().containsKey(channelId)) {
+            PlaceGameHandler.getInstance().handleGuess(messageText, event);
         }
         return;
     }

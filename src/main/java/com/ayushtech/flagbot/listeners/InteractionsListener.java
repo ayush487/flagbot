@@ -23,6 +23,8 @@ import com.ayushtech.flagbot.game.logo.LogoGameEndRunnable;
 import com.ayushtech.flagbot.game.logo.LogoGameHandler;
 import com.ayushtech.flagbot.game.map.MapGameEndRunnable;
 import com.ayushtech.flagbot.game.map.MapGameHandler;
+import com.ayushtech.flagbot.game.place.PlaceGameEndRunnable;
+import com.ayushtech.flagbot.game.place.PlaceGameHandler;
 import com.ayushtech.flagbot.memoflip.MemoflipHandler;
 import com.ayushtech.flagbot.race.RaceHandler;
 import com.ayushtech.flagbot.services.CaptchaService;
@@ -223,7 +225,7 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.setTitle("Commands");
 			eb.setColor(new Color(255, 153, 51)); // rgb (255,153,51)
 			eb.setDescription(
-					"**__Guess Commands__**\n`/guess flag` : Start a flag guessing game in the channel\n`/guess map` : Start a map guessing game in the channel\n`/guess logo` : Start a logo guessing game in the channel\n__Options__ :\n`mode` : Choose the mode you want to play :Soverign Only, Non-Soverign Only, All Countries (Soverign Only if not selected)\n`rounds` : Enter the number of rounds you want to play (maximum it would be 15) (optional)\n`include_non_soverign_countries` : True or False to include non soverign countries (false if not selected)");
+					"**__Guess Commands__**\n`/guess flag` : Start a flag guessing game in the channel\n`/guess map` : Start a map guessing game in the channel\n`/guess logo` : Start a logo guessing game in the channel\n`/guess place` : Start a place guessing game in the channel\n__Options__ :\n`mode` : Choose the mode you want to play :Soverign Only, Non-Soverign Only, All Countries (Soverign Only if not selected)\n`rounds` : Enter the number of rounds you want to play (maximum it would be 15) (optional)\n`include_non_soverign_countries` : True or False to include non soverign countries (false if not selected)");
 			eb.addField("__General Commands__",
 					"`/leaderboards` : Check the global leaderboard (Upto top 25)\n`/invite` : Invite the bot to your server\n`/language set` : Set language for the server (Only work for flag and map guessers)\n`/language info` : See your server language and other supported languages\n`/language remove` : Remove server language\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank\n`/give coins` : Send coins to other users.\n`/vote` : Vote for us and get rewards",
 					false);
@@ -262,7 +264,7 @@ public class InteractionsListener extends ListenerAdapter {
 					.queue();
 		}
 
-		else if(event.getName().equals("language")) {
+		else if (event.getName().equals("language")) {
 			LanguageService.getInstance().handleLanguageCommand(event);
 			return;
 		}
@@ -430,7 +432,7 @@ public class InteractionsListener extends ListenerAdapter {
 							30, TimeUnit.SECONDS);
 				}
 				return;
-			} else {
+			} else if (commandName != null && commandName.equals("flag")) {
 				boolean isAdded = FlagGameHandler.getInstance().addGame(event);
 				if (isAdded) {
 					GameEndService.getInstance().scheduleEndGame(new FlagGameEndRunnable(
@@ -438,6 +440,13 @@ public class InteractionsListener extends ListenerAdapter {
 							event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
 				}
 				return;
+			} else {
+				boolean isAdded = PlaceGameHandler.getInstance().addGame(event);
+				if (isAdded) {
+					GameEndService.getInstance().scheduleEndGame(new PlaceGameEndRunnable(
+							PlaceGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()),
+							event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
+				}
 			}
 		}
 
@@ -599,6 +608,15 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
+		else if (event.getComponentId().equals("skipPlace")) {
+			event.deferReply().queue();
+			if (PlaceGameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())) {
+				event.getHook().sendMessage(event.getUser().getAsMention() + " has skipped the game!").queue();
+				PlaceGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()).endGameAsLose();
+			}
+			return;
+		}
+
 		else if (event.getComponentId().equals("rejectBattle")) {
 			FightHandler.getInstance().handleCancelButton(event);
 			return;
@@ -664,7 +682,17 @@ public class InteractionsListener extends ListenerAdapter {
 						30, TimeUnit.SECONDS);
 			}
 			return;
+		}
 
+		else if (event.getComponentId().startsWith("playAgainPlace")) {
+			boolean isAdded = PlaceGameHandler.getInstance().addGame(event);
+			if (isAdded) {
+				GameEndService.getInstance().scheduleEndGame(
+						new PlaceGameEndRunnable(
+								PlaceGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()),
+								event.getChannel().getIdLong()),
+						30, TimeUnit.SECONDS);
+			}
 		}
 	}
 }

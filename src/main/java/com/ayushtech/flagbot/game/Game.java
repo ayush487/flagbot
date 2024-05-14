@@ -328,13 +328,16 @@ public abstract class Game {
         countryMap.put("krl", "Karelia");
         countryMap.put("kha", "Khakassia");
         countryMap.put("kom", "Komi");
-        countryMap.put("ala", "Alaska");
         countryMap.put("lad", "Ladonia");
         countryMap.put("mar", "Mari El");
         countryMap.put("mor", "Mordovia");
+        countryMap.put("nag", "Nagorno-Karabakh");
+        countryMap.put("nos", "North Ossetia");
     }
 
     public static void loadNonSoverignCountries() {
+        nonSoverignCountries.add("nag");
+        nonSoverignCountries.add("nos");
         nonSoverignCountries.add("lad");
         nonSoverignCountries.add("mar");
         nonSoverignCountries.add("mor");
@@ -348,7 +351,6 @@ public abstract class Game {
         nonSoverignCountries.add("krl");
         nonSoverignCountries.add("kha");
         nonSoverignCountries.add("kom");
-        nonSoverignCountries.add("ala");
         nonSoverignCountries.add("eai");
         nonSoverignCountries.add("dag");
         nonSoverignCountries.add("eu");
