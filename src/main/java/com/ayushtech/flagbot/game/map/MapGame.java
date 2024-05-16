@@ -71,13 +71,17 @@ public class MapGame extends Game {
 			String altGuess = LanguageService.getInstance().getCorrectGuess(lang, countryCode);
 			answerString = String.format("%s (`%s`)", countryMap.get(countryCode), altGuess);
 		}
-		eb.setDescription(
-				msgEvent.getAuthor().getAsMention() +
-						" is correct!\n**Coins :** `" +
-						Game.getAmount(msgEvent.getAuthor().getIdLong()) +
-						"(+100)` " + ":coin:" +
-						"  \n **Correct Answer :** " +
-						answerString);
+		StringBuilder sb = new StringBuilder();
+		sb.append(msgEvent.getAuthor().getAsMention() +
+				" is correct!\n**Coins :** `" +
+				Game.getAmount(msgEvent.getAuthor().getIdLong()) +
+				"(+100)` " + ":coin:" +
+				"  \n **Correct Answer :** " +
+				answerString);
+		if (alternativeNames.containsKey(countryCode)) {
+			sb.append("\n**Alternative Answers :** " + alternativeNames.get(countryCode));
+		}
+		eb.setDescription(sb.toString());
 		eb.setThumbnail(flagLink + countryCode + suffix);
 		eb.setColor(new Color(13, 240, 52));
 		MapGameHandler.getInstance().getGameMap().remove(channel.getIdLong());
@@ -105,7 +109,11 @@ public class MapGame extends Game {
 			String altGuess = LanguageService.getInstance().getCorrectGuess(lang, countryCode);
 			answerString = String.format("%s (`%s`)", countryMap.get(countryCode), altGuess);
 		}
-		eb.setDescription("**Correct Answer :** \n" + answerString);
+		StringBuilder sb = new StringBuilder("**Correct Answer :** " + answerString);
+		if (alternativeNames.containsKey(countryCode)) {
+			sb.append("\n**Alternative Answers :** " + alternativeNames.get(countryCode));
+		}
+		eb.setDescription(sb.toString());
 		eb.setThumbnail(flagLink + countryCode + suffix);
 		eb.setColor(new Color(240, 13, 52));
 		MapGameHandler.getInstance().endGame(channel.getIdLong());
@@ -211,6 +219,7 @@ public class MapGame extends Game {
 		ignoreSet.add("mor");
 		ignoreSet.add("nag");
 		ignoreSet.add("nos");
+		ignoreSet.add("rsr");
 	}
 
 	private static void loadCountryOverrideMap() {

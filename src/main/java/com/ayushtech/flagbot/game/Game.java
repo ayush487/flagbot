@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
@@ -17,10 +18,12 @@ public abstract class Game {
     protected static List<String> isoList;
     protected static final String flagLink = "https://raw.githubusercontent.com/ayush487/image-library/main/flags/";
     protected static final String suffix = ".png";
+    protected static Map<String,String> alternativeNames = new HashMap<>();
 
     static {
         Game.loadCountries();
         Game.loadNonSoverignCountries();
+        Game.loadAlternativeNames();
         isoList = new ArrayList<>(countryMap.keySet());
     }
 
@@ -40,7 +43,7 @@ public abstract class Game {
         return CoinDao.getInstance().getBalance(userId);
     }
 
-    public static void loadCountries() {
+    private static void loadCountries() {
         countryMap.put("aa", "Saba");
         countryMap.put("ab", "Abkhazia");
         countryMap.put("ay", "Adygea");
@@ -333,9 +336,11 @@ public abstract class Game {
         countryMap.put("mor", "Mordovia");
         countryMap.put("nag", "Nagorno-Karabakh");
         countryMap.put("nos", "North Ossetia");
+        countryMap.put("rsr", "Republika Srpska");
     }
 
-    public static void loadNonSoverignCountries() {
+    private static void loadNonSoverignCountries() {
+        nonSoverignCountries.add("rsr");
         nonSoverignCountries.add("nag");
         nonSoverignCountries.add("nos");
         nonSoverignCountries.add("lad");
@@ -432,4 +437,21 @@ public abstract class Game {
         nonSoverignCountries.add("yt");
     }
 
+    private static void loadAlternativeNames() {
+        alternativeNames.put("ae","UAE");
+        alternativeNames.put("cd","DR Congo");
+        alternativeNames.put("ci", "Côte d'Ivoire");
+        alternativeNames.put("cv", "Cabo Verde");
+        alternativeNames.put("cz", "Czechia");
+        alternativeNames.put("tr", "Turkey");
+        alternativeNames.put("us", "USA/United States");
+        alternativeNames.put("gb", "UK");
+        alternativeNames.put("tl", "East Timor");
+        alternativeNames.put("in","Bharat");
+        alternativeNames.put("ba", "Bosnia");
+        alternativeNames.put("mm","Burma");
+        alternativeNames.put("eu","EU");
+        alternativeNames.put("cf", "CAR");
+        alternativeNames.put("gs", "South Georgia");
+    }
 }

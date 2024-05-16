@@ -470,6 +470,7 @@ public class LanguageService {
     russianMap.put("mor", "Мордовия");
     russianMap.put("nag", "Нагорный Карабах");
     russianMap.put("nos", "Северная Осетия");
+    russianMap.put("rsr", "Республика Сербская");
   }
 
   private void loadFrenchCountries() {
@@ -491,7 +492,7 @@ public class LanguageService {
     frenchMap.put("an", "Antarctique");
     frenchMap.put("ar", "Argentine");
     frenchMap.put("as", "Samoa américaines");
-    frenchMap.put("at", "L'Autriche");
+    frenchMap.put("at", "Autriche");
     frenchMap.put("au", "Australie");
     frenchMap.put("aw", "Aruba");
     frenchMap.put("ax", "Iles Aland");
@@ -525,7 +526,7 @@ public class LanguageService {
     frenchMap.put("cg", "Congo");
     frenchMap.put("ch", "Suisse");
     frenchMap.put("ci", "Côte d'Ivoire");
-    frenchMap.put("ck", "les Îles Cook");
+    frenchMap.put("ck", "Îles Cook");
     frenchMap.put("cl", "Chili");
     frenchMap.put("cm", "Cameroun");
     frenchMap.put("cn", "Chine");
@@ -763,8 +764,9 @@ public class LanguageService {
     frenchMap.put("lad", "Ladonie");
     frenchMap.put("mar", "Mari El");
     frenchMap.put("mor", "Mordovie");
-    frenchMap.put("nag", "Haut-Karabakh");
+    frenchMap.put("nag", "Haut-Karabagh");
     frenchMap.put("nos", "Ossétie du Nord");
+    frenchMap.put("rsr", "Republika Srpska");
   }
 
   private void loadTurkishCountries() {
@@ -1060,6 +1062,7 @@ public class LanguageService {
     turkishMap.put("mor", "Mordovya");
     turkishMap.put("nag", "Dağlık Karabağ");
     turkishMap.put("nos", "Kuzey Osetya");
+    turkishMap.put("rsr", "Sırp Cumhuriyeti");
   }
 
   private void loadKoreanCountries() {
@@ -1355,6 +1358,7 @@ public class LanguageService {
     koreanMap.put("mor", "모르도비아");
     koreanMap.put("nag", "나고르노-카라바흐");
     koreanMap.put("nos", "북오세티아");
+    koreanMap.put("rsr", "레푸블리카 스르프스카");
   }
 
   private void loadJapaneseCountries() {
@@ -1650,6 +1654,7 @@ public class LanguageService {
     japaneseMap.put("mor", "モルドビア");
     japaneseMap.put("nag", "ナゴルノ・カラバフ");
     japaneseMap.put("nos", "北オセチア");
+    japaneseMap.put("rsr", "スルプスカ共和国");
   }
 
   private void loadPortugueseCountries() {
@@ -1945,6 +1950,7 @@ public class LanguageService {
     portugueseMap.put("mor", "Mordóvia");
     portugueseMap.put("nag", "Nagorno-Karabakh");
     portugueseMap.put("nos", "Ossétia do Norte");
+    portugueseMap.put("rsr", "República Srpska");
   }
 
   private void loadSpanishCountries() {
@@ -2240,6 +2246,7 @@ public class LanguageService {
     spanishMap.put("mor", "Mordovia");
     spanishMap.put("nag", "Nagorno-Karabaj");
     spanishMap.put("nos", "Osetia del Norte");
+    spanishMap.put("rsr", "República Srpska");
   }
 
   private void loadArabicCountries() {
@@ -2535,5 +2542,6 @@ public class LanguageService {
     arabicMap.put("mor", "موردوفيا");
     arabicMap.put("nag", "ناغورنو كاراباخ");
     arabicMap.put("nos", "أوسيتيا الشمالية");
+    arabicMap.put("rsr", "جمهورية صربسكا");
   }
 }

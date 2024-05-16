@@ -157,7 +157,7 @@ public class MetricService {
       commandMetricMap.get("play_map").incrementAndGet();
     } else if (buttonId.startsWith("playAgainLogo")) {
       commandMetricMap.get("play_logo").incrementAndGet();
-    } else if (buttonId.startsWith("playAgainLogo")) {
+    } else if (buttonId.startsWith("playAgainPlace")) {
       commandMetricMap.get("play_place").incrementAndGet();
     }
     return;

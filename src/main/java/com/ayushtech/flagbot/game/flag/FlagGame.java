@@ -74,15 +74,20 @@ public class FlagGame extends Game {
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setTitle("Correct!");
 		String answerString;
-		if (lang==null) {
+		if (lang == null) {
 			answerString = countryMap.get(countryCode);
 		} else {
 			String altGuess = LanguageService.getInstance().getCorrectGuess(lang, countryCode);
 			answerString = String.format("%s (`%s`)", countryMap.get(countryCode), altGuess);
 		}
-		eb.setDescription(msgEvent.getAuthor().getAsMention() + " is correct!\n**Coins :** `"
+		StringBuilder sb = new StringBuilder();
+		sb.append(msgEvent.getAuthor().getAsMention() + " is correct!\n**Coins :** `"
 				+ Game.getAmount(msgEvent.getAuthor().getIdLong()) + "(+100)` " + ":coin:"
 				+ "  \n **Correct Answer :** " + answerString);
+		if (alternativeNames.containsKey(countryCode)) {
+			sb.append("\n**Alternative Answers :** " + alternativeNames.get(countryCode));
+		}
+		eb.setDescription(sb.toString());
 		eb.setThumbnail(flagLink + countryCode + suffix);
 		eb.setColor(new Color(13, 240, 52));
 		if (rounds <= 1) {
@@ -103,13 +108,17 @@ public class FlagGame extends Game {
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setTitle("No one guessed the flag!");
 		String answerString;
-		if (lang==null) {
+		if (lang == null) {
 			answerString = countryMap.get(countryCode);
 		} else {
 			String altGuess = LanguageService.getInstance().getCorrectGuess(lang, countryCode);
 			answerString = String.format("%s (`%s`)", countryMap.get(countryCode), altGuess);
 		}
-		eb.setDescription("**Correct Answer :** \n" + answerString);
+		StringBuilder sb = new StringBuilder("**Correct Answer :** " + answerString);
+		if (alternativeNames.containsKey(countryCode)) {
+			sb.append("\n**Alternative Answers :** " + alternativeNames.get(countryCode));
+		}
+		eb.setDescription(sb.toString());
 		eb.setThumbnail(flagLink + countryCode + suffix);
 		eb.setColor(new Color(240, 13, 52));
 		FlagGameHandler.getInstance().endGame(channel.getIdLong());
