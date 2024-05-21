@@ -490,7 +490,7 @@ public class LogoGame {
     brandMap.put("bvl", "Bulgari");
     brandMap.put("brg", "Breguet");
     brandMap.put("csl", "Counter Strike");
-    brandMap.put("mok", "Mortal Combat");
+    brandMap.put("mok", "Mortal Kombat");
     brandMap.put("hal", "Halo");
     brandMap.put("iro", "Ironman");
     brandMap.put("fla", "Flash");

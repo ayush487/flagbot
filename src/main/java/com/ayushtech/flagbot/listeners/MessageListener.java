@@ -97,9 +97,10 @@ public class MessageListener extends ListenerAdapter {
     private void loadAlternateNames() {
         alternateNamesMap.put("uae", "United Arab Emirates");
         alternateNamesMap.put("dr congo", "Democratic Republic of the Congo");
+        alternateNamesMap.put("drc", "Democratic Republic of the Congo");
         alternateNamesMap.put("côte d'ivoire", "Ivory Coast");
         alternateNamesMap.put("cabo verde", "Cape Verde");
-        alternateNamesMap.put("czechia", "Czech Republic");
+        alternateNamesMap.put("czech republic", "Czechia");
         alternateNamesMap.put("turkey", "Turkiye");
         alternateNamesMap.put("usa", "United States of America");
         alternateNamesMap.put("united states", "United States of America");

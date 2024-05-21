@@ -37,7 +37,7 @@ public class MapGameHandler {
             return false;
         } else {
             event.getHook().sendMessage("Starting game now!").queue();
-            OptionMapping difficultyOption = event.getOption("include_non_soverign_countries");
+            OptionMapping difficultyOption = event.getOption("include_non_sovereign_countries");
             OptionMapping roundsOption = event.getOption("rounds");
             boolean isHard = difficultyOption == null ? false : difficultyOption.getAsBoolean();
             int rounds = roundsOption == null ? 0 : roundsOption.getAsInt();

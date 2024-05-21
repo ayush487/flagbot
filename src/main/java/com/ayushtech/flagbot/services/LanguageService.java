@@ -23,6 +23,7 @@ public class LanguageService {
   private Map<String, String> turkishMap;
   private Map<String, String> frenchMap;
   private Map<String, String> russianMap;
+  private Map<String,String> swedishMap;
   private Map<String, Map<String, String>> languageMap;
 
   private LanguageService() {
@@ -35,6 +36,7 @@ public class LanguageService {
     turkishMap = new HashMap<>(300);
     frenchMap = new HashMap<>(300);
     russianMap = new HashMap<>(300);
+    swedishMap = new HashMap<>(300);
     languageMap = new HashMap<>();
     loadArabicCountries();
     loadSpanishCountries();
@@ -45,6 +47,7 @@ public class LanguageService {
     loadLanguageMap();
     loadRussianCountries();
     loadFrenchCountries();
+    loadSwedishCountries();
   }
 
   private void loadLanguageMap() {
@@ -56,6 +59,7 @@ public class LanguageService {
     languageMap.put("turkish", turkishMap);
     languageMap.put("french", frenchMap);
     languageMap.put("russian", russianMap);
+    languageMap.put("swedish", swedishMap);
   }
 
   public static LanguageService getInstance() {
@@ -173,8 +177,305 @@ public class LanguageService {
       eb.setDescription("No language selected for this server");
     }
     eb.addField("__Supported Languages__",
-        "`Arabic`, `French`, `Japanese`, `Korean`, `Portuguese`, `Russian`, `Spanish`, `Turkish`", false);
+        "`Arabic`, `French`, `Japanese`, `Korean`, `Portuguese`, `Russian`, `Spanish`,`Swedish`, `Turkish`", false);
     event.getHook().sendMessageEmbeds(eb.build()).queue();
+  }
+
+  private void loadSwedishCountries() {
+    swedishMap.put("aa","Saba");
+    swedishMap.put("ab","Abchazien");
+    swedishMap.put("ay","Adygea");
+    swedishMap.put("aj","Adjara");
+    swedishMap.put("ald","Alderney");
+    swedishMap.put("alr","Republiken Altai");
+    swedishMap.put("ad","Andorra");
+    swedishMap.put("ae","Förenade arabemiraten");
+    swedishMap.put("af","Afghanistan");
+    swedishMap.put("ag","Antigua och Barbuda");
+    swedishMap.put("ai","Anguilla");
+    swedishMap.put("al","Albanien");
+    swedishMap.put("am","Armenien");
+    swedishMap.put("ao","Angola");
+    swedishMap.put("aq","Antarktis");
+    swedishMap.put("an","Antarktis");
+    swedishMap.put("ar","Argentina");
+    swedishMap.put("as","Amerikanska Samoa");
+    swedishMap.put("at","Österrike");
+    swedishMap.put("au","Australien");
+    swedishMap.put("aw","Aruba");
+    swedishMap.put("ax","Ålandsöarna");
+    swedishMap.put("az","Azerbajdzjan");
+    swedishMap.put("ba","Bosnien och Hercegovina");
+    swedishMap.put("bb","Barbados");
+    swedishMap.put("bd","Bangladesh");
+    swedishMap.put("be","Belgien");
+    swedishMap.put("bf","Burkina Faso");
+    swedishMap.put("bg","Bulgarien");
+    swedishMap.put("bh","Bahrain");
+    swedishMap.put("bi","Burundi");
+    swedishMap.put("bj","Benin");
+    swedishMap.put("bl","Saint Barthelemy");
+    swedishMap.put("bm","Bermuda");
+    swedishMap.put("bn","Brunei");
+    swedishMap.put("bo","Bolivia");
+    swedishMap.put("bq","Karibiska Nederländerna");
+    swedishMap.put("baq","Brittiska Antarktis");
+    swedishMap.put("br","Brasilien");
+    swedishMap.put("bs","Bahamas");
+    swedishMap.put("bt","Bhutan");
+    swedishMap.put("bv","Bouvetön");
+    swedishMap.put("bw","Botswana");
+    swedishMap.put("by","Belarus");
+    swedishMap.put("bz","Belize");
+    swedishMap.put("ca","Kanada");
+    swedishMap.put("cc","Cocosöarna");
+    swedishMap.put("cd","Demokratiska republiken Kongo");
+    swedishMap.put("cf","Centralafrikanska republiken");
+    swedishMap.put("cg","Kongo");
+    swedishMap.put("ch","Schweiz");
+    swedishMap.put("ci","Elfenbenskusten");
+    swedishMap.put("ck","Cooköarna");
+    swedishMap.put("cl","Chile");
+    swedishMap.put("cm","Kamerun");
+    swedishMap.put("cn","Kina");
+    swedishMap.put("co","Colombia");
+    swedishMap.put("cr","Costa Rica");
+    swedishMap.put("cu","Kuba");
+    swedishMap.put("cv","Cap Verde");
+    swedishMap.put("cw","Curacao");
+    swedishMap.put("cx","Julön");
+    swedishMap.put("cy","Cypern");
+    swedishMap.put("cz","Tjeckien");
+    swedishMap.put("de","Tyskland");
+    swedishMap.put("dj","Djibouti");
+    swedishMap.put("dk","Danmark");
+    swedishMap.put("dm","Dominica");
+    swedishMap.put("do","Dominikanska republiken");
+    swedishMap.put("dz","Algeriet");
+    swedishMap.put("ec","Ecuador");
+    swedishMap.put("ee","Estland");
+    swedishMap.put("eg","Egypten");
+    swedishMap.put("eh","Västra Sahara");
+    swedishMap.put("ei","Sint Eustatius");
+    swedishMap.put("er","Eritrea");
+    swedishMap.put("es","Spanien");
+    swedishMap.put("et","Etiopien");
+    swedishMap.put("fi","Finland");
+    swedishMap.put("fj","Fiji");
+    swedishMap.put("fk","Falklandsöarna");
+    swedishMap.put("fm","Mikronesien");
+    swedishMap.put("fo","Färöarna");
+    swedishMap.put("fr","Frankrike");
+    swedishMap.put("ga","Gabon");
+    swedishMap.put("gb","Storbritannien");
+    swedishMap.put("gb-eng","England");
+    swedishMap.put("gb-nir","Norra Irland");
+    swedishMap.put("gb-sct","Skottland");
+    swedishMap.put("gb-wls","Wales");
+    swedishMap.put("gd","Grenada");
+    swedishMap.put("ge","Georgien");
+    swedishMap.put("gf","Franska Guyana");
+    swedishMap.put("gg","Guernsey");
+    swedishMap.put("gh","Ghana");
+    swedishMap.put("gi","Gibraltar");
+    swedishMap.put("gl","Grönland");
+    swedishMap.put("gm","Gambia");
+    swedishMap.put("gn","Guinea");
+    swedishMap.put("gp","Guadeloupe");
+    swedishMap.put("gq","Ekvatorialguinea");
+    swedishMap.put("gr","Grekland");
+    swedishMap.put("gs","South Georgia och South Sandwich Islands");
+    swedishMap.put("gt","Guatemala");
+    swedishMap.put("gu","Guam");
+    swedishMap.put("gw","Guinea-Bissau");
+    swedishMap.put("gy","Guyana");
+    swedishMap.put("hk","Hong Kong");
+    swedishMap.put("hm","Heard Island och McDonald Islands");
+    swedishMap.put("hn","Honduras");
+    swedishMap.put("hr","Kroatien");
+    swedishMap.put("ht","Haiti");
+    swedishMap.put("hu","Ungern");
+    swedishMap.put("id","Indonesien");
+    swedishMap.put("ie","Irland");
+    swedishMap.put("il","Israel");
+    swedishMap.put("im","ö av man");
+    swedishMap.put("in","Indien");
+    swedishMap.put("io","Brittiska territoriet i Indiska oceanen");
+    swedishMap.put("iq","Irak");
+    swedishMap.put("ir","Iran");
+    swedishMap.put("is","Island");
+    swedishMap.put("it","Italien");
+    swedishMap.put("je","Jersey");
+    swedishMap.put("jm","Jamaica");
+    swedishMap.put("jo","Jordanien");
+    swedishMap.put("jp","Japan");
+    swedishMap.put("ke","Kenya");
+    swedishMap.put("kg","Kirgizistan");
+    swedishMap.put("kh","Kambodja");
+    swedishMap.put("ki","Kiribati");
+    swedishMap.put("km","Komorerna");
+    swedishMap.put("kn","Saint Kitts och Nevis");
+    swedishMap.put("kp","Nordkorea");
+    swedishMap.put("kr","Sydkorea");
+    swedishMap.put("kw","Kuwait");
+    swedishMap.put("ky","Caymanöarna");
+    swedishMap.put("kz","Kazakstan");
+    swedishMap.put("la","Laos");
+    swedishMap.put("lb","Libanon");
+    swedishMap.put("lc","Saint Lucia");
+    swedishMap.put("li","Liechtenstein");
+    swedishMap.put("lk","Sri Lanka");
+    swedishMap.put("lr","Liberia");
+    swedishMap.put("ls","Lesotho");
+    swedishMap.put("lt","Litauen");
+    swedishMap.put("lu","Luxemburg");
+    swedishMap.put("lv","Lettland");
+    swedishMap.put("ly","Libyen");
+    swedishMap.put("ma","Marocko");
+    swedishMap.put("mc","Monaco");
+    swedishMap.put("md","Moldavien");
+    swedishMap.put("me","Montenegro");
+    swedishMap.put("mf","Sankt Martin");
+    swedishMap.put("mg","Madagaskar");
+    swedishMap.put("mh","Marshallöarna");
+    swedishMap.put("mk","Nordmakedonien");
+    swedishMap.put("ml","Mali");
+    swedishMap.put("mm","Myanmar");
+    swedishMap.put("mn","mongoliet");
+    swedishMap.put("mo","Macau");
+    swedishMap.put("mp","Nordmarianerna");
+    swedishMap.put("mq","Martinique");
+    swedishMap.put("mi","Martinique");
+    swedishMap.put("mr","Mauretanien");
+    swedishMap.put("ms","Montserrat");
+    swedishMap.put("mt","Malta");
+    swedishMap.put("mu","Mauritius");
+    swedishMap.put("mv","Maldiverna");
+    swedishMap.put("mw","Malawi");
+    swedishMap.put("mx","Mexiko");
+    swedishMap.put("my","Malaysia");
+    swedishMap.put("mz","Moçambique");
+    swedishMap.put("na","Namibia");
+    swedishMap.put("nc","Nya Kaledonien");
+    swedishMap.put("ne","Niger");
+    swedishMap.put("nf","Norfolkön");
+    swedishMap.put("ng","Nigeria");
+    swedishMap.put("ni","Nicaragua");
+    swedishMap.put("nl","Nederländerna");
+    swedishMap.put("no","Norge");
+    swedishMap.put("np","Nepal");
+    swedishMap.put("nr","Nauru");
+    swedishMap.put("nu","Niue");
+    swedishMap.put("nz","Nya Zeeland");
+    swedishMap.put("om","oman");
+    swedishMap.put("pa","Panama");
+    swedishMap.put("pe","Peru");
+    swedishMap.put("pf","Franska Polynesien");
+    swedishMap.put("pg","Papua Nya Guinea");
+    swedishMap.put("ph","Filippinerna");
+    swedishMap.put("pk","Pakistan");
+    swedishMap.put("pl","Polen");
+    swedishMap.put("pm","Saint Pierre och Miquelon");
+    swedishMap.put("pn","Pitcairnöarna");
+    swedishMap.put("pr","Puerto Rico");
+    swedishMap.put("ps","Palestina");
+    swedishMap.put("pt","Portugal");
+    swedishMap.put("pw","Palau");
+    swedishMap.put("py","Paraguay");
+    swedishMap.put("qa","Qatar");
+    swedishMap.put("re","Återförening");
+    swedishMap.put("ro","Rumänien");
+    swedishMap.put("rs","Serbien");
+    swedishMap.put("ru","Ryssland");
+    swedishMap.put("rw","Rwanda");
+    swedishMap.put("sa","Saudiarabien");
+    swedishMap.put("sb","Salomonöarna");
+    swedishMap.put("sc","Seychellerna");
+    swedishMap.put("sd","Sudan");
+    swedishMap.put("se","Sverige");
+    swedishMap.put("sg","Singapore");
+    swedishMap.put("sh","Sankt Helena");
+    swedishMap.put("si","Slovenien");
+    swedishMap.put("sj","Svalbard och Jan Mayen");
+    swedishMap.put("sk","Slovakien");
+    swedishMap.put("sl","Sierra Leone");
+    swedishMap.put("sm","San Marino");
+    swedishMap.put("sn","Senegal");
+    swedishMap.put("so","Somalia");
+    swedishMap.put("sr","Surinam");
+    swedishMap.put("ss","södra Sudan");
+    swedishMap.put("st","Sao Tomé och Principe");
+    swedishMap.put("sv","El Salvador");
+    swedishMap.put("sx","Sint Maarten");
+    swedishMap.put("sy","Syrien");
+    swedishMap.put("sz","Eswatini");
+    swedishMap.put("tc","Turks- och Caicosöarna");
+    swedishMap.put("td","Tchad");
+    swedishMap.put("tf","Franska södra och antarktiska länder");
+    swedishMap.put("tg","Togo");
+    swedishMap.put("th","Thailand");
+    swedishMap.put("tj","Tadzjikistan");
+    swedishMap.put("tk","Tokelau");
+    swedishMap.put("tl","Östtimor");
+    swedishMap.put("tm","Turkmenistan");
+    swedishMap.put("tn","Tunisien");
+    swedishMap.put("to","Tonga");
+    swedishMap.put("tr","Turkiye");
+    swedishMap.put("tt","Trinidad och Tobago");
+    swedishMap.put("tv","Tuvalu");
+    swedishMap.put("tw","Taiwan");
+    swedishMap.put("tz","Tanzania");
+    swedishMap.put("ua","Ukraina");
+    swedishMap.put("ug","Uganda");
+    swedishMap.put("um","Förenta staternas mindre avlägsna öar");
+    swedishMap.put("us","Amerikas förenta stater");
+    swedishMap.put("uy","Uruguay");
+    swedishMap.put("uz","Uzbekistan");
+    swedishMap.put("va","Vatikanstaten");
+    swedishMap.put("vc","Saint Vincent och Grenadinerna");
+    swedishMap.put("ve","Venezuela");
+    swedishMap.put("vg","Brittiska Jungfruöarna");
+    swedishMap.put("vi","Amerikanska Jungfruöarna");
+    swedishMap.put("vn","Vietnam");
+    swedishMap.put("vu","Vanuatu");
+    swedishMap.put("wf","Wallis och Futuna");
+    swedishMap.put("ws","Samoa");
+    swedishMap.put("xk","Kosovo");
+    swedishMap.put("ye","Jemen");
+    swedishMap.put("yt","Mayotte");
+    swedishMap.put("za","Sydafrika");
+    swedishMap.put("zm","Zambia");
+    swedishMap.put("zw","Zimbabwe");
+    swedishMap.put("ac","Uppstigning");
+    swedishMap.put("ti","Tristan da Cunha");
+    swedishMap.put("bas","Bashkortostan");
+    swedishMap.put("bia","Bikini Atoll");
+    swedishMap.put("bri","Bretagne");
+    swedishMap.put("bur","Buryatia");
+    swedishMap.put("cri","Tjetjenien Ichkeria");
+    swedishMap.put("che","Tjetjenien");
+    swedishMap.put("chu","Chuvashia");
+    swedishMap.put("crm","Krim");
+    swedishMap.put("eai","Påskön");
+    swedishMap.put("dag","Dagestan");
+    swedishMap.put("eu","europeiska unionen");
+    swedishMap.put("her","Herm");
+    swedishMap.put("ing","Ingusjien");
+    swedishMap.put("kpr","Folkrepubliken Kuban");
+    swedishMap.put("kab","Kabardino-Balkaria");
+    swedishMap.put("kal","Kalmykia");
+    swedishMap.put("kar","Karachay-Cherkessia");
+    swedishMap.put("kkp","Karakalpakstan");
+    swedishMap.put("krl","karelen");
+    swedishMap.put("kha","Khakassia");
+    swedishMap.put("kom","Komi");
+    swedishMap.put("lad","Ladonia");
+    swedishMap.put("mar","Mari El");
+    swedishMap.put("mor","Mordovia");
+    swedishMap.put("nag","Nagorno-Karabach");
+    swedishMap.put("nos","Nordossetien");
+    swedishMap.put("rsr","Republika Srpska");
+    swedishMap.put("bqu","Baskien");
   }
 
   private void loadRussianCountries() {
@@ -471,6 +772,7 @@ public class LanguageService {
     russianMap.put("nag", "Нагорный Карабах");
     russianMap.put("nos", "Северная Осетия");
     russianMap.put("rsr", "Республика Сербская");
+    russianMap.put("bqu", "Страна Басков");
   }
 
   private void loadFrenchCountries() {
@@ -767,6 +1069,7 @@ public class LanguageService {
     frenchMap.put("nag", "Haut-Karabagh");
     frenchMap.put("nos", "Ossétie du Nord");
     frenchMap.put("rsr", "Republika Srpska");
+    frenchMap.put("bqu", "Pays basque");
   }
 
   private void loadTurkishCountries() {
@@ -1063,6 +1366,7 @@ public class LanguageService {
     turkishMap.put("nag", "Dağlık Karabağ");
     turkishMap.put("nos", "Kuzey Osetya");
     turkishMap.put("rsr", "Sırp Cumhuriyeti");
+    turkishMap.put("bqu", "Bask Bölgesi");
   }
 
   private void loadKoreanCountries() {
@@ -1359,6 +1663,7 @@ public class LanguageService {
     koreanMap.put("nag", "나고르노-카라바흐");
     koreanMap.put("nos", "북오세티아");
     koreanMap.put("rsr", "레푸블리카 스르프스카");
+    koreanMap.put("bqu", "바스크주");
   }
 
   private void loadJapaneseCountries() {
@@ -1655,6 +1960,7 @@ public class LanguageService {
     japaneseMap.put("nag", "ナゴルノ・カラバフ");
     japaneseMap.put("nos", "北オセチア");
     japaneseMap.put("rsr", "スルプスカ共和国");
+    japaneseMap.put("bqu", "バスク地方");
   }
 
   private void loadPortugueseCountries() {
@@ -1951,6 +2257,7 @@ public class LanguageService {
     portugueseMap.put("nag", "Nagorno-Karabakh");
     portugueseMap.put("nos", "Ossétia do Norte");
     portugueseMap.put("rsr", "República Srpska");
+    portugueseMap.put("bqu", "País Basco");
   }
 
   private void loadSpanishCountries() {
@@ -2247,6 +2554,7 @@ public class LanguageService {
     spanishMap.put("nag", "Nagorno-Karabaj");
     spanishMap.put("nos", "Osetia del Norte");
     spanishMap.put("rsr", "República Srpska");
+    spanishMap.put("bqu", "País Vasco");
   }
 
   private void loadArabicCountries() {
@@ -2543,5 +2851,6 @@ public class LanguageService {
     arabicMap.put("nag", "ناغورنو كاراباخ");
     arabicMap.put("nos", "أوسيتيا الشمالية");
     arabicMap.put("rsr", "جمهورية صربسكا");
+    arabicMap.put("bqu", "إقليم الباسك");
   }
 }

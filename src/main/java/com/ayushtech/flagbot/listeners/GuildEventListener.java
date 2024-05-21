@@ -19,7 +19,7 @@ public class GuildEventListener extends ListenerAdapter {
       event.replyChoiceStrings("DOOGLE", "MAPPLE", "RAMSUNG", "MICROLOFT", "LOCKSTAR", "SEPSICO", "LETFLIX",
           "STARMUCKS", "TWEETER", "DISKORD").queue();
     } else if (event.getSubcommandName().equals("set")) {
-      event.replyChoiceStrings("Arabic", "French", "Japanese", "Korean", "Portuguese", "Russian", "Spanish", "Turkish")
+      event.replyChoiceStrings("Arabic", "French", "Japanese", "Korean", "Portuguese", "Russian", "Spanish","Swedish", "Turkish")
           .queue();
     }
   }

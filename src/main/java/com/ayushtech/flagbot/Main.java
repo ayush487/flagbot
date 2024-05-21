@@ -36,7 +36,7 @@ public class Main {
                 DefaultShardManagerBuilder builder =
                 DefaultShardManagerBuilder.createDefault(bot_token);
                 builder.setShardsTotal(2);
-                builder.setActivity(Activity.playing("/memoflip"));
+                builder.setActivity(Activity.playing("/guess"));
                 builder.addEventListeners(new MessageListener(), new InteractionsListener(),
                 new GuildEventListener());
                 builder.build();

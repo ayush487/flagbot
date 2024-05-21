@@ -83,7 +83,7 @@ public class FlagGame extends Game {
 		StringBuilder sb = new StringBuilder();
 		sb.append(msgEvent.getAuthor().getAsMention() + " is correct!\n**Coins :** `"
 				+ Game.getAmount(msgEvent.getAuthor().getIdLong()) + "(+100)` " + ":coin:"
-				+ "  \n **Correct Answer :** " + answerString);
+				+ "  \n**Correct Answer :** " + answerString);
 		if (alternativeNames.containsKey(countryCode)) {
 			sb.append("\n**Alternative Answers :** " + alternativeNames.get(countryCode));
 		}

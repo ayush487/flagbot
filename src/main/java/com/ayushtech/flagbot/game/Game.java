@@ -43,6 +43,9 @@ public abstract class Game {
         return CoinDao.getInstance().getBalance(userId);
     }
 
+    public static String getCountryName(String countryCode) {
+        return countryMap.get(countryCode);
+    }
     private static void loadCountries() {
         countryMap.put("aa", "Saba");
         countryMap.put("ab", "Abkhazia");
@@ -107,7 +110,7 @@ public abstract class Game {
         countryMap.put("cw", "Curacao");
         countryMap.put("cx", "Christmas Island");
         countryMap.put("cy", "Cyprus");
-        countryMap.put("cz", "Czech Republic");
+        countryMap.put("cz", "Czechia");
         countryMap.put("de", "Germany");
         countryMap.put("dj", "Djibouti");
         countryMap.put("dk", "Denmark");
@@ -297,7 +300,7 @@ public abstract class Game {
         countryMap.put("vc", "Saint Vincent and the Grenadines");
         countryMap.put("ve", "Venezuela");
         countryMap.put("vg", "British Virgin Islands");
-        countryMap.put("vi", "US Virgin Islands");
+        countryMap.put("vi", "U.S. Virgin Islands");
         countryMap.put("vn", "Vietnam");
         countryMap.put("vu", "Vanuatu");
         countryMap.put("wf", "Wallis and Futuna");
@@ -308,7 +311,7 @@ public abstract class Game {
         countryMap.put("za", "South Africa");
         countryMap.put("zm", "Zambia");
         countryMap.put("zw", "Zimbabwe");
-        countryMap.put("ac", "Ascension");
+        countryMap.put("ac", "Ascension Island");
         countryMap.put("ti", "Tristan da Cunha");
         countryMap.put("bas", "Bashkortostan");
         countryMap.put("bia", "Bikini Atoll");
@@ -337,9 +340,11 @@ public abstract class Game {
         countryMap.put("nag", "Nagorno-Karabakh");
         countryMap.put("nos", "North Ossetia");
         countryMap.put("rsr", "Republika Srpska");
+        countryMap.put("bqu", "Basque Country");
     }
 
     private static void loadNonSoverignCountries() {
+        nonSoverignCountries.add("bqu");
         nonSoverignCountries.add("rsr");
         nonSoverignCountries.add("nag");
         nonSoverignCountries.add("nos");
@@ -439,12 +444,12 @@ public abstract class Game {
 
     private static void loadAlternativeNames() {
         alternativeNames.put("ae","UAE");
-        alternativeNames.put("cd","DR Congo");
+        alternativeNames.put("cd","DR Congo, DRC");
         alternativeNames.put("ci", "Côte d'Ivoire");
         alternativeNames.put("cv", "Cabo Verde");
-        alternativeNames.put("cz", "Czechia");
+        alternativeNames.put("cz", "Czech Republic");
         alternativeNames.put("tr", "Turkey");
-        alternativeNames.put("us", "USA/United States");
+        alternativeNames.put("us", "USA, United States");
         alternativeNames.put("gb", "UK");
         alternativeNames.put("tl", "East Timor");
         alternativeNames.put("in","Bharat");

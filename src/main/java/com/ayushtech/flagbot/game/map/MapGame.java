@@ -76,7 +76,7 @@ public class MapGame extends Game {
 				" is correct!\n**Coins :** `" +
 				Game.getAmount(msgEvent.getAuthor().getIdLong()) +
 				"(+100)` " + ":coin:" +
-				"  \n **Correct Answer :** " +
+				"  \n**Correct Answer :** " +
 				answerString);
 		if (alternativeNames.containsKey(countryCode)) {
 			sb.append("\n**Alternative Answers :** " + alternativeNames.get(countryCode));
@@ -173,6 +173,7 @@ public class MapGame extends Game {
 		ignoreSet.add("ps");
 		ignoreSet.add("cd");
 		ignoreSet.add("aa");
+		ignoreSet.add("ac");
 		ignoreSet.add("ag");
 		ignoreSet.add("re");
 		ignoreSet.add("ax");
@@ -220,6 +221,7 @@ public class MapGame extends Game {
 		ignoreSet.add("nag");
 		ignoreSet.add("nos");
 		ignoreSet.add("rsr");
+		ignoreSet.add("bqu");
 	}
 
 	private static void loadCountryOverrideMap() {
@@ -234,7 +236,8 @@ public class MapGame extends Game {
 		countryOverrideMap.put("Cape Verde", "cabo_verde");
 		countryOverrideMap.put("Ivory Coast", "cote_divoire");
 		countryOverrideMap.put("Congo", "congo_republic_of_the");
-
+		countryOverrideMap.put("Czechia", "czech_republic");
+		countryOverrideMap.put("U.S. Virgin Islands", "virgin_islands");
 	}
 
 	public MessageEmbed getMessageEmbed() {
