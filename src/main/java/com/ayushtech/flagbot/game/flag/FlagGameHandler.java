@@ -1,6 +1,7 @@
 package com.ayushtech.flagbot.game.flag;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import com.ayushtech.flagbot.services.LanguageService;
@@ -15,6 +16,17 @@ public class FlagGameHandler {
     private static FlagGameHandler gameHandler = null;
 
     private HashMap<Long, FlagGame> gameMap;
+    private static Map<String,String> continentCodeMap = new HashMap<>();
+
+    static {
+        continentCodeMap.put("asia", "as");
+        continentCodeMap.put("africa", "af");
+        continentCodeMap.put("europe", "eu");
+        continentCodeMap.put("oceania", "oc");
+        continentCodeMap.put("north america", "na");
+        continentCodeMap.put("south america", "sa");
+        continentCodeMap.put("antarctica", "an");
+    }
 
     private FlagGameHandler() {
         gameMap = new HashMap<>();
@@ -40,6 +52,7 @@ public class FlagGameHandler {
             event.getHook().sendMessage("Starting game now!").queue();
             OptionMapping difficultyOption = event.getOption("mode");
             OptionMapping roundsOption = event.getOption("rounds");
+            OptionMapping continentOption = event.getOption("continent");
             String difficultyString = difficultyOption == null ? "sovereign countries only" : difficultyOption.getAsString().toLowerCase();
             byte difficulty = 0;
             if (difficultyString.startsWith("sovereign")) {
@@ -51,10 +64,22 @@ public class FlagGameHandler {
             } else {
                 difficulty = 0;
             }
+            String continentCode;
+            if (continentOption==null) {
+                continentCode = "all";
+            } else {
+                String continent = continentOption.getAsString().toLowerCase();
+                if (continentCodeMap.containsKey(continent)) {
+                    continentCode = continentCodeMap.get(continent);
+                    difficulty = 2;
+                } else {
+                    continentCode = "all";
+                }
+            }
             int rounds = roundsOption == null ? 0 : roundsOption.getAsInt();
             rounds = (rounds <= 0) ? 0 : (rounds > 15) ? 15 : rounds;
             Optional<String> langOptional = LanguageService.getInstance().getLanguageSelected(event.getGuild().getIdLong());
-            FlagGame game = new FlagGame(event.getChannel(), difficulty, rounds, rounds, langOptional.orElse(null));
+            FlagGame game = new FlagGame(event.getChannel(), difficulty, rounds, rounds, langOptional.orElse(null), continentCode);
             gameMap.put(event.getChannel().getIdLong(), game);
             return true;
         }
@@ -69,8 +94,9 @@ public class FlagGameHandler {
             String[] commandData = event.getComponentId().split("_");
             byte difficulty = Byte.parseByte(commandData[1]);
             int rounds = Integer.parseInt(commandData[2]);
+            String continentCode = commandData[3];
             Optional<String> langOptional = LanguageService.getInstance().getLanguageSelected(event.getGuild().getIdLong());
-            FlagGame game = new FlagGame(event.getChannel(), difficulty, rounds, rounds, langOptional.orElse(null));
+            FlagGame game = new FlagGame(event.getChannel(), difficulty, rounds, rounds, langOptional.orElse(null), continentCode);
             gameMap.put(event.getChannel().getIdLong(), game);
             return true;
         }

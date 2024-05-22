@@ -1,11 +1,14 @@
 package com.ayushtech.flagbot.game.flag;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
 
+import com.ayushtech.flagbot.dbconnectivity.RegionDao;
 import com.ayushtech.flagbot.game.Game;
 import com.ayushtech.flagbot.services.GameEndService;
 import com.ayushtech.flagbot.services.LanguageService;
@@ -19,6 +22,7 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 public class FlagGame extends Game {
 
 	private static Random random;
+	private static Map<String,String> continentMap;
 
 	private String countryCode;
 	private MessageChannel channel;
@@ -28,22 +32,37 @@ public class FlagGame extends Game {
 	private int rounds;
 	private int roundSize;
 	private String lang;
+	private String continentCode;
 
 	static {
 		random = new Random();
+		continentMap = new HashMap<>(7);
+		continentMap.put("as", "Asia");
+    continentMap.put("af", "Africa");
+    continentMap.put("an", "Antarctica");
+    continentMap.put("eu", "Europe");
+    continentMap.put("oc", "Oceania");
+    continentMap.put("sa", "South America");
+    continentMap.put("na", "North America");
 	}
 
-	public FlagGame(MessageChannel channel, byte difficulty, int rounds, int roundSize, String lang) {
+	public static void startAgain(MessageChannel channel, byte difficulty, int rounds, int roundSize, String lang, String continentCode) {
+		FlagGame game = new FlagGame(channel, difficulty, rounds, roundSize, lang, continentCode);
+		FlagGameHandler.getInstance().getGameMap().put(channel.getIdLong(), game);
+		GameEndService.getInstance().scheduleEndGame(
+				new FlagGameEndRunnable(game, channel.getIdLong()), 30, TimeUnit.SECONDS);
+	}
+
+	public FlagGame(MessageChannel channel, byte difficulty, int rounds, int roundSize, String lang,String continentCode) {
 		super();
 		this.channel = channel;
 		this.difficulty = difficulty;
 		this.rounds = rounds;
 		this.roundSize = roundSize;
 		this.lang = lang;
-		this.countryCode = getRandomCountryCode(difficulty);
+		this.continentCode = continentCode;
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setTitle("Guess the Country Flag");
-		eb.setImage(flagLink + countryCode + suffix);
 		eb.setColor(new Color(38, 187, 237));
 		String mode;
 		if (difficulty == 0) {
@@ -53,7 +72,16 @@ public class FlagGame extends Game {
 		} else {
 			mode = "All Countries";
 		}
-		eb.setDescription(String.format("**Mode** : `%s`", mode));
+		String continent;
+		if (continentCode.equals("all")) {
+			continent = "Not Specified";
+			this.countryCode = getRandomCountryCode(difficulty);
+		} else {
+			continent = continentMap.get(continentCode);
+			this.countryCode = RegionDao.getInstance().getRandomCountryByContinent(continentCode);
+		}
+		eb.setImage(flagLink + countryCode + suffix);
+		eb.setDescription(String.format("**Mode** : `%s`\n**Continent** : `%s`", mode, continent));
 		eb.setFooter((difficulty != 0 ? "*Regions not available in the mode" : "*See Region will cost you 60 coins"));
 		MessageEmbed embed = eb.build();
 		setMessageEmbed(embed);
@@ -92,12 +120,12 @@ public class FlagGame extends Game {
 		eb.setColor(new Color(13, 240, 52));
 		if (rounds <= 1) {
 			msgEvent.getChannel().sendMessageEmbeds(eb.build())
-					.setActionRow(Button.primary("playAgainFlag_" + difficulty + "_" + roundSize,
+					.setActionRow(Button.primary("playAgainFlag_" + difficulty + "_" + roundSize + "_" + continentCode,
 							roundSize <= 1 ? "Play Again" : "Start Round Again"))
 					.queue();
 		} else {
 			msgEvent.getChannel().sendMessageEmbeds(eb.build()).queue();
-			startAgain(channel, difficulty, rounds - 1, roundSize, lang);
+			startAgain(channel, difficulty, rounds - 1, roundSize, lang, continentCode);
 		}
 		disableButtons();
 		Game.increaseCoins(msgEvent.getAuthor().getIdLong(), 100l);
@@ -124,22 +152,17 @@ public class FlagGame extends Game {
 		FlagGameHandler.getInstance().endGame(channel.getIdLong());
 		if (rounds <= 1) {
 			this.channel.sendMessageEmbeds(eb.build())
-					.setActionRow(Button.primary("playAgainFlag_" + difficulty + "_" + roundSize,
+					.setActionRow(Button.primary("playAgainFlag_" + difficulty + "_" + roundSize + "_" + continentCode,
 							roundSize <= 1 ? "Play Again" : "Start Round Again"))
 					.queue();
 		} else {
 			this.channel.sendMessageEmbeds(eb.build()).queue();
-			startAgain(channel, difficulty, rounds - 1, roundSize, lang);
+			startAgain(channel, difficulty, rounds - 1, roundSize, lang, continentCode);
 		}
 		disableButtons();
 	}
 
-	public static void startAgain(MessageChannel channel, byte difficulty, int rounds, int roundSize, String lang) {
-		FlagGame game = new FlagGame(channel, difficulty, rounds, roundSize, lang);
-		FlagGameHandler.getInstance().getGameMap().put(channel.getIdLong(), game);
-		GameEndService.getInstance().scheduleEndGame(
-				new FlagGameEndRunnable(game, channel.getIdLong()), 30, TimeUnit.SECONDS);
-	}
+	
 
 	@Override
 	public void disableButtons() {

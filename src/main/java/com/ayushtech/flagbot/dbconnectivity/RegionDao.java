@@ -71,4 +71,19 @@ public class RegionDao {
 		}
 		return countryCodeList;
 	}
+
+	public String getRandomCountryByContinent(String continentCode) {
+		Connection conn = ConnectionProvider.getConnection();
+		try {
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(String.format("SELECT country_code FROM country_continents WHERE continent_code ='%s' ORDER by RAND() limit 1;", continentCode));
+			if (rs.next()) {
+				return rs.getString("country_code");
+			}
+			return "in";
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "in";
+		}
+	}
 }
