@@ -115,6 +115,7 @@ public class MessageListener extends ListenerAdapter {
         alternateNamesMap.put("eu", "European Union");
         alternateNamesMap.put("car", "Central African Republic");
         alternateNamesMap.put("south georgia", "South Georgia and the South Sandwich Islands");
+        alternateNamesMap.put("sealand", "Principality of Sealand");
         alternateNamesMap.put("الإمارات", "الإمارات العربية المتحدة");
     }
 }

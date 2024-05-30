@@ -34,6 +34,7 @@ import com.ayushtech.flagbot.services.CoinTransferService;
 import com.ayushtech.flagbot.services.GameEndService;
 import com.ayushtech.flagbot.services.LanguageService;
 import com.ayushtech.flagbot.services.MetricService;
+import com.ayushtech.flagbot.services.VotingService;
 import com.ayushtech.flagbot.stocks.Company;
 import com.ayushtech.flagbot.stocks.StocksHandler;
 
@@ -444,7 +445,7 @@ public class InteractionsListener extends ListenerAdapter {
 							event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
 				}
 				return;
-			} else if(commandName != null && commandName.equals("place")){
+			} else if (commandName != null && commandName.equals("place")) {
 				boolean isAdded = PlaceGameHandler.getInstance().addGame(event);
 				if (isAdded) {
 					GameEndService.getInstance().scheduleEndGame(new PlaceGameEndRunnable(
@@ -486,8 +487,16 @@ public class InteractionsListener extends ListenerAdapter {
 			CaptchaService.getInstance().removeBlock(Long.parseLong(user_id));
 			event.getHook().sendMessage("Unblocked User").queue();
 			return;
-		} else if(event.getName().equals("metrics")) {
+		}
+
+		else if (event.getName().equals("metrics")) {
 			MetricService.getInstance().handleMetricCommand(event);
+			return;
+		}
+
+		// voters info
+		else if (event.getName().equals("recent_votes")) {
+			VotingService.getInstance().handleVoteInfoCommand(event);
 			return;
 		}
 	}

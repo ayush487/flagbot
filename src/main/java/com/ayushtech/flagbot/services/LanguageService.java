@@ -476,6 +476,10 @@ public class LanguageService {
     swedishMap.put("nos","Nordossetien");
     swedishMap.put("rsr","Republika Srpska");
     swedishMap.put("bqu","Baskien");
+    swedishMap.put("sak","Republiken Sacha");
+    swedishMap.put("sar","Sark");
+    swedishMap.put("sea","Furstendömet Själland");
+    swedishMap.put("som","Somaliland");
   }
 
   private void loadRussianCountries() {
@@ -773,6 +777,10 @@ public class LanguageService {
     russianMap.put("nos", "Северная Осетия");
     russianMap.put("rsr", "Республика Сербская");
     russianMap.put("bqu", "Страна Басков");
+    russianMap.put("sak","Республика Саха");
+    russianMap.put("sar","Сарк");
+    russianMap.put("sea","Княжество Силенд");
+    russianMap.put("som","Сомалиленд");
   }
 
   private void loadFrenchCountries() {
@@ -1070,6 +1078,10 @@ public class LanguageService {
     frenchMap.put("nos", "Ossétie du Nord");
     frenchMap.put("rsr", "Republika Srpska");
     frenchMap.put("bqu", "Pays basque");
+    frenchMap.put("sak", "République de Sakha");
+    frenchMap.put("sar", "Sercq");
+    frenchMap.put("sea", "Principauté de Sealand");
+    frenchMap.put("som", "Somaliland");
   }
 
   private void loadTurkishCountries() {
@@ -1367,6 +1379,10 @@ public class LanguageService {
     turkishMap.put("nos", "Kuzey Osetya");
     turkishMap.put("rsr", "Sırp Cumhuriyeti");
     turkishMap.put("bqu", "Bask Bölgesi");
+    turkishMap.put("sak", "Saha Cumhuriyeti");
+    turkishMap.put("sar", "Sark");
+    turkishMap.put("sea", "Sealand Prensliği");
+    turkishMap.put("som", "Somaliland");
   }
 
   private void loadKoreanCountries() {
@@ -1664,6 +1680,10 @@ public class LanguageService {
     koreanMap.put("nos", "북오세티아");
     koreanMap.put("rsr", "레푸블리카 스르프스카");
     koreanMap.put("bqu", "바스크주");
+    koreanMap.put("sak", "사카 공화국");
+    koreanMap.put("sar", "사크");
+    koreanMap.put("sea", "시랜드 공국");
+    koreanMap.put("som", "소말릴란드");
   }
 
   private void loadJapaneseCountries() {
@@ -1961,6 +1981,10 @@ public class LanguageService {
     japaneseMap.put("nos", "北オセチア");
     japaneseMap.put("rsr", "スルプスカ共和国");
     japaneseMap.put("bqu", "バスク地方");
+    japaneseMap.put("sak", "サハ共和国");
+    japaneseMap.put("sar", "サーク島");
+    japaneseMap.put("sea", "シーランド公国");
+    japaneseMap.put("som", "ソマリランド");
   }
 
   private void loadPortugueseCountries() {
@@ -2258,6 +2282,10 @@ public class LanguageService {
     portugueseMap.put("nos", "Ossétia do Norte");
     portugueseMap.put("rsr", "República Srpska");
     portugueseMap.put("bqu", "País Basco");
+    portugueseMap.put("sak", "República Sakha");
+    portugueseMap.put("sar", "Sark");
+    portugueseMap.put("sea", "Principado de Sealand");
+    portugueseMap.put("som", "Somalilândia");
   }
 
   private void loadSpanishCountries() {
@@ -2555,6 +2583,10 @@ public class LanguageService {
     spanishMap.put("nos", "Osetia del Norte");
     spanishMap.put("rsr", "República Srpska");
     spanishMap.put("bqu", "País Vasco");
+    spanishMap.put("sak", "República de Sajá");
+    spanishMap.put("sar", "sark");
+    spanishMap.put("sea", "Principado de Sealand");
+    spanishMap.put("som", "somalilandia");
   }
 
   private void loadArabicCountries() {
@@ -2852,5 +2884,9 @@ public class LanguageService {
     arabicMap.put("nos", "أوسيتيا الشمالية");
     arabicMap.put("rsr", "جمهورية صربسكا");
     arabicMap.put("bqu", "إقليم الباسك");
+    arabicMap.put("sak","جمهورية ساخا");
+    arabicMap.put("sar","سارك");
+    arabicMap.put("sea","إمارة سيلاند");
+    arabicMap.put("som","أرض الصومال");
   }
 }

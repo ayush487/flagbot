@@ -222,6 +222,10 @@ public class MapGame extends Game {
 		ignoreSet.add("nos");
 		ignoreSet.add("rsr");
 		ignoreSet.add("bqu");
+		ignoreSet.add("sak");
+		ignoreSet.add("sar");
+		ignoreSet.add("sea");
+		ignoreSet.add("som");
 	}
 
 	private static void loadCountryOverrideMap() {
