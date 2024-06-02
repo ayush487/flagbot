@@ -68,7 +68,7 @@ public abstract class Game {
         countryMap.put("at", "Austria");
         countryMap.put("au", "Australia");
         countryMap.put("aw", "Aruba");
-        countryMap.put("ax", "Aland Islands");
+        countryMap.put("ax", "Åland Islands");
         countryMap.put("az", "Azerbaijan");
         countryMap.put("ba", "Bosnia and Herzegovina");
         countryMap.put("bb", "Barbados");
@@ -452,6 +452,7 @@ public abstract class Game {
 
     private static void loadAlternativeNames() {
         alternativeNames.put("ae","UAE");
+        alternativeNames.put("ax", "Aland Islands");
         alternativeNames.put("cd","DR Congo, DRC");
         alternativeNames.put("ci", "Côte d'Ivoire");
         alternativeNames.put("cv", "Cabo Verde");
@@ -467,5 +468,6 @@ public abstract class Game {
         alternativeNames.put("cf", "CAR");
         alternativeNames.put("gs", "South Georgia");
         alternativeNames.put("sea", "Sealand");
+        alternativeNames.put("vi", "US Virgin Islands, United States Virgin Islands");
     }
 }

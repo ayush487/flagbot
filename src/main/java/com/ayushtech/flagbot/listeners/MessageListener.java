@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import com.ayushtech.flagbot.distanceGuess.GuessDistanceHandler;
 import com.ayushtech.flagbot.game.flag.FlagGameHandler;
 import com.ayushtech.flagbot.game.logo.LogoGameHandler;
 import com.ayushtech.flagbot.game.map.MapGameHandler;
@@ -68,6 +69,10 @@ public class MessageListener extends ListenerAdapter {
             }
         }
 
+        if (GuessDistanceHandler.getInstance().isActiveGameInChannel(channelId)) {
+            GuessDistanceHandler.getInstance().handleGuess(messageText, event);
+        }
+
         if (alternateNamesMap.containsKey(messageText.toLowerCase())) {
             messageText = alternateNamesMap.get(messageText.toLowerCase());
         }
@@ -116,6 +121,9 @@ public class MessageListener extends ListenerAdapter {
         alternateNamesMap.put("car", "Central African Republic");
         alternateNamesMap.put("south georgia", "South Georgia and the South Sandwich Islands");
         alternateNamesMap.put("sealand", "Principality of Sealand");
+        alternateNamesMap.put("aland islands", "Åland Islands");
+        alternateNamesMap.put("us virgin islands", "U.S. Virgin Islands");
+        alternateNamesMap.put("united states virgin islands", "U.S. Virgin Islands");
         alternateNamesMap.put("الإمارات", "الإمارات العربية المتحدة");
     }
 }

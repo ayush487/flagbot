@@ -10,7 +10,7 @@ public class GameEndService {
   private ScheduledExecutorService executor;
 
   private GameEndService() {
-    executor = new ScheduledThreadPoolExecutor(1);
+    executor = new ScheduledThreadPoolExecutor(2);
   }
 
   public static GameEndService getInstance() {
