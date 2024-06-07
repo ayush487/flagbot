@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ayushtech.flagbot.game.location.LocationMap;
 import com.ayushtech.flagbot.game.place.Place;
 
 public class PlacesDao {
@@ -47,7 +48,19 @@ public class PlacesDao {
       return new Place(rs.getString("code"), rs.getString("name"), rs.getString("location"));
     } catch (SQLException e) {
       e.printStackTrace();
-      return new Place(null,null,null);
+      return new Place(null, null, null);
+    }
+  }
+
+  public LocationMap getRandomPlaceMap() {
+    Connection conn = ConnectionProvider.getConnection();
+    try {
+      Statement stmt = conn.createStatement();
+      ResultSet rs = stmt.executeQuery("SELECT name, correct FROM places_map_data ORDER BY RAND() LIMIT 1;");
+      rs.next();
+      return new LocationMap(rs.getString("name"), rs.getInt("correct"));
+    } catch (SQLException e) {
+      return new LocationMap("taj_6", 4);
     }
   }
 }

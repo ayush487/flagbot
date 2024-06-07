@@ -17,7 +17,7 @@ public class MetricService {
 
   private MetricService() {
     startingInstance = System.currentTimeMillis();
-    commandMetricMap = new HashMap<>(32);
+    commandMetricMap = new HashMap<>(35);
     loadCommandMetricMap();
   }
 
@@ -35,13 +35,14 @@ public class MetricService {
     eb.setDescription("**Start Time : **" + TimeFormat.RELATIVE.atTimestamp(startingInstance));
     eb.addField("__Guess commands__",
         String.format(
-            "__Slash commands__\n> flag : %d\n> logo : %d\n> map : %d\n> continent : %d\n> place : %d\n> distance : %d\n__Buttons__\n> flag : %d\n> logo : %d\n> map : %d\n> continent : %d\n> place : %d",
+            "__Slash commands__\n> flag : %d\n> logo : %d\n> map : %d\n> continent : %d\n> place : %d\n> distance : %d\n> location : %d\n__Buttons__\n> flag : %d\n> logo : %d\n> map : %d\n> continent : %d\n> place : %d\n> location : %d",
             commandMetricMap.get("guess_flag").get(), commandMetricMap.get("guess_logo").get(),
             commandMetricMap.get("guess_map").get(), commandMetricMap.get("guess_continent").get(),
             commandMetricMap.get("guess_place").get(), commandMetricMap.get("guess_distance").get(),
+            commandMetricMap.get("guess_location").get(),
             commandMetricMap.get("play_flag").get(), commandMetricMap.get("play_logo").get(),
             commandMetricMap.get("play_map").get(), commandMetricMap.get("play_continent").get(),
-            commandMetricMap.get("play_place").get()),
+            commandMetricMap.get("play_place").get(), commandMetricMap.get("play_location").get()),
         true);
     eb.addField("__Race Commands__",
         String.format("> flag : %d\n> map : %d\n> logo : %d\n> maths : %d",
@@ -90,6 +91,9 @@ public class MetricService {
             return;
           case "distance":
             commandMetricMap.get("guess_distance").incrementAndGet();
+            return;
+          case "location":
+            commandMetricMap.get("guess_location").incrementAndGet();
             return;
           default:
             commandMetricMap.get("guess_continent").incrementAndGet();
@@ -195,6 +199,8 @@ public class MetricService {
       commandMetricMap.get("play_place").incrementAndGet();
     } else if (buttonId.startsWith("playAgainContinent")) {
       commandMetricMap.get("play_continent").incrementAndGet();
+    } else if(buttonId.startsWith("playAgainLocation")) {
+      commandMetricMap.get("play_location").incrementAndGet();
     }
     return;
   }
@@ -206,11 +212,13 @@ public class MetricService {
     commandMetricMap.put("guess_place", new AtomicLong());
     commandMetricMap.put("guess_distance", new AtomicLong());
     commandMetricMap.put("guess_continent", new AtomicLong());
+    commandMetricMap.put("guess_location", new AtomicLong());
     commandMetricMap.put("play_flag", new AtomicLong());
     commandMetricMap.put("play_map", new AtomicLong());
     commandMetricMap.put("play_logo", new AtomicLong());
     commandMetricMap.put("play_place", new AtomicLong());
     commandMetricMap.put("play_continent", new AtomicLong());
+    commandMetricMap.put("play_location", new AtomicLong());
     commandMetricMap.put("race_flags", new AtomicLong());
     commandMetricMap.put("race_maps", new AtomicLong());
     commandMetricMap.put("race_maths", new AtomicLong());

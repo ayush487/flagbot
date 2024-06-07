@@ -415,6 +415,7 @@ public abstract class Game {
         nonSoverignCountries.add("gi");
         nonSoverignCountries.add("gp");
         nonSoverignCountries.add("gf");
+        nonSoverignCountries.add("gl");
         nonSoverignCountries.add("gs");
         nonSoverignCountries.add("gu");
         nonSoverignCountries.add("hk");
