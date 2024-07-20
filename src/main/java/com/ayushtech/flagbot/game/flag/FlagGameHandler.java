@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.ayushtech.flagbot.services.LanguageService;
+import com.ayushtech.flagbot.services.PatreonService;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -16,7 +17,7 @@ public class FlagGameHandler {
     private static FlagGameHandler gameHandler = null;
 
     private HashMap<Long, FlagGame> gameMap;
-    private static Map<String,String> continentCodeMap = new HashMap<>();
+    private static Map<String, String> continentCodeMap = new HashMap<>();
 
     static {
         continentCodeMap.put("asia", "as");
@@ -53,19 +54,20 @@ public class FlagGameHandler {
             OptionMapping difficultyOption = event.getOption("mode");
             OptionMapping roundsOption = event.getOption("rounds");
             OptionMapping continentOption = event.getOption("continent");
-            String difficultyString = difficultyOption == null ? "sovereign countries only" : difficultyOption.getAsString().toLowerCase();
+            String difficultyString = difficultyOption == null ? "sovereign countries only"
+                    : difficultyOption.getAsString().toLowerCase();
             byte difficulty = 0;
             if (difficultyString.startsWith("sovereign")) {
                 difficulty = 0;
             } else if (difficultyString.startsWith("non")) {
-                difficulty = 1;             
+                difficulty = 1;
             } else if (difficultyString.startsWith("all")) {
                 difficulty = 2;
             } else {
                 difficulty = 0;
             }
             String continentCode;
-            if (continentOption==null) {
+            if (continentOption == null) {
                 continentCode = "all";
             } else {
                 String continent = continentOption.getAsString().toLowerCase();
@@ -78,8 +80,10 @@ public class FlagGameHandler {
             }
             int rounds = roundsOption == null ? 0 : roundsOption.getAsInt();
             rounds = (rounds <= 0) ? 0 : (rounds > 15) ? 15 : rounds;
-            Optional<String> langOptional = LanguageService.getInstance().getLanguageSelected(event.getGuild().getIdLong());
-            FlagGame game = new FlagGame(event.getChannel(), difficulty, rounds, rounds, langOptional.orElse(null), continentCode);
+            Optional<String> langOptional = LanguageService.getInstance()
+                    .getLanguageSelected(event.getGuild().getIdLong());
+            FlagGame game = new FlagGame(event.getChannel(), difficulty, rounds, rounds, langOptional.orElse(null),
+                    continentCode);
             gameMap.put(event.getChannel().getIdLong(), game);
             return true;
         }
@@ -95,8 +99,10 @@ public class FlagGameHandler {
             byte difficulty = Byte.parseByte(commandData[1]);
             int rounds = Integer.parseInt(commandData[2]);
             String continentCode = commandData[3];
-            Optional<String> langOptional = LanguageService.getInstance().getLanguageSelected(event.getGuild().getIdLong());
-            FlagGame game = new FlagGame(event.getChannel(), difficulty, rounds, rounds, langOptional.orElse(null), continentCode);
+            Optional<String> langOptional = LanguageService.getInstance()
+                    .getLanguageSelected(event.getGuild().getIdLong());
+            FlagGame game = new FlagGame(event.getChannel(), difficulty, rounds, rounds, langOptional.orElse(null),
+                    continentCode);
             gameMap.put(event.getChannel().getIdLong(), game);
             return true;
         }
@@ -111,9 +117,22 @@ public class FlagGameHandler {
     public void handleGuess(String guessWord, MessageReceivedEvent event) {
         if (gameMap.containsKey(event.getChannel().getIdLong())) {
             Long channelId = event.getChannel().getIdLong();
+            long authorId = event.getAuthor().getIdLong();
             if (gameMap.get(channelId).guess(guessWord)) {
-                event.getMessage().addReaction("U+1F389").queue();
+                if (PatreonService.getInstance().hasUserCustomCorrectReactions(authorId)) {
+                    try {
+                        event.getMessage().addReaction(PatreonService.getInstance().getCorrectReaction(authorId))
+                                .queue();
+                    } catch (Exception e) {
+                    }
+                } else {
+                    event.getMessage().addReaction("U+1F389").queue();
+                }
                 gameMap.get(channelId).endGameAsWin(event);
+            } else {
+                if (PatreonService.getInstance().hasUserCustomWrongReactions(authorId)) {
+                    event.getMessage().addReaction(PatreonService.getInstance().getWrongReaction(authorId)).queue();
+                }
             }
         }
 

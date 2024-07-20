@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.ayushtech.flagbot.services.GameEndService;
+import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.VotingService;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -38,8 +39,14 @@ public class GuessDistanceHandler {
       return;
     }
     long hostId = event.getUser().getIdLong();
-    if (!VotingService.getInstance().isUserVoted(hostId)) {
-      event.getHook().sendMessage("This command is only for users who have voted for us in last 24 hours!")
+    boolean isUserPatron;
+    if (PatreonService.getInstance().isUserPatron(hostId)) {
+      isUserPatron = true;
+    } else if (VotingService.getInstance().isUserVoted(hostId)) {
+      isUserPatron = false;
+    } else {
+      event.getHook()
+          .sendMessage("This command is only for patreon supporters or users who have voted for us in last 24 hours!")
           .addActionRow(Button.link("https://top.gg/bot/1129789320165867662/vote", "Vote")).queue();
       return;
     }
@@ -47,7 +54,7 @@ public class GuessDistanceHandler {
     String unit = unitOption == null ? "kilometer" : unitOption.getAsString().toLowerCase();
     boolean isUnitKM = unit.startsWith("mile") ? false : true;
     event.getHook().sendMessage("Starting game in the current channel").queue();
-    GuessDistance guessDistance = new GuessDistance(event.getChannel(), hostId, isUnitKM);
+    GuessDistance guessDistance = new GuessDistance(event.getChannel(), hostId, isUnitKM, isUserPatron);
     distanceGameMap.put(channelId, guessDistance);
     GameEndService.getInstance().scheduleEndGame(() -> {
       if (!guessDistance.isStarted()) {
@@ -83,18 +90,24 @@ public class GuessDistanceHandler {
 
   public void handleJoinCommand(ButtonInteractionEvent event) {
     long userId = event.getUser().getIdLong();
-    if (!VotingService.getInstance().isUserVoted(userId)) {
+    String isHostPatron = event.getComponentId().split("_")[1];
+    if (VotingService.getInstance().isUserVoted(userId) || isHostPatron.equals("true") ||
+        PatreonService.getInstance().isUserPatron(userId)) {
+      long channelId = event.getChannel().getIdLong();
+      if (!distanceGameMap.containsKey(channelId)) {
+        event.reply("This game has already end or something went wrong").setEphemeral(true).queue();
+        return;
+      }
+      distanceGameMap.get(channelId).addUser(userId, event);
+      event.getHook().sendMessage("Joined!").setEphemeral(true).queue();
+    } else {
       event.reply("You must vote for us to join or use this command")
           .addActionRow(Button.link("https://top.gg/bot/1129789320165867662/vote", "Vote"))
           .setEphemeral(true).queue();
       return;
+
     }
-    long channelId = event.getChannel().getIdLong();
-    if (!distanceGameMap.containsKey(channelId)) {
-      event.reply("This game has already end or something went wrong").setEphemeral(true).queue();
-    }
-    distanceGameMap.get(channelId).addUser(userId, event);
-    event.getHook().sendMessage("Joined!").setEphemeral(true).queue();
+
   }
 
   public void handleCancelCommand(ButtonInteractionEvent event) {
@@ -133,7 +146,8 @@ public class GuessDistanceHandler {
   public void handleGuess(String guess, MessageReceivedEvent event) {
     long channelId = event.getChannel().getIdLong();
     long userId = event.getAuthor().getIdLong();
-    if (!distanceGameMap.containsKey(channelId) || !distanceGameMap.get(channelId).isStarted() || !distanceGameMap.get(channelId).isUserPlaying(userId)) {
+    if (!distanceGameMap.containsKey(channelId) || !distanceGameMap.get(channelId).isStarted()
+        || !distanceGameMap.get(channelId).isUserPlaying(userId)) {
       return;
     }
     if (isUptoSixDigitNumber(guess)) {

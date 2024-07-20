@@ -33,7 +33,7 @@ public class GuessDistance {
   private boolean isStarted;
   private DistanceRound currentRound;
 
-  public GuessDistance(MessageChannel channel, long hostId, boolean isUnitKM) {
+  public GuessDistance(MessageChannel channel, long hostId, boolean isUnitKM, boolean isUserPatron) {
     this.channel = channel;
     this.hostId = hostId;
     this.isUnitKM = isUnitKM;
@@ -50,7 +50,7 @@ public class GuessDistance {
     eb.addField("__Players__", "<@" + hostId + ">", false);
     channel.sendMessageEmbeds(eb.build())
         .setActionRows(
-            ActionRow.of(Button.success("startDistance_" + hostId, "Start"), Button.primary("joinDistance", "Join")),
+            ActionRow.of(Button.success("startDistance_" + hostId, "Start"), Button.primary("joinDistance_" + isUserPatron, "Join")),
             ActionRow.of(Button.danger("cancelDistance_" + hostId, "Cancel"),
                 Button.primary("changeDistanceUnit_" + hostId, "Change Unit")))
         .queue(message -> setMessageId(message.getIdLong()));

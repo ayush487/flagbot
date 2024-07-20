@@ -11,6 +11,7 @@ import com.ayushtech.flagbot.game.logo.LogoGameHandler;
 import com.ayushtech.flagbot.game.map.MapGameHandler;
 import com.ayushtech.flagbot.game.place.PlaceGameHandler;
 import com.ayushtech.flagbot.services.CaptchaService;
+import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.PrivateServerService;
 import com.ayushtech.flagbot.services.VotingService;
 
@@ -25,6 +26,8 @@ public class MessageListener extends ListenerAdapter {
     private String[] keywords = { "link", "games", "download game" };
     private long privateServerId = 835384407368007721l;
     private long webhook_channel = 1118507065439174677l;
+    private long newPledgeChannel = 1263027212194414644l;
+    private long updatePledgeChannel = 1263027292322529301l;
 
     public MessageListener() {
         super();
@@ -34,7 +37,7 @@ public class MessageListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
-        
+
         long channelId = event.getChannel().getIdLong();
         if (channelId == vote_notifs_channel) {
             String voter_id = event.getMessage().getContentDisplay();
@@ -45,6 +48,9 @@ public class MessageListener extends ListenerAdapter {
             event.getMessage().addReaction("U+1F937").queue();
             event.getMessage().addReaction("U+1F44E").queue();
             return;
+        } else if (channelId == newPledgeChannel || channelId == updatePledgeChannel) {
+            String patreonId = event.getMessage().getContentDisplay();
+            PatreonService.getInstance().addNewPatron(event.getJDA(), Long.parseLong(patreonId));
         }
 
         if (event.getAuthor().isBot())
@@ -67,6 +73,17 @@ public class MessageListener extends ListenerAdapter {
             } else {
                 return;
             }
+        }
+
+        if (messageText.startsWith("f!set correct_guess")) {
+            PatreonService.getInstance().setReactionsForCorrectGuess(event);
+            return;
+        } else if (messageText.startsWith("f!set wrong_guess")) {
+            PatreonService.getInstance().setReactionsForWrongGuess(event);
+            return;
+        } else if (messageText.startsWith("f!remove wrong_guess")) {
+            PatreonService.getInstance().removeReactionsForWrongGuess(event);
+            return;
         }
 
         if (GuessDistanceHandler.getInstance().isActiveGameInChannel(channelId)) {
@@ -122,8 +139,10 @@ public class MessageListener extends ListenerAdapter {
         alternateNamesMap.put("south georgia", "South Georgia and the South Sandwich Islands");
         alternateNamesMap.put("sealand", "Principality of Sealand");
         alternateNamesMap.put("aland islands", "Åland Islands");
+        alternateNamesMap.put("northern cyprus", "Turkish Republic of Northern Cyprus");
         alternateNamesMap.put("us virgin islands", "U.S. Virgin Islands");
         alternateNamesMap.put("united states virgin islands", "U.S. Virgin Islands");
         alternateNamesMap.put("الإمارات", "الإمارات العربية المتحدة");
+
     }
 }

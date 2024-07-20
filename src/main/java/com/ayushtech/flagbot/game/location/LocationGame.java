@@ -33,24 +33,29 @@ public class LocationGame {
                 ActionRow[] rows = new ActionRow[2];
                 rows[0] = ActionRow.of(
                                 Button.primary(
-                                                String.format("selectLocation_1_%d_%s", locationMap.getCorrectAnswer(),
-                                                                locationMap.getCode()),
+                                                String.format("selectLocation_1_%d_%s_%d",
+                                                                locationMap.getCorrectAnswer(),
+                                                                locationMap.getCode(), userId),
                                                 "1"),
                                 Button.primary(
-                                                String.format("selectLocation_2_%d_%s", locationMap.getCorrectAnswer(),
-                                                                locationMap.getCode()),
+                                                String.format("selectLocation_2_%d_%s_%d",
+                                                                locationMap.getCorrectAnswer(),
+                                                                locationMap.getCode(), userId),
                                                 "2"),
                                 Button.primary(
-                                                String.format("selectLocation_3_%d_%s", locationMap.getCorrectAnswer(),
-                                                                locationMap.getCode()),
+                                                String.format("selectLocation_3_%d_%s_%d",
+                                                                locationMap.getCorrectAnswer(),
+                                                                locationMap.getCode(), userId),
                                                 "3"),
                                 Button.primary(
-                                                String.format("selectLocation_4_%d_%s", locationMap.getCorrectAnswer(),
-                                                                locationMap.getCode()),
+                                                String.format("selectLocation_4_%d_%s_%d",
+                                                                locationMap.getCorrectAnswer(),
+                                                                locationMap.getCode(), userId),
                                                 "4"),
                                 Button.primary(
-                                                String.format("selectLocation_5_%d_%s", locationMap.getCorrectAnswer(),
-                                                                locationMap.getCode()),
+                                                String.format("selectLocation_5_%d_%s_%d",
+                                                                locationMap.getCorrectAnswer(),
+                                                                locationMap.getCode(), userId),
                                                 "5"));
                 rows[1] = ActionRow.of(
                                 Button.primary(

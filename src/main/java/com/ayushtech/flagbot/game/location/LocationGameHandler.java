@@ -5,6 +5,7 @@ import java.awt.Color;
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.dbconnectivity.PlacesDao;
 import com.ayushtech.flagbot.game.place.Place;
+import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.VotingService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -40,8 +41,9 @@ public class LocationGameHandler {
 
   public void handleStartGameCommand(SlashCommandInteractionEvent event) {
     long userId = event.getUser().getIdLong();
-    if (!VotingService.getInstance().isUserVoted(userId)) {
-      event.getHook().sendMessage("This command is only for users who have voted for us in last 24 hours!")
+    if (!VotingService.getInstance().isUserVoted(userId) && !PatreonService.getInstance().isUserPatron(userId)) {
+      event.getHook()
+          .sendMessage("This command is only for patreon supporters or users who have voted for us in last 24 hours!")
           .addActionRow(Button.link("https://top.gg/bot/1129789320165867662/vote", "Vote")).queue();
       return;
     }
@@ -51,8 +53,8 @@ public class LocationGameHandler {
 
   public void handleStartGameCommand(ButtonInteractionEvent event) {
     long userId = event.getUser().getIdLong();
-    if (!VotingService.getInstance().isUserVoted(userId)) {
-      event.reply("This command is only for users who have voted for us in last 24 hours!")
+    if (!VotingService.getInstance().isUserVoted(userId) && !PatreonService.getInstance().isUserPatron(userId)) {
+      event.reply("This command is only for patreon supporters or users who have voted for us in last 24 hours!")
           .addActionRow(Button.link("https://top.gg/bot/1129789320165867662/vote", "Vote")).queue();
       return;
     }
@@ -63,12 +65,12 @@ public class LocationGameHandler {
 
   public void handleSelection(ButtonInteractionEvent event) {
     long actionUser = event.getUser().getIdLong();
-    if (!VotingService.getInstance().isUserVoted(actionUser)) {
-      event.reply("This mode is only for users who have voted for us in last 24 hours!")
-          .setEphemeral(true).queue();
+    String[] btnData = event.getComponentId().split("_");
+    String registeredUser = btnData[5];
+    if (!registeredUser.equals(String.valueOf(actionUser))) {
+      event.reply("This button is not for you").setEphemeral(true).queue();
       return;
     }
-    String[] btnData = event.getComponentId().split("_");
     String selection = btnData[1];
     String correct = btnData[2];
     String placeCode = btnData[3];
@@ -141,7 +143,8 @@ public class LocationGameHandler {
     eb.setTitle("Correct!");
     eb.setColor(Color.green);
     eb.setDescription(
-        String.format("<@%d> selected the correct option!\n**Coins** : `%d(+100)`:coin:\n**Correct Option** : `%s`", userId,
+        String.format("<@%d> selected the correct option!\n**Coins** : `%d(+100)`:coin:\n**Correct Option** : `%s`",
+            userId,
             coins, correctAnswer));
     eb.addField("__Place Information__",
         String.format("**Name :** `%s`\n**Location** : `%s`", place.getName(), place.getLocation()), false);

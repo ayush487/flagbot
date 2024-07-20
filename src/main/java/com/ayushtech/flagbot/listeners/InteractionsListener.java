@@ -36,6 +36,8 @@ import com.ayushtech.flagbot.services.CoinTransferService;
 import com.ayushtech.flagbot.services.GameEndService;
 import com.ayushtech.flagbot.services.LanguageService;
 import com.ayushtech.flagbot.services.MetricService;
+import com.ayushtech.flagbot.services.PatreonService;
+import com.ayushtech.flagbot.services.PrivateServerService;
 import com.ayushtech.flagbot.services.VotingService;
 import com.ayushtech.flagbot.stocks.Company;
 import com.ayushtech.flagbot.stocks.StocksHandler;
@@ -147,6 +149,9 @@ public class InteractionsListener extends ListenerAdapter {
 						.queue();
 			}
 			return;
+		} else if (event.getName().equals("staff_poll")) {
+			PrivateServerService.getInstance().handlePollCommand(event);
+			return;
 		}
 
 		boolean isCommandsDisabled = channelService.isChannelDisabled(event.getChannel().getIdLong());
@@ -225,6 +230,11 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
+		else if (event.getName().equals("patreon")) {
+			PatreonService.getInstance().handlePatreonCommand(event);
+			return;
+		}
+
 		// help command
 		else if (event.getName().equals("help")) {
 			EmbedBuilder eb = new EmbedBuilder();
@@ -234,7 +244,7 @@ public class InteractionsListener extends ListenerAdapter {
 			eb.setDescription(
 					"**__Guess Commands__**\n`/guess flag` : Start a flag guessing game in the channel\n`/guess map` : Start a map guessing game in the channel\n`/guess logo` : Start a logo guessing game in the channel\n`/guess place` : Start a place guessing game in the channel\n`/guess continent` : State a continent guessing game in the channel\n`/guess location` : Start a location guessing game in the channel (**Only for voters**)\n`/guess distance` : A Multiplayer mode in which users can guess distance marked on the map (**Only for voters**)\n__Options__ :\n`mode` : Choose the mode you want to play :Soverign Only, Non-Soverign Only, All Countries (Soverign Only if not selected)\n`continent` : Specify the continent for the flag game\n`rounds` : Enter the number of rounds you want to play (maximum it would be 15) (optional)\n`include_non_soverign_countries` : True or False to include non soverign countries (false if not selected)\n`unit` : Enter your preffered unit (kilometer or miles)\n__Note__ : `Specifying continent will nullify mode selection and mode will automatically become 'All Countries'.`");
 			eb.addField("__General Commands__",
-					"`/leaderboards` : Check the global leaderboard (Upto top 25)\n`/invite` : Invite the bot to your server\n`/language set` : Set language for the server (Only work for flag and map guessers)\n`/language info` : See your server language and other supported languages\n`/language remove` : Remove server language\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank\n`/give coins` : Send coins to other users.\n`/vote` : Vote for us and get rewards",
+					"`/leaderboards` : Check the global leaderboard (Upto top 25)\n`/invite` : Invite the bot to your server\n`/language set` : Set language for the server (Only work for flag and map guessers)\n`/language info` : See your server language and other supported languages\n`/language remove` : Remove server language\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank\n`/give coins` : Send coins to other users.\n`/vote` : Vote for us and get rewards\n`/patreon` : Show information about Patreon Membership",
 					false);
 			eb.addField("__Battle Command__",
 					"`/battle` : Start a 1v1 battle between two users.\n**__Options__**\n**opponent** : Mention the user with whom you wanna battle.\n**bet** : Amout to bet in the battle (optional)",
@@ -263,11 +273,7 @@ public class InteractionsListener extends ListenerAdapter {
 			EmbedBuilder eb = new EmbedBuilder();
 			eb.setColor(Color.YELLOW);
 			eb.addField("Support Server", "[Flag Bot Support Server](https://discord.gg/RqvTRMmVgR)", false);
-			eb.addField("Support Developer",
-					"[<:paypal:1226208018094358528> Paypal](https://www.paypal.me/ayush487)", false);
 			event.getHook().sendMessageEmbeds(eb.build())
-					.addActionRow(Button.link("https://www.paypal.me/ayush487",
-							Emoji.fromEmote("paypal", 1226208018094358528l, false)))
 					.queue();
 		}
 
@@ -539,14 +545,17 @@ public class InteractionsListener extends ListenerAdapter {
 		} else if (commandId.equals("raceStart")) {
 			RaceHandler.getInstance().handleStartRace(event);
 			return;
-		} else if (commandId.equals("joinDistance")) {
-			GuessDistanceHandler.getInstance().handleJoinCommand(event);
+		} else if (commandId.equals("viewPatreonPerks")) {
+			PatreonService.getInstance().showPatreonPerks(event);
 			return;
 		}
 
 		if (commandId.startsWith("punchSelection")) {
 			String selectedOptionIso = commandId.split("-")[1];
 			FightHandler.getInstance().handleSelection(event, Damage.PUNCH, selectedOptionIso);
+			return;
+		} else if (commandId.startsWith("joinDistance")) {
+			GuessDistanceHandler.getInstance().handleJoinCommand(event);
 			return;
 		} else if (commandId.startsWith("kickSelection")) {
 			String selectedOptionIso = commandId.split("-")[1];
@@ -600,8 +609,20 @@ public class InteractionsListener extends ListenerAdapter {
 		} else if (commandId.startsWith("skipLocation")) {
 			LocationGameHandler.getInstance().handleSkipButton(event);
 			return;
-		} else if(commandId.startsWith("selectLocation")) {
+		} else if (commandId.startsWith("selectLocation")) {
 			LocationGameHandler.getInstance().handleSelection(event);
+			return;
+		} else if (commandId.startsWith("pollUpvote")) {
+			PrivateServerService.getInstance().handlePollUpvote(event);
+			return;
+		} else if (commandId.startsWith("pollDownvote")) {
+			PrivateServerService.getInstance().handlePollDownvote(event);
+			return;
+		} else if (commandId.startsWith("pollViewVotes")) {
+			PrivateServerService.getInstance().handlePollViewVotes(event);
+			return;
+		} else if (commandId.startsWith("pollRemovevote")) {
+			PrivateServerService.getInstance().handleRemoveVote(event);
 			return;
 		}
 

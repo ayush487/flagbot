@@ -10,6 +10,8 @@ import com.ayushtech.flagbot.listeners.GuildEventListener;
 import com.ayushtech.flagbot.listeners.InteractionsListener;
 import com.ayushtech.flagbot.listeners.MessageListener;
 import com.ayushtech.flagbot.services.ChannelService;
+import com.ayushtech.flagbot.services.PatreonService;
+import com.ayushtech.flagbot.services.PrivateServerService;
 import com.ayushtech.flagbot.stocks.StocksHandler;
 
 import net.dv8tion.jda.api.entities.Activity;
@@ -30,15 +32,22 @@ public class Main {
                 final String db_username = properties.getProperty("database_username");
                 final String db_password = properties.getProperty("database_password");
 
-                DBInfo.setData(db_host, db_username, db_password);
-                StocksHandler.loadInitialPriceMap();
+                final int adminThreshold = Integer.parseInt(properties.getProperty("adminThreshold"));
+                final int modThreshold = Integer.parseInt(properties.getProperty("modThreshold"));
+                final int staffThreshold = Integer.parseInt(properties.getProperty("staffThreshold"));
+                final int totalVotes = Integer.parseInt(properties.getProperty("totalVotes"));
 
-                DefaultShardManagerBuilder builder =
-                DefaultShardManagerBuilder.createDefault(bot_token);
+                DBInfo.setData(db_host, db_username, db_password);
+                PrivateServerService.getInstance().setThreshold(adminThreshold, modThreshold, staffThreshold,
+                                totalVotes);
+                StocksHandler.loadInitialPriceMap();
+                PatreonService.getInstance();
+
+                DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(bot_token);
                 builder.setShardsTotal(2);
                 builder.setActivity(Activity.playing("/guess"));
                 builder.addEventListeners(new MessageListener(), new InteractionsListener(),
-                new GuildEventListener());
+                                new GuildEventListener());
                 builder.build();
 
                 ChannelService.getInstance().loadDisabledChannels();

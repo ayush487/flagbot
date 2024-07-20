@@ -226,6 +226,12 @@ public class MapGame extends Game {
 		ignoreSet.add("sar");
 		ignoreSet.add("sea");
 		ignoreSet.add("som");
+		ignoreSet.add("udm");
+		ignoreSet.add("tuv");
+		ignoreSet.add("ncy");
+		ignoreSet.add("tra");
+		ignoreSet.add("tdf");
+		ignoreSet.add("tat");
 	}
 
 	private static void loadCountryOverrideMap() {

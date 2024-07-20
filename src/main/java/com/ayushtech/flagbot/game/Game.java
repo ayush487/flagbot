@@ -345,9 +345,21 @@ public abstract class Game {
         countryMap.put("sar", "Sark");
         countryMap.put("sea", "Principality of Sealand");
         countryMap.put("som", "Somaliland");
+        countryMap.put("tat", "Tatarstan");
+        countryMap.put("tdf", "Tierra del Fuego");
+        countryMap.put("tra", "Transnistria");
+        countryMap.put("ncy", "Turkish Republic of Northern Cyprus");
+        countryMap.put("tuv", "Tuva");
+        countryMap.put("udm", "Udmurtia");
     }
 
     private static void loadNonSoverignCountries() {
+        nonSoverignCountries.add("udm");
+        nonSoverignCountries.add("tuv");
+        nonSoverignCountries.add("ncy");
+        nonSoverignCountries.add("tra");
+        nonSoverignCountries.add("tdf");
+        nonSoverignCountries.add("tat");
         nonSoverignCountries.add("som");
         nonSoverignCountries.add("sea");
         nonSoverignCountries.add("sar");
@@ -469,6 +481,7 @@ public abstract class Game {
         alternativeNames.put("cf", "CAR");
         alternativeNames.put("gs", "South Georgia");
         alternativeNames.put("sea", "Sealand");
+        alternativeNames.put("ncy", "Northern Cyprus");
         alternativeNames.put("vi", "US Virgin Islands, United States Virgin Islands");
     }
 }
