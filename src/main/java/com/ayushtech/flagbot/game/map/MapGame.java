@@ -32,6 +32,7 @@ public class MapGame extends Game {
 	private int rounds;
 	private int roundSize;
 	private String lang;
+	private long startTimeStamp;
 
 	static {
 		random = new Random();
@@ -48,6 +49,7 @@ public class MapGame extends Game {
 		this.roundSize = roundSize;
 		this.lang = lang;
 		this.countryCode = getRandomCountryCode(isHard);
+		this.startTimeStamp = System.currentTimeMillis();
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setTitle("Guess the country");
 		eb.setImage(createImageURL(countryCode));
@@ -81,6 +83,7 @@ public class MapGame extends Game {
 		if (alternativeNames.containsKey(countryCode)) {
 			sb.append("\n**Alternative Answers :** " + alternativeNames.get(countryCode));
 		}
+		sb.append("\n**Time Taken :** " + getTimeTook());
 		eb.setDescription(sb.toString());
 		eb.setThumbnail(flagLink + countryCode + suffix);
 		eb.setColor(new Color(13, 240, 52));
@@ -279,4 +282,9 @@ public class MapGame extends Game {
 		this.messageId = messageId;
 	}
 
+	private String getTimeTook() {
+		long timeTookInMS = System.currentTimeMillis() - startTimeStamp;
+		String returnString = String.format("`%.1f seconds`", timeTookInMS/1000.0);
+		return returnString;
+	}
 }

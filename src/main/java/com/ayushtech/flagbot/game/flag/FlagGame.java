@@ -33,6 +33,7 @@ public class FlagGame extends Game {
 	private int roundSize;
 	private String lang;
 	private String continentCode;
+	private long startTimeStamp;
 
 	static {
 		random = new Random();
@@ -61,6 +62,7 @@ public class FlagGame extends Game {
 		this.roundSize = roundSize;
 		this.lang = lang;
 		this.continentCode = continentCode;
+		this.startTimeStamp = System.currentTimeMillis();
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setTitle("Guess the Country Flag");
 		eb.setColor(new Color(38, 187, 237));
@@ -115,6 +117,7 @@ public class FlagGame extends Game {
 		if (alternativeNames.containsKey(countryCode)) {
 			sb.append("\n**Alternative Answers :** " + alternativeNames.get(countryCode));
 		}
+		sb.append("\n**Time Taken :** " + getTimeTook());
 		eb.setDescription(sb.toString());
 		eb.setThumbnail(flagLink + countryCode + suffix);
 		eb.setColor(new Color(13, 240, 52));
@@ -161,8 +164,6 @@ public class FlagGame extends Game {
 		}
 		disableButtons();
 	}
-
-	
 
 	@Override
 	public void disableButtons() {
@@ -216,4 +217,9 @@ public class FlagGame extends Game {
 		}
 	}
 
+	private String getTimeTook() {
+		long timeTookInMS = System.currentTimeMillis() - startTimeStamp;
+		String returnString = String.format("`%.1f seconds`", timeTookInMS/1000.0);
+		return returnString;
+	}
 }

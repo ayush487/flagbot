@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -61,13 +60,13 @@ import net.dv8tion.jda.api.utils.TimeFormat;
 public class InteractionsListener extends ListenerAdapter {
 
 	private ChannelService channelService;
-	private Random random;
-	private final int BOUND = 500;
+	// private Random random;
+	// private final int BOUND = 500;
 
 	public InteractionsListener() {
 		super();
 		channelService = ChannelService.getInstance();
-		random = new Random();
+		// random = new Random();
 	}
 
 	@Override
@@ -415,10 +414,11 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
-		if (random.nextInt(BOUND) == 1) {
-			CaptchaService.getInstance().sendCaptcha(event);
-			return;
-		}
+		// Commenting Captcha for now
+		// if (random.nextInt(BOUND) == 1) {
+		// 	CaptchaService.getInstance().sendCaptcha(event);
+		// 	return;
+		// }
 
 		// guess command
 		else if (event.getName().equals("guess")) {
@@ -719,11 +719,12 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
-		if (random.nextInt(BOUND) == 1) {
-			event.deferReply().queue();
-			CaptchaService.getInstance().sendCaptcha(event);
-			return;
-		}
+		// Commenting Captcha for now
+		// if (random.nextInt(BOUND) == 1) {
+		// 	event.deferReply().queue();
+		// 	CaptchaService.getInstance().sendCaptcha(event);
+		// 	return;
+		// }
 
 		else if (commandId.startsWith("playAgainFlag")) {
 			boolean isAdded = FlagGameHandler.getInstance().addGame(event);

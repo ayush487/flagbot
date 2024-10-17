@@ -36,6 +36,7 @@ public class Main {
                 final int modThreshold = Integer.parseInt(properties.getProperty("modThreshold"));
                 final int staffThreshold = Integer.parseInt(properties.getProperty("staffThreshold"));
                 final int totalVotes = Integer.parseInt(properties.getProperty("totalVotes"));
+                final int shards = Integer.parseInt(properties.getProperty("shards"));
 
                 DBInfo.setData(db_host, db_username, db_password);
                 PrivateServerService.getInstance().setThreshold(adminThreshold, modThreshold, staffThreshold,
@@ -44,7 +45,7 @@ public class Main {
                 PatreonService.getInstance();
 
                 DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(bot_token);
-                builder.setShardsTotal(2);
+                builder.setShardsTotal(shards);
                 builder.setActivity(Activity.playing("/guess"));
                 builder.addEventListeners(new MessageListener(), new InteractionsListener(),
                                 new GuildEventListener());

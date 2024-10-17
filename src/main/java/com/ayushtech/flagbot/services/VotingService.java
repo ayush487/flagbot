@@ -49,11 +49,11 @@ public class VotingService {
     String dmMsg;
     boolean isWeekend = isWeekend();
     if (isWeekend) {
-      dmMsg = ":heart: **|** Thanks for voting us on [top.gg](https://top.gg/bot/1129789320165867662/vote)\n:money_with_wings: **|** You received 1000 :coin: as reward!\n:fireworks: **|** Since it's a weeakend, you receive 1000 :coin: extra!";
+      dmMsg = ":heart: **|** Thanks for voting us on [top.gg](<https://top.gg/bot/1129789320165867662/vote>)\n:money_with_wings: **|** You received 1000 :coin: as reward!\n:fireworks: **|** Since it's a weeakend, you receive 1000 :coin: extra!";
       CoinDao.getInstance().addCoins(Long.parseLong(voter_id), 2000l);
     } else {
       CoinDao.getInstance().addCoins(Long.parseLong(voter_id), 1000l);
-      dmMsg = ":heart: **|** Thanks for voting us on [top.gg](https://top.gg/bot/1129789320165867662/vote)\n:money_with_wings: **|** You received 1000 :coin: as reward!";
+      dmMsg = ":heart: **|** Thanks for voting us on [top.gg](<https://top.gg/bot/1129789320165867662/vote>)\n:money_with_wings: **|** You received 1000 :coin: as reward!";
     }
     voteData.put(Long.parseLong(voter_id), System.currentTimeMillis());
     jda.retrieveUserById(voter_id).queue(voter -> {

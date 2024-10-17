@@ -18,7 +18,7 @@ public abstract class Game {
     protected static List<String> isoList;
     protected static final String flagLink = "https://raw.githubusercontent.com/ayush487/image-library/main/flags/";
     protected static final String suffix = ".png";
-    protected static Map<String,String> alternativeNames = new HashMap<>();
+    protected static Map<String, String> alternativeNames = new HashMap<>();
 
     static {
         Game.loadCountries();
@@ -46,6 +46,7 @@ public abstract class Game {
     public static String getCountryName(String countryCode) {
         return countryMap.get(countryCode);
     }
+
     private static void loadCountries() {
         countryMap.put("aa", "Saba");
         countryMap.put("ab", "Abkhazia");
@@ -464,9 +465,9 @@ public abstract class Game {
     }
 
     private static void loadAlternativeNames() {
-        alternativeNames.put("ae","UAE");
+        alternativeNames.put("ae", "UAE");
         alternativeNames.put("ax", "Aland Islands");
-        alternativeNames.put("cd","DR Congo, DRC");
+        alternativeNames.put("cd", "DR Congo, DRC");
         alternativeNames.put("ci", "Côte d'Ivoire");
         alternativeNames.put("cv", "Cabo Verde");
         alternativeNames.put("cz", "Czech Republic");
@@ -474,10 +475,10 @@ public abstract class Game {
         alternativeNames.put("us", "USA, United States");
         alternativeNames.put("gb", "UK");
         alternativeNames.put("tl", "East Timor");
-        alternativeNames.put("in","Bharat");
+        alternativeNames.put("in", "Bharat");
         alternativeNames.put("ba", "Bosnia");
-        alternativeNames.put("mm","Burma");
-        alternativeNames.put("eu","EU");
+        alternativeNames.put("mm", "Burma");
+        alternativeNames.put("eu", "EU");
         alternativeNames.put("cf", "CAR");
         alternativeNames.put("gs", "South Georgia");
         alternativeNames.put("sea", "Sealand");

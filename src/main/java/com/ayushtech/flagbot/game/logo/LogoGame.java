@@ -28,6 +28,7 @@ public class LogoGame {
   private long messageId;
   private int rounds;
   private int roundSize;
+  private long startTimeStamp;
 
   static {
     LogoGame.loadBrands();
@@ -43,6 +44,7 @@ public class LogoGame {
     this.rounds = rounds;
     this.roundSize = roundSize;
     this.brandCode = getRandomBrand();
+    this.startTimeStamp = System.currentTimeMillis();
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Guess the Brand");
     eb.setImage(String.format("https://raw.githubusercontent.com/ayush487/image-library/main/logo/%s.png", brandCode));
@@ -57,9 +59,11 @@ public class LogoGame {
     LogoGameHandler.getInstance().getGameMap().remove(channel.getIdLong());
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Correct!");
-    eb.setDescription(msgEvent.getAuthor().getAsMention() + " is correct!\n**Coins :** `"
+    StringBuilder sb = new StringBuilder(msgEvent.getAuthor().getAsMention() + " is correct!\n**Coins :** `"
         + Game.getAmount(msgEvent.getAuthor().getIdLong()) + "(+100)` " + ":coin:"
         + "  \n **Correct Answer :** " + brandMap.get(brandCode));
+    sb.append("\n**Time Taken :** " + getTimeTook());
+    eb.setDescription(sb.toString());
     eb.setThumbnail(
         String.format("https://raw.githubusercontent.com/ayush487/image-library/main/logo/%s.png", brandCode));
     eb.setColor(new Color(13, 240, 52));
@@ -80,7 +84,9 @@ public class LogoGame {
     LogoGameHandler.getInstance().endGame(channel.getIdLong());
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("No one guessed the logo!");
-    eb.setDescription("**Correct Answer :** \n" + brandMap.get(brandCode));
+    StringBuilder sb = new StringBuilder("**Correct Answer :** \n" + brandMap.get(brandCode));
+    sb.append("\n**Time Taken :** " + getTimeTook());
+    eb.setDescription(sb.toString());
     eb.setThumbnail(
         String.format("https://raw.githubusercontent.com/ayush487/image-library/main/logo/%s.png", brandCode));
     eb.setColor(new Color(240, 13, 52));
@@ -124,6 +130,12 @@ public class LogoGame {
 
   private void setMessageId(long id) {
     this.messageId = id;
+  }
+
+  private String getTimeTook() {
+    long timeTookInMS = System.currentTimeMillis() - startTimeStamp;
+    String returnString = String.format("`%.1f seconds`", timeTookInMS / 1000.0);
+    return returnString;
   }
 
   private static void loadBrands() {
@@ -326,7 +338,7 @@ public class LogoGame {
     brandMap.put("ram", "Los Angeles Rams");
     brandMap.put("yan", "New York Yankees");
     brandMap.put("gia", "New Year Giants");
-    brandMap.put("kni", "New Year Knicks");
+    brandMap.put("kni", "New York Knicks");
     brandMap.put("bea", "Chicago Bears");
     brandMap.put("gsw", "Golden State Warriors");
     brandMap.put("rea", "Real Madrid");
@@ -537,5 +549,4 @@ public class LogoGame {
     brandMap.put("raz", "Razer");
     brandMap.put("hyp", "HyperX");
   }
-
 }

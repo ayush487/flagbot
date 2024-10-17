@@ -25,6 +25,7 @@ public class PlaceGame {
   private long messageId;
   private int rounds;
   private int roundSize;
+  private long startTimeStamp;
 
   static {
     PlaceGame.loadPlaceList();
@@ -35,6 +36,7 @@ public class PlaceGame {
     this.rounds = rounds;
     this.roundSize = roundSize;
     this.place = PlacesDao.getInstance().getPlace(getRandomPlace());
+    this.startTimeStamp = System.currentTimeMillis();
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Guess the Place");
     eb.setImage(
@@ -50,10 +52,12 @@ public class PlaceGame {
     PlaceGameHandler.getInstance().endGame(channel.getIdLong());
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Correct!");
-    eb.setDescription(msgEvent.getAuthor().getAsMention() + " is correct!\n**Coins :** `"
-        + Game.getAmount(msgEvent.getAuthor().getIdLong()) + "(+100)` " + ":coin:"
-        + "  \n **Correct Answer :** " + place.getName()
-        + "\n**Location :** `" + place.getLocation() + "`");
+    StringBuilder sb = new StringBuilder(msgEvent.getAuthor().getAsMention() + " is correct!\n**Coins :** `"
+    + Game.getAmount(msgEvent.getAuthor().getIdLong()) + "(+100)` " + ":coin:"
+    + "  \n **Correct Answer :** " + place.getName()
+    + "\n**Location :** `" + place.getLocation() + "`");
+    sb.append("\n**Time Taken :** " + getTimeTook());
+    eb.setDescription(sb.toString());
     eb.setThumbnail(
         String.format("https://raw.githubusercontent.com/ayush487/image-library/main/places/%s.jpg", place.getCode()));
     eb.setColor(new Color(13, 240, 52));
@@ -118,5 +122,11 @@ public class PlaceGame {
 
   private void setMessageId(long mId) {
     this.messageId = mId;
+  }
+
+  private String getTimeTook() {
+    long timeTookInMS = System.currentTimeMillis() - startTimeStamp;
+    String returnString = String.format("`%.1f seconds`", timeTookInMS / 1000.0);
+    return returnString;
   }
 }
