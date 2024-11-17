@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 import com.ayushtech.flagbot.distanceGuess.GuessDistanceHandler;
+import com.ayushtech.flagbot.game.capital.CapitalGameHandler;
 import com.ayushtech.flagbot.game.flag.FlagGameHandler;
 import com.ayushtech.flagbot.game.logo.LogoGameHandler;
 import com.ayushtech.flagbot.game.map.MapGameHandler;
@@ -101,6 +102,9 @@ public class MessageListener extends ListenerAdapter {
         }
         if (LogoGameHandler.getInstance().getGameMap().containsKey(channelId)) {
             LogoGameHandler.getInstance().handleGuess(messageText, event);
+        }
+        if(CapitalGameHandler.getInstance().getGameMap().containsKey(channelId)) {
+            CapitalGameHandler.getInstance().handleGuess(messageText, event);
         }
         if (PlaceGameHandler.getInstance().getGameMap().containsKey(channelId)) {
             PlaceGameHandler.getInstance().handleGuess(messageText, event);

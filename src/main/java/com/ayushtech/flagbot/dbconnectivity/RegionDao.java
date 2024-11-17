@@ -7,6 +7,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import com.ayushtech.flagbot.game.capital.Capital;
 
 public class RegionDao {
 
@@ -84,6 +88,25 @@ public class RegionDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return "in";
+		}
+	}
+
+	public List<Capital> getCapitalList() {
+		Connection conn = ConnectionProvider.getConnection();
+		try {
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT country,country_code,capital FROM capital;");
+			List<Capital> capitalList = new ArrayList<>(194);
+			while (rs.next()) {
+				String countryCode = rs.getString("country_code");
+				String countryName = rs.getString("country");
+				String capitalName = rs.getString("capital");
+				capitalList.add(new Capital(countryCode,countryName, capitalName));
+			}
+			return capitalList;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Stream.of(new Capital("IN", "INDIA", "New Delhi")).collect(Collectors.toList());
 		}
 	}
 }

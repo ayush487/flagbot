@@ -123,8 +123,7 @@ public class FlagGameHandler {
                     try {
                         event.getMessage().addReaction(PatreonService.getInstance().getCorrectReaction(authorId))
                                 .queue();
-                    } catch (Exception e) {
-                    }
+                    } catch (Exception e) {}
                 } else {
                     event.getMessage().addReaction("U+1F389").queue();
                 }

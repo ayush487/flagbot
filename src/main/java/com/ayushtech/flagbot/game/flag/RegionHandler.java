@@ -9,27 +9,28 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 public class RegionHandler {
 
 	public static RegionHandler regionHandler = null;
-	
-	private RegionHandler () {}
-	
+
+	private RegionHandler() {
+	}
+
 	public static synchronized RegionHandler getInstance() {
-		if(regionHandler==null) {
+		if (regionHandler == null) {
 			regionHandler = new RegionHandler();
 		}
 		return regionHandler;
 	}
-	
+
 	public String requestForHint(ButtonInteractionEvent buttonEvent) {
-		
-		if(buttonEvent.isFromGuild()) {
+
+		if (buttonEvent.isFromGuild()) {
 			Member member = buttonEvent.getMember();
-			if(member==null) {
+			if (member == null) {
 				return "Something went wrong!";
 			}
-			
+
 			long memberBalance = CoinDao.getInstance().getBalance(member.getIdLong());
-			
-			if(memberBalance<60) {
+
+			if (memberBalance < 60) {
 				return "You don't have enough coins!";
 			} else {
 				CoinDao.getInstance().addCoins(member.getIdLong(), -60l);
@@ -39,10 +40,17 @@ public class RegionHandler {
 			return "Not Allowed!";
 		}
 	}
-	
+
 	public String getRegion(long eventChannelId) {
-    	String countryCode = FlagGameHandler.getInstance().getGameMap()
-    			.get(eventChannelId).getCountryCode();
-    	return RegionDao.getInstance().getRegion(countryCode);
-    }
+		String countryCode = FlagGameHandler.getInstance().getGameMap()
+				.get(eventChannelId).getCountryCode();
+		return RegionDao.getInstance().getRegion(countryCode);
+	}
+
+	public void handleRegionButton(ButtonInteractionEvent event) {
+		event.deferReply().setEphemeral(true).queue();
+		String response = requestForHint(event);
+		response = (response != null) ? response : "Region Not Found!";
+		event.getHook().sendMessage(response).setEphemeral(true).queue();
+	}
 }

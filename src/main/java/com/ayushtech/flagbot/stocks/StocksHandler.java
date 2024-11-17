@@ -14,8 +14,11 @@ import com.ayushtech.flagbot.dbconnectivity.StocksDao;
 import com.ayushtech.flagbot.dbconnectivity.StocksTransactionsDao;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.utils.TimeFormat;
 
 public class StocksHandler {
@@ -129,24 +132,6 @@ public class StocksHandler {
     return new int[] { 0 };
   }
 
-  public MessageEmbed getTransactionsEmbed(long userId, int page) {
-    List<StocksTransaction> list = StocksTransactionsDao.getInstance().getTransactions(userId, page, 10);
-    EmbedBuilder eb = new EmbedBuilder();
-    if (list.size() == 0) {
-      eb.setColor(Color.red);
-      eb.setTitle("No Transaction Data Available");
-    } else {
-      eb.setColor(Color.green);
-      eb.setTitle(String.format("__Your last %d transactions__", list.size()));
-      StringBuilder sb = new StringBuilder();
-      list.stream()
-          .map(StocksTransaction::getTransactionMessage)
-          .forEach(m -> sb.append(m));
-      eb.setDescription(sb.toString());
-    }
-    return eb.build();
-  }
-
   private void loadStocksMap() {
     stocksMap.put(Company.DISKORD, new StockData(Company.DISKORD, initialStockPriceMap.get("DISKORD")));
     stocksMap.put(Company.DOOGLE, new StockData(Company.DOOGLE, initialStockPriceMap.get("DOOGLE")));
@@ -166,6 +151,45 @@ public class StocksHandler {
 
   public boolean isCompanyValid(String company) {
     return initialStockPriceMap.containsKey(company);
+  }
+
+  public void handleStockTransactionButton(ButtonInteractionEvent event) {
+    int page = Integer.parseInt(event.getComponentId().split("_")[1]);
+    MessageEmbed eb = StocksHandler.getInstance().getTransactionsEmbed(event.getUser().getIdLong(), page);
+    event.replyEmbeds(eb).setEphemeral(true).queue();
+  }
+
+  public void handleRefreshMarketButton(ButtonInteractionEvent event) {
+    String commandId = event.getComponentId();
+    long lastUpdatedSince = Long.parseLong(commandId.split("_")[1]);
+    long curentTime = System.currentTimeMillis();
+    if (curentTime - lastUpdatedSince < 30_000) {
+      event.reply("Try again in " + TimeFormat.RELATIVE.atTimestamp(lastUpdatedSince + 30_000)).setEphemeral(true)
+          .queue();
+    } else {
+      event.editMessageEmbeds(StocksHandler.getInstance().getStockList())
+          .setActionRow(Button.primary("refreshMarket_" + System.currentTimeMillis(),
+              Emoji.fromEmote("refresh", 1209076086185656340l, false)))
+          .queue();
+    }
+  }
+
+  private MessageEmbed getTransactionsEmbed(long userId, int page) {
+    List<StocksTransaction> list = StocksTransactionsDao.getInstance().getTransactions(userId, page, 10);
+    EmbedBuilder eb = new EmbedBuilder();
+    if (list.size() == 0) {
+      eb.setColor(Color.red);
+      eb.setTitle("No Transaction Data Available");
+    } else {
+      eb.setColor(Color.green);
+      eb.setTitle(String.format("__Your last %d transactions__", list.size()));
+      StringBuilder sb = new StringBuilder();
+      list.stream()
+          .map(StocksTransaction::getTransactionMessage)
+          .forEach(m -> sb.append(m));
+      eb.setDescription(sb.toString());
+    }
+    return eb.build();
   }
 
   private String getEmoji(int changed) {
