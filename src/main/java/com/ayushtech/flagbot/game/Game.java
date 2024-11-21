@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public abstract class Game {
 
-    public static HashMap<String, String> countryMap = new HashMap<>(300);
+    public static HashMap<String, String> countryMap = new HashMap<>(305);
     protected static Set<String> nonSoverignCountries = new HashSet<>();
     protected static List<String> isoList;
     protected static final String flagLink = "https://raw.githubusercontent.com/ayush487/image-library/main/flags/";

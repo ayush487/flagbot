@@ -10,6 +10,7 @@ import com.ayushtech.flagbot.listeners.GuildEventListener;
 import com.ayushtech.flagbot.listeners.InteractionsListener;
 import com.ayushtech.flagbot.listeners.MessageListener;
 import com.ayushtech.flagbot.services.ChannelService;
+import com.ayushtech.flagbot.services.LanguageService;
 import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.PrivateServerService;
 import com.ayushtech.flagbot.stocks.StocksHandler;
@@ -43,6 +44,7 @@ public class Main {
                                 totalVotes);
                 StocksHandler.loadInitialPriceMap();
                 PatreonService.getInstance();
+                LanguageService.getInstance();
 
                 DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(bot_token);
                 builder.setShardsTotal(shards);
