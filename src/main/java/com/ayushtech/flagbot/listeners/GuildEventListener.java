@@ -17,15 +17,18 @@ public class GuildEventListener extends ListenerAdapter {
       if (event.getFocusedOption().getName().equals("mode")) {
         event.replyChoiceStrings("Sovereign Countries Only", "Non-Sovereign Countries Only", "All Countries").queue();
       } else {
-        event.replyChoiceStrings("Asia","Africa","Europe", "North America", "South America", "Oceania","Antarctica").queue();
+        event.replyChoiceStrings("Asia", "Africa", "Europe", "North America", "South America", "Oceania", "Antarctica")
+            .queue();
       }
     } else if (event.getSubcommandName().equals("buy") || event.getSubcommandName().equals("sell")) {
       event.replyChoiceStrings("DOOGLE", "MAPPLE", "RAMSUNG", "MICROLOFT", "LOCKSTAR", "SEPSICO", "LETFLIX",
           "STARMUCKS", "TWEETER", "DISKORD").queue();
     } else if (event.getSubcommandName().equals("set")) {
-      event.replyChoiceStrings("Arabic", "French","German", "Japanese", "Korean", "Portuguese", "Russian", "Spanish","Swedish", "Turkish")
+      event
+          .replyChoiceStrings("Arabic", "Dutch", "French", "German", "Japanese", "Korean", "Portuguese", "Russian",
+              "Spanish", "Swedish", "Turkish")
           .queue();
-    } else if(event.getSubcommandName().equals("distance")) {
+    } else if (event.getSubcommandName().equals("distance")) {
       event.replyChoiceStrings("Kilometers", "Miles").queue();
     }
   }

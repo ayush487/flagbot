@@ -73,7 +73,8 @@ public class StocksHandler {
         });
     eb.addField("__**Company** (`Price`)__", sSb.toString(), false);
     eb.addField("__Last Updated__", TimeFormat.TIME_SHORT.now() + "", false);
-    eb.setFooter("'/stocks buy' to buy stocks.");
+    // eb.setFooter("'/stocks buy' to buy stocks.");
+    eb.setFooter("Stock commands will be deleted on December 1st");
     eb.setColor(Color.YELLOW);
     return eb.build();
   }
@@ -101,7 +102,8 @@ public class StocksHandler {
       eb.setColor(Color.red);
     }
 
-    eb.setFooter("'/stocks sell' to sell your stocks");
+    // eb.setFooter("'/stocks sell' to sell your stocks");
+    eb.setFooter("Stock commands will be deleted on December 1st");
     return eb.build();
   }
 

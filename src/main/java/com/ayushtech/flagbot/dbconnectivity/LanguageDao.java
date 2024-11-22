@@ -68,10 +68,11 @@ public class LanguageDao {
     Map<String, String> russianMap = new HashMap<>(305);
     Map<String, String> swedishMap = new HashMap<>(305);
     Map<String, String> germanMap = new HashMap<>(305);
+    Map<String, String> dutchMap = new HashMap<>(305);
     Connection conn = ConnectionProvider.getConnection();
     try {
       Statement stmt = conn.createStatement();
-      ResultSet rs = stmt.executeQuery("SELECT code,sw,ru,fr,tr,kr,ja,pt,es,ar,de from country_names;");
+      ResultSet rs = stmt.executeQuery("SELECT code,sw,ru,fr,tr,kr,ja,pt,es,ar,de,nl from country_names;");
       while (rs.next()) {
         String code = rs.getString("code");
         arabicMap.put(code, rs.getString("ar"));
@@ -84,6 +85,7 @@ public class LanguageDao {
         russianMap.put(code, rs.getString("ru"));
         swedishMap.put(code, rs.getString("sw"));
         germanMap.put(code, rs.getString("de"));
+        dutchMap.put(code, rs.getString("nl"));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -99,6 +101,7 @@ public class LanguageDao {
     languageMap.put("russian", russianMap);
     languageMap.put("swedish", swedishMap);
     languageMap.put("german", germanMap);
+    languageMap.put("dutch", dutchMap);
     return languageMap;
   }
 }
