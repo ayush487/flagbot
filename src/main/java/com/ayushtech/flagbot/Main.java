@@ -6,6 +6,7 @@ import java.util.Properties;
 import javax.security.auth.login.LoginException;
 
 import com.ayushtech.flagbot.dbconnectivity.DBInfo;
+import com.ayushtech.flagbot.fileConnectivity.CountryNameFileReader;
 import com.ayushtech.flagbot.listeners.GuildEventListener;
 import com.ayushtech.flagbot.listeners.InteractionsListener;
 import com.ayushtech.flagbot.listeners.MessageListener;
@@ -38,6 +39,8 @@ public class Main {
                 final int staffThreshold = Integer.parseInt(properties.getProperty("staffThreshold"));
                 final int totalVotes = Integer.parseInt(properties.getProperty("totalVotes"));
                 final int shards = Integer.parseInt(properties.getProperty("shards"));
+
+                CountryNameFileReader.getInstance();
 
                 DBInfo.setData(db_host, db_username, db_password);
                 PrivateServerService.getInstance().setThreshold(adminThreshold, modThreshold, staffThreshold,

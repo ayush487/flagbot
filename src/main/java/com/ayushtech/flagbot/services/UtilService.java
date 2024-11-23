@@ -46,7 +46,6 @@ public class UtilService {
   private ChannelService channelService;
 
   private UtilService() {
-
     channelService = ChannelService.getInstance();
   }
 

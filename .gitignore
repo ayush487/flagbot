@@ -38,3 +38,5 @@ maps data.txt
 .settings/
 .png
 temp.txt
+countries-names.csv
+countries-names-arabic.csv
