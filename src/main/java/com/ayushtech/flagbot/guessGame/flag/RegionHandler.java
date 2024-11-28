@@ -1,9 +1,10 @@
-package com.ayushtech.flagbot.game.flag;
+package com.ayushtech.flagbot.guessGame.flag;
+
+import java.util.concurrent.CompletableFuture;
 
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.dbconnectivity.RegionDao;
 
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 
 public class RegionHandler {
@@ -21,30 +22,12 @@ public class RegionHandler {
 	}
 
 	public String requestForHint(ButtonInteractionEvent buttonEvent) {
-
-		if (buttonEvent.isFromGuild()) {
-			Member member = buttonEvent.getMember();
-			if (member == null) {
-				return "Something went wrong!";
-			}
-
-			long memberBalance = CoinDao.getInstance().getBalance(member.getIdLong());
-
-			if (memberBalance < 60) {
-				return "You don't have enough coins!";
-			} else {
-				CoinDao.getInstance().addCoins(member.getIdLong(), -60l);
-				return getRegion(buttonEvent.getChannel().getIdLong());
-			}
-		} else {
-			return "Not Allowed!";
-		}
-	}
-
-	public String getRegion(long eventChannelId) {
-		String countryCode = FlagGameHandler.getInstance().getGameMap()
-				.get(eventChannelId).getCountryCode();
-		return RegionDao.getInstance().getRegion(countryCode);
+		String countryCode = buttonEvent.getComponentId().split("_")[1];
+		String region = RegionDao.getInstance().getRegion(countryCode);
+		CompletableFuture.runAsync(() -> {
+			CoinDao.getInstance().addCoins(buttonEvent.getUser().getIdLong(), -60l);
+		});
+		return region;
 	}
 
 	public void handleRegionButton(ButtonInteractionEvent event) {

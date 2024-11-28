@@ -2,7 +2,8 @@ package com.ayushtech.flagbot.game.continent;
 
 import java.awt.Color;
 
-import com.ayushtech.flagbot.dbconnectivity.RegionDao;
+import com.ayushtech.flagbot.guessGame.Country;
+import com.ayushtech.flagbot.guessGame.GuessGameUtil;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -14,17 +15,21 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 public class ContinentGame {
   private String countryCode;
   private String continentCode;
+  private Country country;
 
-  public ContinentGame(SlashCommandInteractionEvent event, String countryCode) {
-    this.countryCode = countryCode;
-    setData();
+  public ContinentGame(SlashCommandInteractionEvent event) {
+    this.country = GuessGameUtil.getInstance().getRandomCountry();
+    this.countryCode = country.getCode();
+    this.continentCode = country.getContinentCode();
+    // setData();
     event.getHook().sendMessageEmbeds(createEmbed()).addActionRows(getActionRows()).queue();
   }
 
-  public ContinentGame(ButtonInteractionEvent event, String countryCode) {
+  public ContinentGame(ButtonInteractionEvent event) {
     event.deferReply().queue();
-    this.countryCode = countryCode;
-    setData();
+    this.country = GuessGameUtil.getInstance().getRandomCountry();
+    this.countryCode = country.getCode();
+    this.continentCode = country.getContinentCode();
     event.getHook().sendMessageEmbeds(createEmbed()).addActionRows(getActionRows()).queue();
   }
 
@@ -42,11 +47,6 @@ public class ContinentGame {
       Button.primary(String.format("selectContinent_an_%s_%s",countryCode,continentCode), "Antarctica")
     );
     return rows;
-  }
-
-  private void setData() {
-    String[] data = RegionDao.getInstance().getCountryData(this.countryCode);
-    continentCode = data[2];
   }
 
   private MessageEmbed createEmbed() {

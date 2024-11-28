@@ -6,11 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.ayushtech.flagbot.game.capital.Capital;
+import com.ayushtech.flagbot.guessGame.Country;
+import com.ayushtech.flagbot.guessGame.capital.Capital;
 
 public class RegionDao {
 
@@ -108,5 +111,58 @@ public class RegionDao {
 			e.printStackTrace();
 			return Stream.of(new Capital("IN", "INDIA", "New Delhi")).collect(Collectors.toList());
 		}
+	}
+
+	public Map<String,String> getCountryCodeMap() {
+		Connection conn = ConnectionProvider.getConnection();
+		try {
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT country_code,country_name FROM country_continents;");
+			Map<String,String> countryCodeMap = new HashMap<>(304);
+			while (rs.next()) {
+				countryCodeMap.put(rs.getString(1), rs.getString(2));
+			}
+			return countryCodeMap;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new HashMap<>();
+		}
+	}
+
+	public List<Country> getCountryList() {
+		Connection conn = ConnectionProvider.getConnection();
+		try {
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT country_code,country_name,continent_code,Sovereign FROM country_continents;");
+			List<Country> countryList = new ArrayList<>();
+			while (rs.next()) {
+				String code = rs.getString("country_code");
+				String continentCode = rs.getString("continent_code");
+				String countryName = rs.getString("country_name");
+				boolean isSovereign = rs.getBoolean("Sovereign");
+				countryList.add(new Country(code, countryName, continentCode, isSovereign));
+			}
+			return countryList;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.exit(0);
+			return null;
+		}
+	}
+
+	public Map<String,String> getLogoMap() {
+		Connection conn = ConnectionProvider.getConnection();
+		Map<String,String> logoMap = new HashMap<>(409);
+		try {
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT code,name from brands;");
+			while (rs.next()) {
+				logoMap.put(rs.getString("code"), rs.getString("name"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+		return logoMap;
 	}
 }

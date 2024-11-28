@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
-import com.ayushtech.flagbot.game.Game;
-import com.ayushtech.flagbot.game.map.MapGame;
+import com.ayushtech.flagbot.guessGame.GuessGameUtil;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emoji;
@@ -65,7 +64,7 @@ public class FightUtils {
     FightHandler.getInstance().fightGameMap.get(event.getChannel().getIdLong()).setCountryOptions(o);
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Select correct country");
-    eb.setImage(createImageURL(o.getCorrectOption().getName()));
+    eb.setImage(GuessGameUtil.getInstance().getMapImage(o.getCorrectOption().getName()));
     event.replyEmbeds(eb.build())
         .addActionRow(
             Button.primary("kickSelection-" + o.getOptions()[0].getIsoCode(), o.getOptions()[0].getName()),
@@ -76,17 +75,18 @@ public class FightUtils {
         .queue();
   }
 
-  public String createImageURL(String countryName) {
-    StringBuffer sb = new StringBuffer("https://maps.lib.utexas.edu/maps/cia16/");
-    if (MapGame.countryOverrideMap.containsKey(countryName)) {
-      countryName = MapGame.countryOverrideMap.get(countryName);
-    } else {
-      countryName = countryName.toLowerCase().replace(' ', '_');
-    }
-    sb.append(countryName);
-    sb.append("_sm_2016.gif");
-    return sb.toString();
-  }
+  // public String createImageURL(String countryName) {
+  // StringBuffer sb = new
+  // StringBuffer("https://maps.lib.utexas.edu/maps/cia16/");
+  // if (MapGame.countryOverrideMap.containsKey(countryName)) {
+  // countryName = MapGame.countryOverrideMap.get(countryName);
+  // } else {
+  // countryName = countryName.toLowerCase().replace(' ', '_');
+  // }
+  // sb.append(countryName);
+  // sb.append("_sm_2016.gif");
+  // return sb.toString();
+  // }
 
   public CountryOptions getOptions() {
     int[] options = get4randomNumbers(isoList.size());
@@ -97,12 +97,12 @@ public class FightUtils {
     optionsAsCode[2] = isoList.get(options[2]);
     optionsAsCode[3] = isoList.get(options[3]);
     String winnerIsoCode = optionsAsCode[winnerIndex];
-    CountryPair winner = new CountryPair(winnerIsoCode, Game.countryMap.get(winnerIsoCode));
+    CountryPair winner = new CountryPair(winnerIsoCode, GuessGameUtil.getInstance().getCountryName(winnerIsoCode));
     CountryPair[] countryOptions = new CountryPair[4];
-    countryOptions[0] = new CountryPair(optionsAsCode[0], Game.countryMap.get(optionsAsCode[0]));
-    countryOptions[1] = new CountryPair(optionsAsCode[1], Game.countryMap.get(optionsAsCode[1]));
-    countryOptions[2] = new CountryPair(optionsAsCode[2], Game.countryMap.get(optionsAsCode[2]));
-    countryOptions[3] = new CountryPair(optionsAsCode[3], Game.countryMap.get(optionsAsCode[3]));
+    countryOptions[0] = new CountryPair(optionsAsCode[0], GuessGameUtil.getInstance().getCountryName(optionsAsCode[0]));
+    countryOptions[1] = new CountryPair(optionsAsCode[1], GuessGameUtil.getInstance().getCountryName(optionsAsCode[1]));
+    countryOptions[2] = new CountryPair(optionsAsCode[2], GuessGameUtil.getInstance().getCountryName(optionsAsCode[2]));
+    countryOptions[3] = new CountryPair(optionsAsCode[3], GuessGameUtil.getInstance().getCountryName(optionsAsCode[3]));
     return new CountryOptions(winner, countryOptions);
   }
 

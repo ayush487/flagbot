@@ -4,7 +4,7 @@ import java.awt.Color;
 
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.dbconnectivity.PlacesDao;
-import com.ayushtech.flagbot.game.place.Place;
+import com.ayushtech.flagbot.guessGame.place.Place;
 import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.VotingService;
 

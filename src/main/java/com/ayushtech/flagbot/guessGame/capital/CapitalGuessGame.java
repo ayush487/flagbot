@@ -1,9 +1,13 @@
-package com.ayushtech.flagbot.game.capital;
+package com.ayushtech.flagbot.guessGame.capital;
 
 import java.awt.Color;
 import java.util.concurrent.TimeUnit;
 
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
+import com.ayushtech.flagbot.guessGame.GuessGame;
+import com.ayushtech.flagbot.guessGame.GuessGameEndRunnable;
+import com.ayushtech.flagbot.guessGame.GuessGameHandler;
+import com.ayushtech.flagbot.guessGame.GuessGameUtil;
 import com.ayushtech.flagbot.services.GameEndService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -13,49 +17,46 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
-public class CapitalGame {
+public class CapitalGuessGame implements GuessGame {
 
   private MessageChannel channel;
-  private MessageEmbed messageEmbed;
   private Capital capital;
-  private Long messageId;
   private int rounds;
   private int roundSize;
   private long startTimeStamp;
+  private long messageId;
+  private MessageEmbed embed;
 
-  private final String flagLink = "https://raw.githubusercontent.com/ayush487/image-library/main/flags/";
-  private final String linkSuffix = ".png";
-
-  public CapitalGame(MessageChannel channel, Capital capital, int rounds, int roundSize, InteractionHook hook) {
+  public CapitalGuessGame(MessageChannel channel, int rounds, int roundSize, InteractionHook hook) {
     this.channel = channel;
-    this.capital = capital;
-    this.rounds = rounds;
+    this.capital = GuessGameUtil.getInstance().getRandomCapital();
     this.roundSize = roundSize;
+    this.rounds = rounds;
     this.startTimeStamp = System.currentTimeMillis();
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Guess Capital of this Country");
     eb.setColor(new Color(38, 187, 237));
-    eb.setThumbnail(flagLink + capital.getCountryCode() + linkSuffix);
+    eb.setThumbnail(this.capital.getFlagLink());
     StringBuilder sb = new StringBuilder();
     sb.append("**Country** : `" + capital.getCountry() + "`");
     eb.setDescription(sb.toString());
-    MessageEmbed embed = eb.build();
-    setMessageEmbed(embed);
+    embed = eb.build();
     if (hook == null) {
-      channel.sendMessageEmbeds(embed).setActionRow(Button.primary("skipCapital", "Skip"))
-          .queue(message -> setMessageId(message.getIdLong()));
+      channel.sendMessageEmbeds(embed).setActionRow(Button.primary("skipGuess", "Skip"))
+          .queue(message -> this.messageId = message.getIdLong());
     } else {
-      hook.sendMessageEmbeds(embed).addActionRow(Button.primary("skipCapital", "Skip"))
-          .queue(message -> setMessageId(message.getIdLong()));
+      hook.sendMessageEmbeds(embed).addActionRow(Button.primary("skipGuess", "Skip"))
+          .queue(message -> this.messageId = message.getIdLong());
     }
     return;
   }
 
+  @Override
   public void endGameAsWin(MessageReceivedEvent event) {
-    CapitalGameHandler.getInstance().getGameMap().remove(channel.getIdLong());
+    GuessGameHandler.getInstance().removeGame(this.channel.getIdLong());
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Correct!");
-    eb.setThumbnail(flagLink + capital.getCountryCode() + linkSuffix);
+    eb.setThumbnail(capital.getFlagLink());
     eb.setColor(Color.green);
     StringBuilder sb = new StringBuilder();
     sb.append(event.getAuthor().getAsMention() + " is correct!\n");
@@ -71,17 +72,18 @@ public class CapitalGame {
           .queue();
     } else {
       event.getChannel().sendMessageEmbeds(eb.build()).queue();
-      startAgain(channel, CapitalGameHandler.getInstance().getRandomCapital(), rounds-1, roundSize);
+      startAgain(channel, rounds - 1, roundSize);
     }
     disableButtons();
   }
 
+  @Override
   public void endGameAsLose() {
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("No one guessed the capital");
     StringBuilder sb = new StringBuilder();
     sb.append(String.format("**Country** : `%s`\n**Capital** : `%s`", capital.getCountry(), capital.getCapital()));
-    eb.setThumbnail(flagLink + capital.getCountryCode() + linkSuffix);
+    eb.setThumbnail(capital.getFlagLink());
     eb.setDescription(sb.toString());
     eb.setColor(Color.red);
     if (rounds <= 1) {
@@ -91,27 +93,20 @@ public class CapitalGame {
           .queue();
     } else {
       channel.sendMessageEmbeds(eb.build()).queue();
-      startAgain(channel, CapitalGameHandler.getInstance().getRandomCapital(), rounds-1, roundSize);
+      startAgain(channel, rounds - 1, roundSize);
     }
     disableButtons();
   }
 
-  public boolean guess(String guessCity) {
-    guessCity = guessCity.toLowerCase();
-    return guessCity.equals(capital.getCapital().toLowerCase());
-  }
-
-  private void disableButtons() {
-    this.channel.retrieveMessageById(this.messageId).complete().editMessageEmbeds(getMessageEmbed())
+  @Override
+  public void disableButtons() {
+    this.channel.retrieveMessageById(this.messageId).complete().editMessageEmbeds(embed)
         .setActionRow(Button.primary("skip", "Skip").asDisabled()).queue();
   }
 
-  private void setMessageEmbed(MessageEmbed embed) {
-    this.messageEmbed = embed;
-  }
-
-  private MessageEmbed getMessageEmbed() {
-    return this.messageEmbed;
+  @Override
+  public boolean guess(String guessString) {
+    return guessString.equalsIgnoreCase(capital.getCapital());
   }
 
   private String getTimeTook() {
@@ -120,14 +115,10 @@ public class CapitalGame {
     return returnString;
   }
 
-  private void setMessageId(long msgId) {
-    this.messageId = msgId;
-  }
-
-  private static void startAgain(MessageChannel channel, Capital capital, int rounds, int roundSize) {
-    CapitalGame cGame = new CapitalGame(channel, capital, rounds, roundSize, null);
-    CapitalGameHandler.getInstance().getGameMap().put(channel.getIdLong(), cGame);
-    GameEndService.getInstance().scheduleEndGame(new CapitalGameEndRunnable(cGame, channel.getIdLong()), 30,
+  private static void startAgain(MessageChannel channel, int rounds, int roundSize) {
+    CapitalGuessGame game = new CapitalGuessGame(channel, rounds, roundSize, null);
+    GuessGameHandler.getInstance().addThisGame(channel.getIdLong(), game);
+    GameEndService.getInstance().scheduleEndGame(new GuessGameEndRunnable(game, channel.getIdLong()), 30,
         TimeUnit.SECONDS);
   }
 }

@@ -1,4 +1,4 @@
-package com.ayushtech.flagbot.game.logo;
+package com.ayushtech.flagbot.guessGame.logo;
 
 public class LogoOptions {
   private String correctOption;

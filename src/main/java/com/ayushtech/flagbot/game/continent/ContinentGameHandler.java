@@ -2,12 +2,10 @@ package com.ayushtech.flagbot.game.continent;
 
 import java.awt.Color;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
-import com.ayushtech.flagbot.dbconnectivity.RegionDao;
-import com.ayushtech.flagbot.game.Game;
+import com.ayushtech.flagbot.dbconnectivity.CoinDao;
+import com.ayushtech.flagbot.guessGame.GuessGameUtil;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -20,13 +18,9 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class ContinentGameHandler {
   private static ContinentGameHandler handler = null;
-  private List<String> countryCodes;
-  private Random random;
   private Map<String, String> continentMapping;
 
   private ContinentGameHandler() {
-    random = new Random();
-    countryCodes = RegionDao.getInstance().getCountryCodeList();
     loadContinentMap();
   }
 
@@ -41,11 +35,11 @@ public class ContinentGameHandler {
     OptionMapping roundsOption = event.getOption("rounds");
     int rounds = roundsOption == null ? 0 : roundsOption.getAsInt();
     rounds = (rounds <= 0) ? 0 : (rounds > 15) ? 15 : rounds;
-    new ContinentGame(event, getRandomCountryCode());
+    new ContinentGame(event);
   }
 
   public void handlePlayCommand(ButtonInteractionEvent event) {
-    new ContinentGame(event, getRandomCountryCode());
+    new ContinentGame(event);
   }
 
   public void handleSelection(ButtonInteractionEvent event) {
@@ -80,26 +74,30 @@ public class ContinentGameHandler {
   private void endGameAsWin(ButtonInteractionEvent event, String correctContinent, String country) {
     EmbedBuilder eb = new EmbedBuilder();
     User user = event.getUser();
+    long userBalance = CoinDao.getInstance().addCoinsAndGetBalance(user.getIdLong(), 100l);
     eb.setTitle("Select which continent this country belongs");
     eb.setColor(Color.green);
     eb.setImage(
         String.format("https://raw.githubusercontent.com/ayush487/image-library/main/flags/%s.png", country));
     event.editMessageEmbeds(eb.build()).setActionRows(getDisabledActionRowsWin(correctContinent)).queue();
-    event.getHook().sendMessageEmbeds(getNotificationEmbedAsWin(user.getIdLong(), country, correctContinent))
+    event.getHook()
+        .sendMessageEmbeds(getNotificationEmbedAsWin(user.getIdLong(), country, correctContinent, userBalance))
         .addActionRow(Button.primary("playAgainContinent", "Play Again"))
         .queue();
-    Game.increaseCoins(user.getIdLong(), 100);
+
   }
 
-  private MessageEmbed getNotificationEmbedAsWin(long userId, String countryCode, String continentCode) {
+  private MessageEmbed getNotificationEmbedAsWin(long userId, String countryCode, String continentCode,
+      long userBalance) {
     EmbedBuilder eb = new EmbedBuilder();
     eb.setColor(Color.green);
     eb.setThumbnail(
         String.format("https://raw.githubusercontent.com/ayush487/image-library/main/flags/%s.png", countryCode));
     eb.setTitle("Correct!");
     eb.setDescription(
-        String.format("<@%d> is correct\n**Coins :** `%d(+100)` :coin:\n**Country :** `%s`\n**Continent :** `%s`", userId,
-            Game.getAmount(userId), Game.getCountryName(countryCode),
+        String.format("<@%d> is correct\n**Coins :** `%d(+100)` :coin:\n**Country :** `%s`\n**Continent :** `%s`",
+            userId,
+            userBalance, GuessGameUtil.getInstance().getCountryName(countryCode),
             continentMapping.get(continentCode)));
     return eb.build();
   }
@@ -110,7 +108,8 @@ public class ContinentGameHandler {
     eb.setThumbnail(
         String.format("https://raw.githubusercontent.com/ayush487/image-library/main/flags/%s.png", countryCode));
     eb.setTitle(String.format("%s selected wrong option!", username));
-    eb.setDescription(String.format("**Country :** `%s`\n**Continent :** `%s`", Game.getCountryName(countryCode),
+    eb.setDescription(String.format("**Country :** `%s`\n**Continent :** `%s`",
+        GuessGameUtil.getInstance().getCountryName(countryCode),
         continentMapping.get(continentCode)));
     return eb.build();
   }
@@ -162,10 +161,6 @@ public class ContinentGameHandler {
             : selected.equals("an") ? Button.danger("con_an", "Antarctica").asDisabled()
                 : Button.primary("con_an", "Antarctica").asDisabled());
     return rows;
-  }
-
-  private String getRandomCountryCode() {
-    return countryCodes.get(random.nextInt(countryCodes.size()));
   }
 
   private void loadContinentMap() {

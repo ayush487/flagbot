@@ -9,8 +9,9 @@ import java.util.concurrent.TimeUnit;
 
 import com.ayushtech.flagbot.game.fight.CountryOptions;
 import com.ayushtech.flagbot.game.fight.FightUtils;
-import com.ayushtech.flagbot.game.logo.LogoOptions;
-import com.ayushtech.flagbot.game.logo.LogoUtils;
+import com.ayushtech.flagbot.guessGame.GuessGameUtil;
+import com.ayushtech.flagbot.guessGame.logo.LogoOptions;
+import com.ayushtech.flagbot.guessGame.logo.LogoUtils;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -162,7 +163,7 @@ public class RaceHandler {
     CountryOptions options = FightUtils.getInstance().getOptions();
     eb.setTitle("Select the correct country");
     eb.setColor(Color.YELLOW);
-    eb.setImage(FightUtils.getInstance().createImageURL(options.getCorrectOption().getName()));
+    eb.setImage(GuessGameUtil.getInstance().getMapImage(options.getCorrectOption().getName()));
     event.replyEmbeds(eb.build())
         .addActionRow(
             Button.primary(

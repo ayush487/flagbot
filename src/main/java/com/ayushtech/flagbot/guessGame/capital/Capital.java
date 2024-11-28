@@ -1,4 +1,4 @@
-package com.ayushtech.flagbot.game.capital;
+package com.ayushtech.flagbot.guessGame.capital;
 
 public class Capital {
   private String countryCode;
@@ -9,6 +9,10 @@ public class Capital {
     this.countryCode = countryCode;
     this.country = country;
     this.capital = capital;
+  }
+
+  public String getFlagLink() {
+    return "https://raw.githubusercontent.com/ayush487/image-library/main/flags/" + countryCode.toLowerCase() + ".png"; 
   }
 
   public String getCountryCode() {

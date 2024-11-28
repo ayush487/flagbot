@@ -5,24 +5,15 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.dbconnectivity.StocksDao;
 import com.ayushtech.flagbot.dbconnectivity.StocksTransactionsDao;
 import com.ayushtech.flagbot.distanceGuess.GuessDistanceHandler;
 import com.ayushtech.flagbot.game.LeaderboardHandler;
-import com.ayushtech.flagbot.game.capital.CapitalGameHandler;
 import com.ayushtech.flagbot.game.continent.ContinentGameHandler;
-import com.ayushtech.flagbot.game.flag.FlagGameEndRunnable;
-import com.ayushtech.flagbot.game.flag.FlagGameHandler;
 import com.ayushtech.flagbot.game.location.LocationGameHandler;
-import com.ayushtech.flagbot.game.logo.LogoGameEndRunnable;
-import com.ayushtech.flagbot.game.logo.LogoGameHandler;
-import com.ayushtech.flagbot.game.map.MapGameEndRunnable;
-import com.ayushtech.flagbot.game.map.MapGameHandler;
-import com.ayushtech.flagbot.game.place.PlaceGameEndRunnable;
-import com.ayushtech.flagbot.game.place.PlaceGameHandler;
+import com.ayushtech.flagbot.guessGame.GuessGameHandler;
 import com.ayushtech.flagbot.stocks.Company;
 import com.ayushtech.flagbot.stocks.StocksHandler;
 
@@ -270,42 +261,16 @@ public class UtilService {
   public void handleGuessComnmands(SlashCommandInteractionEvent event) {
     String commandName = event.getSubcommandName();
     if (commandName.equals("map")) {
-      boolean isAdded = MapGameHandler.getInstance().addGame(event);
-      if (isAdded) {
-        GameEndService.getInstance().scheduleEndGame(
-            new MapGameEndRunnable(
-                MapGameHandler.getInstance().getGameMap()
-                    .get(event.getChannel().getIdLong()),
-                event.getChannel().getIdLong()),
-            30, TimeUnit.SECONDS);
-      }
+      GuessGameHandler.getInstance().handlePlayMapCommand(event);
       return;
     } else if (commandName.equals("logo")) {
-      boolean isAdded = LogoGameHandler.getInstance().addGame(event);
-      if (isAdded) {
-        GameEndService.getInstance().scheduleEndGame(
-            new LogoGameEndRunnable(
-                LogoGameHandler.getInstance().getGameMap()
-                    .get(event.getChannel().getIdLong()),
-                event.getChannel().getIdLong()),
-            30, TimeUnit.SECONDS);
-      }
+      GuessGameHandler.getInstance().handlePlayLogoCommand(event);
       return;
     } else if (commandName.equals("flag")) {
-      boolean isAdded = FlagGameHandler.getInstance().addGame(event);
-      if (isAdded) {
-        GameEndService.getInstance().scheduleEndGame(new FlagGameEndRunnable(
-            FlagGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()),
-            event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
-      }
+      GuessGameHandler.getInstance().handlePlayFlagCommand(event);
       return;
     } else if (commandName.equals("place")) {
-      boolean isAdded = PlaceGameHandler.getInstance().addGame(event);
-      if (isAdded) {
-        GameEndService.getInstance().scheduleEndGame(new PlaceGameEndRunnable(
-            PlaceGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()),
-            event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
-      }
+      GuessGameHandler.getInstance().handlePlayPlaceCommand(event);
       return;
     } else if (commandName.equals("distance")) {
       GuessDistanceHandler.getInstance().handleNewGameCommand(event);
@@ -314,7 +279,7 @@ public class UtilService {
       LocationGameHandler.getInstance().handleStartGameCommand(event);
       return;
     } else if (commandName.equals("capital")) {
-      CapitalGameHandler.getInstance().handlePlayCommand(event);
+      GuessGameHandler.getInstance().handlePlayCapitalCommand(event);
       return;
     } else {
       ContinentGameHandler.getInstance().handlePlayCommand(event);
@@ -395,81 +360,5 @@ public class UtilService {
       }
     }
     return;
-  }
-
-  public void handlePlayPlaceButton(ButtonInteractionEvent event) {
-    boolean isAdded = PlaceGameHandler.getInstance().addGame(event);
-    if (isAdded) {
-      GameEndService.getInstance().scheduleEndGame(
-          new PlaceGameEndRunnable(
-              PlaceGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()),
-              event.getChannel().getIdLong()),
-          30, TimeUnit.SECONDS);
-    }
-  }
-
-  public void handlePlayLogoButton(ButtonInteractionEvent event) {
-    boolean isAdded = LogoGameHandler.getInstance().addGame(event);
-    if (isAdded) {
-      GameEndService.getInstance().scheduleEndGame(
-          new LogoGameEndRunnable(
-              LogoGameHandler.getInstance().getGameMap()
-                  .get(event.getChannel().getIdLong()),
-              event.getChannel().getIdLong()),
-          30, TimeUnit.SECONDS);
-    }
-  }
-
-  public void handlePlayMapButton(ButtonInteractionEvent event) {
-    boolean isAdded = MapGameHandler.getInstance().addGame(event);
-    if (isAdded) {
-      GameEndService.getInstance().scheduleEndGame(
-          new MapGameEndRunnable(
-              MapGameHandler.getInstance().getGameMap()
-                  .get(event.getChannel().getIdLong()),
-              event.getChannel().getIdLong()),
-          30, TimeUnit.SECONDS);
-    }
-  }
-
-  public void handlePlayFlagButton(ButtonInteractionEvent event) {
-    boolean isAdded = FlagGameHandler.getInstance().addGame(event);
-    if (isAdded) {
-      GameEndService.getInstance().scheduleEndGame(new FlagGameEndRunnable(
-          FlagGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()),
-          event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
-    }
-  }
-
-  public void handleSkipFlagButton(ButtonInteractionEvent event) {
-    event.deferReply().queue();
-    if (FlagGameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())) {
-      event.getHook().sendMessage(event.getUser().getAsMention() + " has skipped the game!").queue();
-      FlagGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()).endGameAsLose();
-    }
-  }
-
-  public void handleSkipMapButton(ButtonInteractionEvent event) {
-    event.deferReply().queue();
-    if (MapGameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())) {
-      event.getHook().sendMessage(event.getUser().getAsMention() + " has skipped the game!").queue();
-      MapGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()).endGameAsLose();
-    }
-  }
-
-  public void handleSkipLogoButton(ButtonInteractionEvent event) {
-    event.deferReply().queue();
-    if (LogoGameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())) {
-      event.getHook().sendMessage(event.getUser().getAsMention() + " has skipped the game!").queue();
-      LogoGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()).endGameAsLose();
-    }
-  }
-
-  public void handleSkipPlaceButton(ButtonInteractionEvent event) {
-    event.deferReply().queue();
-    if (PlaceGameHandler.getInstance().getGameMap().containsKey(event.getChannel().getIdLong())) {
-      event.getHook().sendMessage(event.getUser().getAsMention() + " has skipped the game!").queue();
-      PlaceGameHandler.getInstance().getGameMap().get(event.getChannel().getIdLong()).endGameAsLose();
-    }
   }
 }

@@ -7,6 +7,7 @@ import javax.security.auth.login.LoginException;
 
 import com.ayushtech.flagbot.dbconnectivity.DBInfo;
 import com.ayushtech.flagbot.fileConnectivity.CountryNameFileReader;
+import com.ayushtech.flagbot.guessGame.GuessGameUtil;
 import com.ayushtech.flagbot.listeners.GuildEventListener;
 import com.ayushtech.flagbot.listeners.InteractionsListener;
 import com.ayushtech.flagbot.listeners.MessageListener;
@@ -48,6 +49,7 @@ public class Main {
                 StocksHandler.loadInitialPriceMap();
                 PatreonService.getInstance();
                 LanguageService.getInstance();
+                GuessGameUtil.getInstance();
 
                 DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(bot_token);
                 builder.setShardsTotal(shards);

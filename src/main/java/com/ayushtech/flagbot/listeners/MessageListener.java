@@ -6,11 +6,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 import com.ayushtech.flagbot.distanceGuess.GuessDistanceHandler;
-import com.ayushtech.flagbot.game.capital.CapitalGameHandler;
-import com.ayushtech.flagbot.game.flag.FlagGameHandler;
-import com.ayushtech.flagbot.game.logo.LogoGameHandler;
-import com.ayushtech.flagbot.game.map.MapGameHandler;
-import com.ayushtech.flagbot.game.place.PlaceGameHandler;
+import com.ayushtech.flagbot.guessGame.GuessGameHandler;
 import com.ayushtech.flagbot.services.CaptchaService;
 import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.PrivateServerService;
@@ -94,20 +90,9 @@ public class MessageListener extends ListenerAdapter {
         if (alternateNamesMap.containsKey(messageText.toLowerCase())) {
             messageText = alternateNamesMap.get(messageText.toLowerCase());
         }
-        if (FlagGameHandler.getInstance().getGameMap().containsKey(channelId)) {
-            FlagGameHandler.getInstance().handleGuess(messageText, event);
-        }
-        if (MapGameHandler.getInstance().getGameMap().containsKey(channelId)) {
-            MapGameHandler.getInstance().handleGuess(messageText, event);
-        }
-        if (LogoGameHandler.getInstance().getGameMap().containsKey(channelId)) {
-            LogoGameHandler.getInstance().handleGuess(messageText, event);
-        }
-        if(CapitalGameHandler.getInstance().getGameMap().containsKey(channelId)) {
-            CapitalGameHandler.getInstance().handleGuess(messageText, event);
-        }
-        if (PlaceGameHandler.getInstance().getGameMap().containsKey(channelId)) {
-            PlaceGameHandler.getInstance().handleGuess(messageText, event);
+        if (GuessGameHandler.getInstance().isActiveGame(channelId)) {
+            GuessGameHandler.getInstance().handleGuess(messageText, event);
+            return;
         }
         return;
     }

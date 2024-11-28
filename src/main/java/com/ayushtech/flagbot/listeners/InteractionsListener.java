@@ -4,12 +4,12 @@ import javax.annotation.Nonnull;
 
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.distanceGuess.GuessDistanceHandler;
-import com.ayushtech.flagbot.game.capital.CapitalGameHandler;
 import com.ayushtech.flagbot.game.continent.ContinentGameHandler;
 import com.ayushtech.flagbot.game.fight.Damage;
 import com.ayushtech.flagbot.game.fight.FightHandler;
-import com.ayushtech.flagbot.game.flag.RegionHandler;
 import com.ayushtech.flagbot.game.location.LocationGameHandler;
+import com.ayushtech.flagbot.guessGame.GuessGameHandler;
+import com.ayushtech.flagbot.guessGame.flag.RegionHandler;
 import com.ayushtech.flagbot.memoflip.MemoflipHandler;
 import com.ayushtech.flagbot.race.RaceHandler;
 import com.ayushtech.flagbot.services.CaptchaService;
@@ -300,36 +300,13 @@ public class InteractionsListener extends ListenerAdapter {
 		} else if (commandId.startsWith("delete_data")) {
 			UtilService.getInstance().handleConfirmDeleteButton(event);
 			return;
-		}
-
-		else if (commandId.equals("skipButton")) {
-			UtilService.getInstance().handleSkipFlagButton(event);
-			return;
-		}
-
-		else if (commandId.equals("checkRegionButton")) {
+		} else if (commandId.startsWith("checkRegionButton")) {
 			RegionHandler.getInstance().handleRegionButton(event);
 			return;
 		}
 
-		else if (commandId.equals("skipMap")) {
-			UtilService.getInstance().handleSkipMapButton(event);
-			return;
-		}
-
-		else if (commandId.equals("skipLogo")) {
-			UtilService.getInstance().handleSkipLogoButton(event);
-			return;
-		}
-
-		else if (commandId.equals("skipCapital")) {
-			event.deferReply().queue();
-			CapitalGameHandler.getInstance().handleSkipRequest(event);
-			return;
-		}
-
-		else if (commandId.equals("skipPlace")) {
-			UtilService.getInstance().handleSkipPlaceButton(event);
+		else if (commandId.startsWith("skipGuess")) {
+			GuessGameHandler.getInstance().handleSkipRequest(event);
 			return;
 		}
 
@@ -366,32 +343,32 @@ public class InteractionsListener extends ListenerAdapter {
 		// }
 
 		else if (commandId.startsWith("playAgainFlag")) {
-			UtilService.getInstance().handlePlayFlagButton(event);
+			GuessGameHandler.getInstance().handlePlayFlagButton(event);
 			return;
 		}
 
 		else if (commandId.startsWith("playAgainMap")) {
-			UtilService.getInstance().handlePlayMapButton(event);
+			GuessGameHandler.getInstance().handlePlayMapButton(event);
 			return;
 		}
 
 		else if (commandId.startsWith("playAgainLogo")) {
-			UtilService.getInstance().handlePlayLogoButton(event);
+			GuessGameHandler.getInstance().handlePlayLogoButton(event);
 			return;
 		}
 
 		else if (commandId.startsWith("playAgainPlace")) {
-			UtilService.getInstance().handlePlayPlaceButton(event);
+			GuessGameHandler.getInstance().handlePlayPlaceButton(event);
+			return;
+		}
+
+		else if (commandId.startsWith("playAgainCapital")) {
+			GuessGameHandler.getInstance().handlePlayCapitalButton(event);
 			return;
 		}
 
 		else if (commandId.startsWith("playAgainContinent")) {
 			ContinentGameHandler.getInstance().handlePlayCommand(event);
-			return;
-		}
-
-		else if (commandId.startsWith("playAgainCapital")) {
-			CapitalGameHandler.getInstance().handlePlayCommand(event);
 			return;
 		}
 
