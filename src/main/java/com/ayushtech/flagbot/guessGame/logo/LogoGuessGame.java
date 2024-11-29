@@ -40,13 +40,12 @@ public class LogoGuessGame implements GuessGame {
     eb.setImage(String.format("https://raw.githubusercontent.com/ayush487/image-library/main/logo/%s.png", brandCode));
     eb.setColor(new Color(235, 206, 129));
     embed = eb.build();
-    if (hook == null) {
-      channel.sendMessageEmbeds(embed).setActionRow(Button.primary("skipGuess", "Skip"))
-          .queue(message -> this.messageId = message.getIdLong());
-    } else {
-      hook.sendMessageEmbeds(embed).addActionRow(Button.primary("skipGuess", "Skip"))
-          .queue(message -> this.messageId = message.getIdLong());
+    if (hook != null) {
+      hook.sendMessage("Starting game now!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
     }
+    channel.sendMessageEmbeds(embed).setActionRow(Button.primary("skipGuess", "Skip"))
+        .queue(message -> this.messageId = message.getIdLong());
+    return;
   }
 
   @Override

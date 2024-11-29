@@ -41,13 +41,11 @@ public class CapitalGuessGame implements GuessGame {
     sb.append("**Country** : `" + capital.getCountry() + "`");
     eb.setDescription(sb.toString());
     embed = eb.build();
-    if (hook == null) {
-      channel.sendMessageEmbeds(embed).setActionRow(Button.primary("skipGuess", "Skip"))
-          .queue(message -> this.messageId = message.getIdLong());
-    } else {
-      hook.sendMessageEmbeds(embed).addActionRow(Button.primary("skipGuess", "Skip"))
-          .queue(message -> this.messageId = message.getIdLong());
+    if (hook != null) {
+      hook.sendMessage("Starting game now!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
     }
+    channel.sendMessageEmbeds(embed).setActionRow(Button.primary("skipGuess", "Skip"))
+        .queue(message -> this.messageId = message.getIdLong());
     return;
   }
 

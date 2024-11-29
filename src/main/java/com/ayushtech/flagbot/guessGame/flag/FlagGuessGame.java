@@ -68,17 +68,15 @@ public class FlagGuessGame implements GuessGame {
     eb.setDescription(String.format("**Mode** : `%s`\n**Continent** : `%s`", modeDisplayName, continentName));
     eb.setFooter((difficulty != 0 ? "*Regions not available in the mode" : "*See Region will cost you 60 coins"));
     this.embed = eb.build();
-    if (hook == null) {
-      channel.sendMessageEmbeds(embed).setActionRow(Button.primary("skipGuess", "Skip"),
-          difficulty == 0 ? Button.primary("checkRegionButton_" + country.getCode(), "See Region")
-              : Button.primary("checkRegionButton", "See Region").asDisabled())
-          .queue(message -> this.messageId = message.getIdLong());
-    } else {
-      hook.sendMessageEmbeds(embed).addActionRow(Button.primary("skipGuess", "Skip"),
-          difficulty == 0 ? Button.primary("checkRegionButton_" + country.getCode(), "See Region")
-              : Button.primary("checkRegionButton", "See Region").asDisabled())
-          .queue(message -> this.messageId = message.getIdLong());
+    if (hook != null) {
+      hook.sendMessage("Starting game now!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
     }
+    channel.sendMessageEmbeds(embed)
+        .setActionRow(Button.primary("skipGuess", "Skip"),
+            difficulty == 0 ? Button.primary("checkRegionButton_" + country.getCode(), "See Region")
+                : Button.primary("checkRegionButton", "See Region").asDisabled())
+        .queue(message -> this.messageId = message.getIdLong());
+    return;
   }
 
   @Override

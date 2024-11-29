@@ -193,7 +193,7 @@ public class GuessGameHandler {
     Optional<String> langOptional = LanguageService.getInstance()
         .getLanguageSelected(event.getGuild().getIdLong());
     GuessGame guessGame = new FlagGuessGame(event.getChannel(), difficulty, rounds, rounds,
-        langOptional.orElseGet(null),
+        langOptional.orElse(null),
         continentCode, event.getHook());
     gameMap.put(event.getChannel().getIdLong(), guessGame);
     GameEndService.getInstance()
@@ -212,7 +212,7 @@ public class GuessGameHandler {
     int rounds = Integer.parseInt(commandData[2]);
     Optional<String> langOptional = LanguageService.getInstance()
         .getLanguageSelected(event.getGuild().getIdLong());
-    GuessGame guessGame = new MapGuessGame(event.getChannel(), isHard, rounds, rounds, langOptional.orElseGet(null),
+    GuessGame guessGame = new MapGuessGame(event.getChannel(), isHard, rounds, rounds, langOptional.orElse(null),
         event.getHook());
     gameMap.put(event.getChannel().getIdLong(), guessGame);
     GameEndService.getInstance()

@@ -21,6 +21,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emoji;
+import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
@@ -259,6 +260,14 @@ public class UtilService {
   }
 
   public void handleGuessComnmands(SlashCommandInteractionEvent event) {
+    Member selfMember = event.getGuild().getSelfMember();
+    if (event.getGuild() != null) {
+      GuildChannel guildChannel = event.getGuild().getGuildChannelById(event.getChannel().getId());
+      if (!selfMember.hasPermission(guildChannel, Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.MESSAGE_EMBED_LINKS)) {
+        event.getHook().sendMessage("Missing Permissions : `VIEW_CHANNEL` or `MESSAGE_SEND` or `MESSAGE_EMBED_LINKS`\nPlease ask your server admin to grant me these permissions or try in a different channel.").queue();
+        return;
+      }
+    }
     String commandName = event.getSubcommandName();
     if (commandName.equals("map")) {
       GuessGameHandler.getInstance().handlePlayMapCommand(event);

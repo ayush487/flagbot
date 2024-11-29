@@ -38,15 +38,12 @@ public class PlaceGuessGame implements GuessGame {
     eb.setImage(place.getPlaceImage());
     eb.setColor(new Color(83, 184, 224));
     this.embed = eb.build();
-    if (hook == null) {
-      this.channel.sendMessageEmbeds(embed)
-          .setActionRow(Button.primary("skipGuess", "Skip"))
-          .queue(msg -> this.messageId = msg.getIdLong());
-    } else {
-      hook.sendMessageEmbeds(embed)
-          .addActionRow(Button.primary("skipGuess", "Skip"))
-          .queue(msg -> this.messageId = msg.getIdLong());
+    if (hook != null) {
+      hook.sendMessage("Starting game now!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
     }
+    channel.sendMessageEmbeds(embed).setActionRow(Button.primary("skipGuess", "Skip"))
+        .queue(message -> this.messageId = message.getIdLong());
+    return;
   }
 
   @Override
