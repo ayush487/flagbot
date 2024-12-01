@@ -20,7 +20,6 @@ import com.ayushtech.flagbot.stocks.StocksHandler;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.Member;
@@ -263,8 +262,11 @@ public class UtilService {
     Member selfMember = event.getGuild().getSelfMember();
     if (event.getGuild() != null) {
       GuildChannel guildChannel = event.getGuild().getGuildChannelById(event.getChannel().getId());
-      if (!selfMember.hasPermission(guildChannel, Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.MESSAGE_EMBED_LINKS)) {
-        event.getHook().sendMessage("Missing Permissions : `VIEW_CHANNEL` or `MESSAGE_SEND` or `MESSAGE_EMBED_LINKS`\nPlease ask your server admin to grant me these permissions or try in a different channel.").queue();
+      if (!selfMember.hasPermission(guildChannel, Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND,
+          Permission.MESSAGE_EMBED_LINKS)) {
+        event.getHook().sendMessage(
+            "Missing Permissions : `VIEW_CHANNEL` or `MESSAGE_SEND` or `MESSAGE_EMBED_LINKS`\nPlease ask your server admin to grant me these permissions or try in a different channel.")
+            .queue();
         return;
       }
     }
@@ -300,8 +302,6 @@ public class UtilService {
     String subcommandName = event.getSubcommandName();
     if (subcommandName.equals("list")) {
       event.getHook().sendMessageEmbeds(StocksHandler.getInstance().getStockList())
-          .addActionRow(Button.primary("refreshMarket_" + System.currentTimeMillis(),
-              Emoji.fromEmote("refresh", 1209076086185656340l, false)))
           .queue();
       return;
     } else if (subcommandName.equals("owned")) {
@@ -309,36 +309,8 @@ public class UtilService {
           .addActionRow(Button.secondary("stockTransactions_0", "View Transactions"))
           .queue();
       return;
-    } else if (subcommandName.equals("buy")) {
-      String companyName = event.getOption("company").getAsString().toUpperCase();
-      if (StocksHandler.getInstance().isCompanyValid(companyName)) {
-        Company selectedCompany = Company.valueOf(companyName);
-        int amountOfStocks = 0;
-        try {
-          amountOfStocks = event.getOption("amount").getAsInt();
-        } catch (Exception e) {
-          event.getHook().sendMessage("Something went wrong!").queue();
-          return;
-        }
-        if (amountOfStocks <= 0) {
-          event.getHook().sendMessage("You can't buy negative numbers of stocks :face_with_raised_eyebrow:").queue();
-          return;
-        }
-        int[] returnArray = StocksHandler.getInstance().buyStocks(selectedCompany, amountOfStocks,
-            event.getUser().getIdLong());
-        if (returnArray[0] == 1) {
-          event.getHook()
-              .sendMessage("You bought `" + amountOfStocks + "` shares of **" + selectedCompany.toString()
-                  + "** spending `" + (returnArray[1] * amountOfStocks) + "` :coin:")
-              .queue();
-        } else {
-          event.getHook().sendMessage("Something went wrong!\nCheck your balance or Try Again!").queue();
-        }
-      } else {
-        event.getHook().sendMessage("Company not valid!").queue();
-        return;
-      }
-    } else if (subcommandName.equals("sell")) {
+    }
+    else if (subcommandName.equals("sell")) {
       String companyName = event.getOption("company").getAsString().toUpperCase();
       if (StocksHandler.getInstance().isCompanyValid(companyName)) {
         Company selectedCompany = Company.valueOf(companyName);

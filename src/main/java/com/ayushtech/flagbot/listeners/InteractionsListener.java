@@ -246,9 +246,6 @@ public class InteractionsListener extends ListenerAdapter {
 		} else if (commandId.startsWith("kickSelection")) {
 			FightHandler.getInstance().handleSelection(event, Damage.KICK, commandId.split("-")[1]);
 			return;
-		} else if (commandId.startsWith("refreshMarket")) {
-			StocksHandler.getInstance().handleRefreshMarketButton(event);
-			return;
 		} else if (commandId.startsWith("stockTransactions")) {
 			StocksHandler.getInstance().handleStockTransactionButton(event);
 			return;

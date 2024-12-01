@@ -2,54 +2,25 @@ package com.ayushtech.flagbot.stocks;
 
 import java.awt.Color;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import com.ayushtech.flagbot.dbconnectivity.StocksDao;
 import com.ayushtech.flagbot.dbconnectivity.StocksTransactionsDao;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.utils.TimeFormat;
 
 public class StocksHandler {
 
   private static Map<String, Integer> initialStockPriceMap;
   private static StocksHandler stocksHandler = null;
-  private Map<Company, StockData> stocksMap;
-  private ScheduledExecutorService stockPricesUpdateService;
-  private String greenUpEmoji = "<:green_up:1207014598528602162>";
-  private String redDownEmoji = "<:red_down:1207014620792102922>";
   private String[] companyArray = { "DOOGLE", "MAPPLE", "RAMSUNG", "MICROLOFT", "LOCKSTAR", "SEPSICO", "LETFLIX",
       "STARMUCKS", "TWEETER", "DISKORD" };
 
-  private Set<Company> companies;
-
   private StocksHandler() {
-    this.stockPricesUpdateService = new ScheduledThreadPoolExecutor(1);
-    stocksMap = new HashMap<>();
-    loadStocksMap();
-    companies = stocksMap.keySet();
-    stockPricesUpdateService.scheduleWithFixedDelay(() -> {
-      companies.stream().forEach(c -> {
-        int initialValue = stocksMap.get(c).getValue();
-        int change = stocksMap.get(c).getStockFluctuation();
-        stocksMap.get(c).resetData();
-        stocksMap.get(c).setValue(initialValue + change);
-        initialStockPriceMap.put(c.toString(), initialValue + change);
-        stocksMap.get(c).setChange(change);
-      });
-      StocksDao.getInstance().setStockValue(initialStockPriceMap);
-    }, 2, 2, TimeUnit.MINUTES);
   }
 
   public static synchronized StocksHandler getInstance() {
@@ -68,13 +39,12 @@ public class StocksHandler {
     Arrays.stream(companyArray)
         .map(Company::valueOf)
         .forEach(c -> {
-          sSb.append("**" + c.toString() + "** (`" + stocksMap.get(c).getValue() + "`)"
-              + getEmoji(stocksMap.get(c).getChange()) + "\n");
+          sSb.append("**" + c.toString() + "** (`" + initialStockPriceMap.get(c.name()) + "`)\n");
         });
     eb.addField("__**Company** (`Price`)__", sSb.toString(), false);
-    eb.addField("__Last Updated__", TimeFormat.TIME_SHORT.now() + "", false);
-    // eb.setFooter("'/stocks buy' to buy stocks.");
-    eb.setFooter("Stock commands will be deleted on December 1st");
+    eb.addField("_Note__", "You can no longer buy them, you can still sell if you have using command `/stocks sell`",
+        false);
+
     eb.setColor(Color.YELLOW);
     return eb.build();
   }
@@ -90,7 +60,7 @@ public class StocksHandler {
       if (stocksOwnedData[i] > 0) {
         eb.addField(companyArray[i], stocksOwnedData[i] + "", true);
         isUserOwnAnyStock = true;
-        totalInvestment += (stocksOwnedData[i] * stocksMap.get(Company.valueOf(companyArray[i])).getValue());
+        totalInvestment += (stocksOwnedData[i] * initialStockPriceMap.get(Company.valueOf(companyArray[i]).name()));
       }
     }
     if (isUserOwnAnyStock) {
@@ -101,50 +71,20 @@ public class StocksHandler {
       eb.setDescription("You don't own any stocks, `/stocks list` to view available stocks.");
       eb.setColor(Color.red);
     }
-
-    // eb.setFooter("'/stocks sell' to sell your stocks");
-    eb.setFooter("Stock commands will be deleted on December 1st");
+    eb.setFooter("You can no longer buy stocks!");
     return eb.build();
   }
 
-  public int[] buyStocks(Company company, int count, long userId) {
-    int priceOfStock = stocksMap.get(company).getValue();
-    boolean isBought = StocksDao.getInstance().buyStocks(userId, company.toString(), count,
-        priceOfStock);
-    if (isBought) {
-      stocksMap.get(company).buyStock(count);
-      StocksTransactionsDao.getInstance().addTransactionData(
-          new StocksTransaction(userId, TransactionType.Bought, company, count, System.currentTimeMillis(),
-              priceOfStock));
-      return new int[] { 1, priceOfStock };
-    }
-    return new int[] { 0 };
-  }
-
   public int[] sellStock(Company company, int count, long userId) {
-    int priceOfStock = stocksMap.get(company).getValue();
+    int priceOfStock = initialStockPriceMap.get(company.name());
     boolean isSold = StocksDao.getInstance().sellStocks(userId, company.toString(), count, priceOfStock);
     if (isSold) {
-      stocksMap.get(company).sellStock(count);
       StocksTransactionsDao.getInstance().addTransactionData(
           new StocksTransaction(userId, TransactionType.Sold, company, count, System.currentTimeMillis(),
               priceOfStock));
       return new int[] { 1, priceOfStock };
     }
     return new int[] { 0 };
-  }
-
-  private void loadStocksMap() {
-    stocksMap.put(Company.DISKORD, new StockData(Company.DISKORD, initialStockPriceMap.get("DISKORD")));
-    stocksMap.put(Company.DOOGLE, new StockData(Company.DOOGLE, initialStockPriceMap.get("DOOGLE")));
-    stocksMap.put(Company.LETFLIX, new StockData(Company.LETFLIX, initialStockPriceMap.get("LETFLIX")));
-    stocksMap.put(Company.LOCKSTAR, new StockData(Company.LOCKSTAR, initialStockPriceMap.get("LOCKSTAR")));
-    stocksMap.put(Company.MAPPLE, new StockData(Company.MAPPLE, initialStockPriceMap.get("MAPPLE")));
-    stocksMap.put(Company.MICROLOFT, new StockData(Company.MICROLOFT, initialStockPriceMap.get("MICROLOFT")));
-    stocksMap.put(Company.RAMSUNG, new StockData(Company.RAMSUNG, initialStockPriceMap.get("RAMSUNG")));
-    stocksMap.put(Company.SEPSICO, new StockData(Company.SEPSICO, initialStockPriceMap.get("SEPSICO")));
-    stocksMap.put(Company.STARMUCKS, new StockData(Company.STARMUCKS, initialStockPriceMap.get("STARMUCKS")));
-    stocksMap.put(Company.TWEETER, new StockData(Company.TWEETER, initialStockPriceMap.get("TWEETER")));
   }
 
   public static void loadInitialPriceMap() {
@@ -159,21 +99,6 @@ public class StocksHandler {
     int page = Integer.parseInt(event.getComponentId().split("_")[1]);
     MessageEmbed eb = StocksHandler.getInstance().getTransactionsEmbed(event.getUser().getIdLong(), page);
     event.replyEmbeds(eb).setEphemeral(true).queue();
-  }
-
-  public void handleRefreshMarketButton(ButtonInteractionEvent event) {
-    String commandId = event.getComponentId();
-    long lastUpdatedSince = Long.parseLong(commandId.split("_")[1]);
-    long curentTime = System.currentTimeMillis();
-    if (curentTime - lastUpdatedSince < 30_000) {
-      event.reply("Try again in " + TimeFormat.RELATIVE.atTimestamp(lastUpdatedSince + 30_000)).setEphemeral(true)
-          .queue();
-    } else {
-      event.editMessageEmbeds(StocksHandler.getInstance().getStockList())
-          .setActionRow(Button.primary("refreshMarket_" + System.currentTimeMillis(),
-              Emoji.fromEmote("refresh", 1209076086185656340l, false)))
-          .queue();
-    }
   }
 
   private MessageEmbed getTransactionsEmbed(long userId, int page) {
@@ -192,9 +117,5 @@ public class StocksHandler {
       eb.setDescription(sb.toString());
     }
     return eb.build();
-  }
-
-  private String getEmoji(int changed) {
-    return (changed > 0) ? (greenUpEmoji) : ((changed < 0) ? redDownEmoji : "");
   }
 }
