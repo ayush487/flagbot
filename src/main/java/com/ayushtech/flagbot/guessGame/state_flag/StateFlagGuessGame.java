@@ -1,7 +1,4 @@
-package com.ayushtech.flagbot.guessGame.capital;
-
-import java.awt.Color;
-import java.util.concurrent.TimeUnit;
+package com.ayushtech.flagbot.guessGame.state_flag;
 
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.guessGame.GuessGame;
@@ -10,6 +7,9 @@ import com.ayushtech.flagbot.guessGame.GuessGameHandler;
 import com.ayushtech.flagbot.guessGame.GuessGameUtil;
 import com.ayushtech.flagbot.services.GameEndService;
 
+import java.awt.Color;
+import java.util.concurrent.TimeUnit;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -17,36 +17,38 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
-public class CapitalGuessGame implements GuessGame {
+public class StateFlagGuessGame implements GuessGame {
 
   private MessageChannel channel;
-  private Capital capital;
+  private State state;
   private int rounds;
   private int roundSize;
   private long startTimeStamp;
   private long messageId;
   private MessageEmbed embed;
+  private String countryCode;
+  private String countryName;
 
-  public CapitalGuessGame(MessageChannel channel, int rounds, int roundSize, InteractionHook hook) {
+  public StateFlagGuessGame(MessageChannel channel, String countryCode, int rounds, int roundSize,
+      InteractionHook hook) {
     this.channel = channel;
-    this.capital = GuessGameUtil.getInstance().getRandomCapital();
-    this.roundSize = roundSize;
+    this.countryCode = countryCode;
     this.rounds = rounds;
+    this.roundSize = roundSize;
+    this.state = GuessGameUtil.getInstance().getRandomState(countryCode);
     this.startTimeStamp = System.currentTimeMillis();
+    this.countryName = GuessGameUtil.getInstance().getCountryName(countryCode);
     EmbedBuilder eb = new EmbedBuilder();
-    eb.setTitle("Guess Capital of this Country");
+    eb.setTitle("Guess this state of " + countryName);
+    eb.setImage(state.getFlag());
     eb.setColor(new Color(38, 187, 237));
-    eb.setThumbnail(this.capital.getFlagLink());
-    StringBuilder sb = new StringBuilder();
-    sb.append("**Country** : `" + capital.getCountry() + "`");
-    eb.setDescription(sb.toString());
-    embed = eb.build();
+    eb.setDescription(String.format("**Country** : `%s`", countryName));
+    this.embed = eb.build();
     if (hook != null) {
       hook.sendMessage("Starting game now!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
     }
-    channel.sendMessageEmbeds(embed).setActionRow(Button.primary("skipGuess", "Skip"))
+    channel.sendMessageEmbeds(this.embed).setActionRow(Button.primary("skipGuess", "Skip"))
         .queue(message -> this.messageId = message.getIdLong());
-    return;
   }
 
   @Override
@@ -54,23 +56,26 @@ public class CapitalGuessGame implements GuessGame {
     GuessGameHandler.getInstance().removeGame(this.channel.getIdLong());
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Correct!");
-    eb.setThumbnail(capital.getFlagLink());
+    eb.setThumbnail(this.state.getFlag());
     eb.setColor(Color.green);
     StringBuilder sb = new StringBuilder();
     sb.append(event.getAuthor().getAsMention() + " is correct!\n");
     long userBalance = CoinDao.getInstance().addCoinsAndGetBalance(event.getAuthor().getIdLong(), 100);
     sb.append(String.format("**Coins** : `%d(+100)` :coin:\n", userBalance));
-    sb.append(String.format("**Country** : %s\n**Capital** : `%s`\n", capital.getCountry(), capital.getCapital()));
+    sb.append(String.format("**State** : `%s`\n", state.getName()));
+    sb.append(String.format("**Country** : `%s`\n", countryName));
+    sb.append(
+        state.hasAlternativeName() ? String.format("**Alternative Name** : `%s`\n", state.getAlternativeName()) : "");
     sb.append(String.format("**Time Taken** : `%s`", getTimeTook()));
     eb.setDescription(sb.toString());
     if (rounds <= 1) {
-      event.getChannel().sendMessageEmbeds(eb.build())
-          .setActionRow(Button.primary("playAgainCapital_" + roundSize,
+      channel.sendMessageEmbeds(eb.build())
+          .setActionRow(Button.primary("playAgainStateFlag_" + countryCode + "_" + roundSize,
               roundSize <= 1 ? "Play Again" : "Start Round Again"))
           .queue();
     } else {
       event.getChannel().sendMessageEmbeds(eb.build()).queue();
-      startAgain(channel, rounds - 1, roundSize);
+      startAgain(channel, countryCode, rounds - 1, roundSize);
     }
     disableButtons();
   }
@@ -78,20 +83,23 @@ public class CapitalGuessGame implements GuessGame {
   @Override
   public void endGameAsLose() {
     EmbedBuilder eb = new EmbedBuilder();
-    eb.setTitle("No one guessed the capital");
+    eb.setTitle("No one guessed the state");
+    eb.setThumbnail(state.getFlag());
     StringBuilder sb = new StringBuilder();
-    sb.append(String.format("**Country** : `%s`\n**Capital** : `%s`", capital.getCountry(), capital.getCapital()));
-    eb.setThumbnail(capital.getFlagLink());
+    sb.append(String.format("**State** : `%s`\n", state.getName()));
+    sb.append(String.format("**Country** : `%s`\n", countryName));
+    sb.append(
+        state.hasAlternativeName() ? String.format("**Alternative Name** : `%s`", state.getAlternativeName()) : "");
     eb.setDescription(sb.toString());
     eb.setColor(Color.red);
     if (rounds <= 1) {
       channel.sendMessageEmbeds(eb.build())
-          .setActionRow(Button.primary("playAgainCapital_" + roundSize,
+          .setActionRow(Button.primary("playAgainStateFlag_" + countryCode + "_" + roundSize,
               roundSize <= 1 ? "Play Again" : "Start Round Again"))
           .queue();
     } else {
       channel.sendMessageEmbeds(eb.build()).queue();
-      startAgain(channel, rounds - 1, roundSize);
+      startAgain(channel, countryCode, rounds - 1, roundSize);
     }
     disableButtons();
   }
@@ -104,7 +112,9 @@ public class CapitalGuessGame implements GuessGame {
 
   @Override
   public boolean guess(String guessString) {
-    return guessString.equalsIgnoreCase(capital.getCapital());
+    return this.state.getName().equalsIgnoreCase(guessString) || (this.state.getAlternativeName() == null
+        ? false
+        : this.state.getAlternativeName().equalsIgnoreCase(guessString));
   }
 
   private String getTimeTook() {
@@ -113,10 +123,11 @@ public class CapitalGuessGame implements GuessGame {
     return returnString;
   }
 
-  private static void startAgain(MessageChannel channel, int rounds, int roundSize) {
-    CapitalGuessGame game = new CapitalGuessGame(channel, rounds, roundSize, null);
+  private static void startAgain(MessageChannel channel, String countryCode, int rounds, int roundSize) {
+    GuessGame game = new StateFlagGuessGame(channel, countryCode, rounds, roundSize, null);
     GuessGameHandler.getInstance().addThisGame(channel.getIdLong(), game);
     GameEndService.getInstance().scheduleEndGame(new GuessGameEndRunnable(game, channel.getIdLong()), 30,
         TimeUnit.SECONDS);
   }
+
 }

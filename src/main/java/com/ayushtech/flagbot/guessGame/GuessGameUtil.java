@@ -12,6 +12,7 @@ import com.ayushtech.flagbot.dbconnectivity.PlacesDao;
 import com.ayushtech.flagbot.dbconnectivity.RegionDao;
 import com.ayushtech.flagbot.guessGame.capital.Capital;
 import com.ayushtech.flagbot.guessGame.place.Place;
+import com.ayushtech.flagbot.guessGame.state_flag.State;
 
 public class GuessGameUtil {
 
@@ -29,20 +30,26 @@ public class GuessGameUtil {
   private Map<String, String> brandMap;
   private Map<String, String> mapImageOverrideMap;
   private Map<String, String> alternativeCountryNames = new HashMap<>(19);
-  private Map<String,String> countryCodeMap;
+  private Map<String, String> countryCodeMap;
+  private Map<String, String> reverseCountryCodeMap;
+  private Map<String, Map<String, State>> stateMap;
+  private Map<String, List<String>> stateList;
 
   private GuessGameUtil() {
-    random = new Random();
-    ignoreSetMapGuess = new HashSet<>();
-    continentMap = new HashMap<>(7);
-    mapImageOverrideMap = new HashMap<>(13);
-    continentCodeMap = new HashMap<>(7);
-    capitalList = RegionDao.getInstance().getCapitalList();
-    countryList = RegionDao.getInstance().getCountryList();
-    brandMap = RegionDao.getInstance().getLogoMap();
-    placeList = PlacesDao.getInstance().getPlacesList();
-    countryCodeMap = RegionDao.getInstance().getCountryCodeMap();
-    brandCodeList = new ArrayList<>(brandMap.keySet());
+    this.random = new Random();
+    this.ignoreSetMapGuess = new HashSet<>();
+    this.continentMap = new HashMap<>(7);
+    this.mapImageOverrideMap = new HashMap<>(13);
+    this.continentCodeMap = new HashMap<>(7);
+    this.capitalList = RegionDao.getInstance().getCapitalList();
+    this.countryList = RegionDao.getInstance().getCountryList();
+    this.brandMap = RegionDao.getInstance().getLogoMap();
+    this.placeList = PlacesDao.getInstance().getPlacesList();
+    this.countryCodeMap = RegionDao.getInstance().getCountryCodeMap();
+    this.stateMap = RegionDao.getInstance().getStateMap();
+    this.stateList = new HashMap<>();
+    this.brandCodeList = new ArrayList<>(brandMap.keySet());
+    this.reverseCountryCodeMap = new HashMap<>();
     loadMapDataStatically();
   }
 
@@ -105,6 +112,11 @@ public class GuessGameUtil {
     return country;
   }
 
+  public State getRandomState(String countryCode) {
+    String stateCode = stateList.get(countryCode).get(random.nextInt(stateList.get(countryCode).size()));
+    return stateMap.get(countryCode).get(stateCode);
+  }
+
   public String getContinentName(String code) {
     if (code.equals("all")) {
       return "Not Specified";
@@ -159,6 +171,10 @@ public class GuessGameUtil {
     return nameOptions;
   }
 
+  public String getCountryCode(String countryName) {
+    return reverseCountryCodeMap.getOrDefault(countryName.toLowerCase(), "us");
+  }
+
   private int[] get4randomNumbers(int range) {
     int[] numbers = new int[4];
     numbers[0] = random.nextInt(range);
@@ -175,6 +191,26 @@ public class GuessGameUtil {
   }
 
   private void loadMapDataStatically() {
+    this.stateList.put("us", new ArrayList<String>(stateMap.get("us").keySet()));
+    this.stateList.put("br", new ArrayList<String>(stateMap.get("br").keySet()));
+    this.stateList.put("de", new ArrayList<String>(stateMap.get("de").keySet()));
+    this.stateList.put("es", new ArrayList<String>(stateMap.get("es").keySet()));
+    this.stateList.put("ch", new ArrayList<String>(stateMap.get("ch").keySet()));
+    this.stateList.put("ca", new ArrayList<String>(stateMap.get("ca").keySet()));
+    this.stateList.put("it", new ArrayList<String>(stateMap.get("it").keySet()));
+    this.stateList.put("ru", new ArrayList<String>(stateMap.get("ru").keySet()));
+    this.stateList.put("nl", new ArrayList<String>(stateMap.get("nl").keySet()));
+    reverseCountryCodeMap.put("united states", "us");
+    reverseCountryCodeMap.put("united states of america", "us");
+    reverseCountryCodeMap.put("usa", "us");
+    reverseCountryCodeMap.put("brazil", "br");
+    reverseCountryCodeMap.put("germany", "de");
+    reverseCountryCodeMap.put("spain", "es");
+    reverseCountryCodeMap.put("switzerland", "ch");
+    reverseCountryCodeMap.put("canada", "ca");
+    reverseCountryCodeMap.put("italy", "it");
+    reverseCountryCodeMap.put("netherlands", "nl");
+    reverseCountryCodeMap.put("russia", "ru");
     ignoreSetMapGuess.add("gm");
     ignoreSetMapGuess.add("va");
     ignoreSetMapGuess.add("sz");

@@ -25,17 +25,17 @@ public class CountryNameFileReader {
   }
 
   public Map<String, Map<String, String>> getLangMap() {
-    Map<String, String> spanishMap = new HashMap<>(305);
-    Map<String, String> portugueseMap = new HashMap<>(305);
-    Map<String, String> japaneseMap = new HashMap<>(305);
-    Map<String, String> koreanMap = new HashMap<>(305);
-    Map<String, String> turkishMap = new HashMap<>(305);
-    Map<String, String> frenchMap = new HashMap<>(305);
-    Map<String, String> russianMap = new HashMap<>(305);
-    Map<String, String> swedishMap = new HashMap<>(305);
-    Map<String, String> germanMap = new HashMap<>(305);
-    Map<String, String> dutchMap = new HashMap<>(305);
-    Map<String, String> arabicMap = new HashMap<>(305);
+    Map<String, String> spanishMap = new HashMap<>(285);
+    Map<String, String> portugueseMap = new HashMap<>(285);
+    Map<String, String> japaneseMap = new HashMap<>(285);
+    Map<String, String> koreanMap = new HashMap<>(285);
+    Map<String, String> turkishMap = new HashMap<>(285);
+    Map<String, String> frenchMap = new HashMap<>(285);
+    Map<String, String> russianMap = new HashMap<>(285);
+    Map<String, String> swedishMap = new HashMap<>(285);
+    Map<String, String> germanMap = new HashMap<>(285);
+    Map<String, String> dutchMap = new HashMap<>(285);
+    Map<String, String> arabicMap = new HashMap<>(285);
     try {
       BufferedReader reader = new BufferedReader(
           new InputStreamReader(

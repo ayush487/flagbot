@@ -23,10 +23,10 @@ public class GuildEventListener extends ListenerAdapter {
     } else if (event.getSubcommandName().equals("buy") || event.getSubcommandName().equals("sell")) {
       event.replyChoiceStrings("DOOGLE", "MAPPLE", "RAMSUNG", "MICROLOFT", "LOCKSTAR", "SEPSICO", "LETFLIX",
           "STARMUCKS", "TWEETER", "DISKORD").queue();
-    } else if (event.getSubcommandName().equals("set")) {
+    } else if (event.getSubcommandName().equals("state_flag")) {
       event
-          .replyChoiceStrings("Arabic", "Dutch", "French", "German", "Japanese", "Korean", "Portuguese", "Russian",
-              "Spanish", "Swedish", "Turkish")
+          .replyChoiceStrings("United States", "Brazil", "Germany", "Spain", "Switzerland", "Canada", "Italy", "Russia",
+              "Netherlands")
           .queue();
     } else if (event.getSubcommandName().equals("distance")) {
       event.replyChoiceStrings("Kilometers", "Miles").queue();

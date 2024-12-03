@@ -364,6 +364,11 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
+		else if(commandId.startsWith("playAgainStateFlag_")) {
+			GuessGameHandler.getInstance().handlePlayStateFlagButton(event);
+			return;
+		}
+
 		else if (commandId.startsWith("playAgainContinent")) {
 			ContinentGameHandler.getInstance().handlePlayCommand(event);
 			return;

@@ -10,6 +10,7 @@ import com.ayushtech.flagbot.guessGame.flag.FlagGuessGame;
 import com.ayushtech.flagbot.guessGame.logo.LogoGuessGame;
 import com.ayushtech.flagbot.guessGame.map.MapGuessGame;
 import com.ayushtech.flagbot.guessGame.place.PlaceGuessGame;
+import com.ayushtech.flagbot.guessGame.state_flag.StateFlagGuessGame;
 import com.ayushtech.flagbot.services.GameEndService;
 import com.ayushtech.flagbot.services.LanguageService;
 import com.ayushtech.flagbot.services.PatreonService;
@@ -165,6 +166,24 @@ public class GuessGameHandler {
         .scheduleEndGame(new GuessGameEndRunnable(guessGame, event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
   }
 
+  public void handlePlayStateFlagCommand(SlashCommandInteractionEvent event) {
+    if (gameMap.containsKey(event.getChannel().getIdLong())) {
+      event.getHook().sendMessage("There is already a game running in this channel!").queue(
+          message -> message.delete().queueAfter(10, TimeUnit.SECONDS));
+      return;
+    }
+    OptionMapping countryOption = event.getOption("country");
+    String countrySelection = countryOption.getAsString();
+    String countryCode = GuessGameUtil.getInstance().getCountryCode(countrySelection.toLowerCase());
+    OptionMapping roundsOption = event.getOption("rounds");
+    int rounds = roundsOption == null ? 0 : roundsOption.getAsInt();
+    rounds = (rounds <= 0) ? 0 : (rounds > 15) ? 15 : rounds;
+    GuessGame guessGame = new StateFlagGuessGame(event.getChannel(), countryCode, rounds, rounds, event.getHook());
+    gameMap.put(event.getChannel().getIdLong(), guessGame);
+    GameEndService.getInstance()
+        .scheduleEndGame(new GuessGameEndRunnable(guessGame, event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
+  }
+
   public void handlePlayCapitalButton(ButtonInteractionEvent event) {
     event.deferReply().queue();
     if (gameMap.containsKey(event.getChannel().getIdLong())) {
@@ -244,6 +263,22 @@ public class GuessGameHandler {
     String[] commandData = event.getComponentId().split("_");
     int rounds = Integer.parseInt(commandData[1]);
     GuessGame guessGame = new PlaceGuessGame(event.getChannel(), rounds, rounds, event.getHook());
+    gameMap.put(event.getChannel().getIdLong(), guessGame);
+    GameEndService.getInstance()
+        .scheduleEndGame(new GuessGameEndRunnable(guessGame, event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
+  }
+
+  public void handlePlayStateFlagButton(ButtonInteractionEvent event) {
+    event.deferReply().queue();
+    if (gameMap.containsKey(event.getChannel().getIdLong())) {
+      event.getHook().sendMessage("There is already a game running in this channel!").queue(
+          message -> message.delete().queueAfter(10, TimeUnit.SECONDS));
+      return;
+    }
+    String[] commandData = event.getComponentId().split("_");
+    String countryCode = commandData[1];
+    int rounds = Integer.parseInt(commandData[2]);
+    GuessGame guessGame = new StateFlagGuessGame(event.getChannel(), countryCode, rounds, rounds, event.getHook());
     gameMap.put(event.getChannel().getIdLong(), guessGame);
     GameEndService.getInstance()
         .scheduleEndGame(new GuessGameEndRunnable(guessGame, event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
