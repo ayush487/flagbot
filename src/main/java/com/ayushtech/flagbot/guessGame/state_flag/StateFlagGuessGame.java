@@ -39,7 +39,8 @@ public class StateFlagGuessGame implements GuessGame {
     this.startTimeStamp = System.currentTimeMillis();
     this.countryName = GuessGameUtil.getInstance().getCountryName(countryCode);
     EmbedBuilder eb = new EmbedBuilder();
-    eb.setTitle("Guess this state of " + countryName);
+    eb.setTitle(String.format("Guess this %s of %s", GuessGameUtil.getInstance().getSubdivionTypeName(countryCode),
+        countryName));
     eb.setImage(state.getFlag());
     eb.setColor(new Color(38, 187, 237));
     eb.setDescription(String.format("**Country** : `%s`", countryName));
@@ -62,7 +63,7 @@ public class StateFlagGuessGame implements GuessGame {
     sb.append(event.getAuthor().getAsMention() + " is correct!\n");
     long userBalance = CoinDao.getInstance().addCoinsAndGetBalance(event.getAuthor().getIdLong(), 100);
     sb.append(String.format("**Coins** : `%d(+100)` :coin:\n", userBalance));
-    sb.append(String.format("**State** : `%s`\n", state.getName()));
+    sb.append(String.format("**%s** : `%s`\n",GuessGameUtil.getInstance().getSubdivionTypeName(countryCode), state.getName()));
     sb.append(String.format("**Country** : `%s`\n", countryName));
     sb.append(
         state.hasAlternativeName() ? String.format("**Alternative Name** : `%s`\n", state.getAlternativeName()) : "");
@@ -83,10 +84,10 @@ public class StateFlagGuessGame implements GuessGame {
   @Override
   public void endGameAsLose() {
     EmbedBuilder eb = new EmbedBuilder();
-    eb.setTitle("No one guessed the state");
+    eb.setTitle("No one guessed the " + GuessGameUtil.getInstance().getSubdivionTypeName(countryCode).toLowerCase());
     eb.setThumbnail(state.getFlag());
     StringBuilder sb = new StringBuilder();
-    sb.append(String.format("**State** : `%s`\n", state.getName()));
+    sb.append(String.format("**%s** : `%s`\n",GuessGameUtil.getInstance().getSubdivionTypeName(countryCode), state.getName()));
     sb.append(String.format("**Country** : `%s`\n", countryName));
     sb.append(
         state.hasAlternativeName() ? String.format("**Alternative Name** : `%s`", state.getAlternativeName()) : "");

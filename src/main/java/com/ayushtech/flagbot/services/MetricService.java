@@ -35,17 +35,16 @@ public class MetricService {
     eb.setDescription("**Start Time : **" + TimeFormat.RELATIVE.atTimestamp(startingInstance));
     eb.addField("__Guess commands__",
         String.format(
-            "__Slash commands__\n> flag : %d\n> logo : %d\n> map : %d\n> continent : %d\n> place : %d\n> capital : %d\n> state_flag : %d\n> county_flag: %d\n> distance : %d\n> location : %d\n__Buttons__\n> flag : %d\n> logo : %d\n> map : %d\n> continent : %d\n> place : %d\n> capital : %d\n> state_flag : %d\n> county_flag: %d\n> location : %d",
+            "__Slash commands__\n> flag : %d\n> logo : %d\n> map : %d\n> continent : %d\n> place : %d\n> capital : %d\n> state_flag : %d\n> distance : %d\n> location : %d\n__Buttons__\n> flag : %d\n> logo : %d\n> map : %d\n> continent : %d\n> place : %d\n> capital : %d\n> state_flag : %d\n> location : %d",
             commandMetricMap.get("guess_flag").get(), commandMetricMap.get("guess_logo").get(),
             commandMetricMap.get("guess_map").get(), commandMetricMap.get("guess_continent").get(),
             commandMetricMap.get("guess_place").get(), commandMetricMap.get("guess_capital").get(),
-            commandMetricMap.get("guess_stateflag").get(), commandMetricMap.get("guess_countyflag").get(),
+            commandMetricMap.get("guess_stateflag").get(),
             commandMetricMap.get("guess_distance").get(), commandMetricMap.get("guess_location").get(),
             commandMetricMap.get("play_flag").get(), commandMetricMap.get("play_logo").get(),
             commandMetricMap.get("play_map").get(), commandMetricMap.get("play_continent").get(),
             commandMetricMap.get("play_place").get(), commandMetricMap.get("play_capital").get(),
-            commandMetricMap.get("play_stateflag").get(), commandMetricMap.get("play_countyflag").get(),
-            commandMetricMap.get("play_location").get()),
+            commandMetricMap.get("play_stateflag").get(), commandMetricMap.get("play_location").get()),
         true);
     eb.addField("__Race Commands__",
         String.format("> flag : %d\n> map : %d\n> logo : %d\n> maths : %d",
@@ -103,9 +102,6 @@ public class MetricService {
             return;
           case "state_flag":
             commandMetricMap.get("guess_stateflag").incrementAndGet();
-            return;
-          case "county_flag":
-            commandMetricMap.get("guess_countyflag").incrementAndGet();
             return;
           default:
             commandMetricMap.get("guess_continent").incrementAndGet();
@@ -217,8 +213,6 @@ public class MetricService {
       commandMetricMap.get("play_capital").incrementAndGet();
     } else if (buttonId.startsWith("playAgainStateFlag")) {
       commandMetricMap.get("play_stateflag").incrementAndGet();
-    } else if (buttonId.startsWith("playAgainCountyFlag")) {
-      commandMetricMap.get("play_countyflag").incrementAndGet();
     }
     return;
   }
@@ -233,7 +227,6 @@ public class MetricService {
     commandMetricMap.put("guess_location", new AtomicLong());
     commandMetricMap.put("guess_capital", new AtomicLong());
     commandMetricMap.put("guess_stateflag", new AtomicLong());
-    commandMetricMap.put("guess_countyflag", new AtomicLong());
     commandMetricMap.put("play_flag", new AtomicLong());
     commandMetricMap.put("play_map", new AtomicLong());
     commandMetricMap.put("play_logo", new AtomicLong());
@@ -242,7 +235,6 @@ public class MetricService {
     commandMetricMap.put("play_location", new AtomicLong());
     commandMetricMap.put("play_capital", new AtomicLong());
     commandMetricMap.put("play_stateflag", new AtomicLong());
-    commandMetricMap.put("play_countyflag", new AtomicLong());
     commandMetricMap.put("race_flags", new AtomicLong());
     commandMetricMap.put("race_maps", new AtomicLong());
     commandMetricMap.put("race_maths", new AtomicLong());
