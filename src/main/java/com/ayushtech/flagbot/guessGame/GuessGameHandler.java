@@ -306,8 +306,8 @@ public class GuessGameHandler {
 
   void requestEndGame(GuessGame guessGame, long channelId) {
     if (gameMap.get(channelId).hashCode() == guessGame.hashCode()) {
-      guessGame.endGameAsLose();
       gameMap.remove(channelId);
+      guessGame.endGameAsLose();
     }
   }
 
