@@ -61,13 +61,12 @@ public class LogoGuessGame implements GuessGame {
     eb.setThumbnail(
         String.format("https://raw.githubusercontent.com/ayush487/image-library/main/logo/%s.png", brandCode));
     eb.setColor(new Color(13, 240, 52));
-    embed = eb.build();
     if (rounds <= 1) {
-      event.getChannel().sendMessageEmbeds(embed).setActionRow(
+      event.getChannel().sendMessageEmbeds(eb.build()).setActionRow(
           Button.primary("playAgainLogo_" + roundSize, roundSize <= 1 ? "Play Again" : "Start Round Again"))
           .queue();
     } else {
-      event.getChannel().sendMessageEmbeds(embed).queue();
+      event.getChannel().sendMessageEmbeds(eb.build()).queue();
       startAgain(channel, rounds - 1, roundSize);
     }
     disableButtons();
@@ -78,7 +77,6 @@ public class LogoGuessGame implements GuessGame {
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("No one guessed the logo!");
     StringBuilder sb = new StringBuilder("**Correct Answer :** \n" + brandName);
-    sb.append("\n**Time Taken :** " + getTimeTook());
     eb.setDescription(sb.toString());
     eb.setThumbnail(
         String.format("https://raw.githubusercontent.com/ayush487/image-library/main/logo/%s.png", brandCode));
