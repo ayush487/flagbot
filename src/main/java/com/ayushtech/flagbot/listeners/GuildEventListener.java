@@ -26,7 +26,7 @@ public class GuildEventListener extends ListenerAdapter {
     } else if (event.getSubcommandName().equals("state_flag")) {
       event
           .replyChoiceStrings("United States", "Brazil", "Germany", "Spain", "Switzerland", "Canada", "Italy", "Russia",
-              "Netherlands", "England")
+              "Netherlands", "England", "Australia")
           .queue();
     } else if (event.getSubcommandName().equals("distance")) {
       event.replyChoiceStrings("Kilometers", "Miles").queue();

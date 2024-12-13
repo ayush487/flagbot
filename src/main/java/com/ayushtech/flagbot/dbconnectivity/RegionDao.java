@@ -183,6 +183,7 @@ public class RegionDao {
 		stateMap.put("ru", new HashMap<>());
 		stateMap.put("nl", new HashMap<>());
 		stateMap.put("en", new HashMap<>());
+		stateMap.put("au", new HashMap<>());
 		Connection conn = ConnectionProvider.getConnection();
 		try {
 			Statement stmt = conn.createStatement();

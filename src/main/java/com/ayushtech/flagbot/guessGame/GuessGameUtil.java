@@ -201,6 +201,7 @@ public class GuessGameUtil {
 
   private void loadMapDataStatically() {
     this.subdivisionType.put("us","State");
+    this.subdivisionType.put("au","State");
     this.subdivisionType.put("br","State");
     this.subdivisionType.put("de","State");
     this.subdivisionType.put("es","Autonomous Community");
@@ -211,6 +212,7 @@ public class GuessGameUtil {
     this.subdivisionType.put("ru","Federal Subject");
     this.subdivisionType.put("nl","Province");
     this.stateList.put("us", new ArrayList<String>(stateMap.get("us").keySet()));
+    this.stateList.put("au", new ArrayList<String>(stateMap.get("au").keySet()));
     this.stateList.put("br", new ArrayList<String>(stateMap.get("br").keySet()));
     this.stateList.put("de", new ArrayList<String>(stateMap.get("de").keySet()));
     this.stateList.put("es", new ArrayList<String>(stateMap.get("es").keySet()));
@@ -234,6 +236,7 @@ public class GuessGameUtil {
     reverseCountryCodeMap.put("england", "en");
     reverseCountryCodeMap.put("britain", "en");
     reverseCountryCodeMap.put("uk", "en");
+    reverseCountryCodeMap.put("australia", "au");
     ignoreSetMapGuess.add("gm");
     ignoreSetMapGuess.add("va");
     ignoreSetMapGuess.add("sz");
