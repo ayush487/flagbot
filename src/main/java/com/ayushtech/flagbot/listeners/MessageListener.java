@@ -127,7 +127,7 @@ public class MessageListener extends ListenerAdapter {
         alternateNamesMap.put("car", "Central African Republic");
         alternateNamesMap.put("south georgia", "South Georgia and the South Sandwich Islands");
         alternateNamesMap.put("sealand", "Principality of Sealand");
-        alternateNamesMap.put("aland islands", "Åland Islands");
+        alternateNamesMap.put("Åland islands", "Aland Islands");
         alternateNamesMap.put("northern cyprus", "Turkish Republic of Northern Cyprus");
         alternateNamesMap.put("us virgin islands", "U.S. Virgin Islands");
         alternateNamesMap.put("united states virgin islands", "U.S. Virgin Islands");

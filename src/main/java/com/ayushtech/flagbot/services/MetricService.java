@@ -3,6 +3,7 @@ package com.ayushtech.flagbot.services;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicLong;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -76,6 +77,14 @@ public class MetricService {
   }
 
   public void registerCommandData(SlashCommandInteractionEvent event) {
+    CompletableFuture.runAsync(() -> updateCommandData(event));
+  }
+  
+  public void registerCommandData(ButtonInteractionEvent event) {
+    CompletableFuture.runAsync(() -> updateCommandData(event));
+  }
+
+  private void updateCommandData(SlashCommandInteractionEvent event) {
     switch (event.getName()) {
       case "guess": {
         switch (event.getSubcommandName()) {
@@ -195,7 +204,7 @@ public class MetricService {
     }
   }
 
-  public void registerCommandData(ButtonInteractionEvent event) {
+  private void updateCommandData(ButtonInteractionEvent event) {
     String buttonId = event.getComponentId();
     if (buttonId.startsWith("playAgainFlag")) {
       commandMetricMap.get("play_flag").incrementAndGet();

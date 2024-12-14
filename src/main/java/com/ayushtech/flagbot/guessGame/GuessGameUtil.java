@@ -317,7 +317,7 @@ public class GuessGameUtil {
     continentCodeMap.put("south america", "sa");
     continentCodeMap.put("antarctica", "an");
     alternativeCountryNames.put("ae", "UAE");
-    alternativeCountryNames.put("ax", "Aland Islands");
+    alternativeCountryNames.put("ax", "Åland Islands");
     alternativeCountryNames.put("cd", "DR Congo, DRC");
     alternativeCountryNames.put("ci", "Côte d'Ivoire");
     alternativeCountryNames.put("cv", "Cabo Verde");
