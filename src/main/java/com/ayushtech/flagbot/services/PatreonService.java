@@ -49,7 +49,7 @@ public class PatreonService {
     long validTill = PatronDao.getInstance().addNewPatron(userId);
     jda.retrieveUserById(userId).queue(user -> {
       user.openPrivateChannel().flatMap(channel -> channel.sendMessage(
-          "# Thanks for joining Flag Bot Patreon Membership\nYou got the following perks :\n> Access to Voters Only Commands (Guess distance & Guess location)\n> Custom Reactions for correct and wrong guesses\n\n__Set Custom Reaction with These commands__ :\n"
+          "# Thanks for joining Flag Bot Patreon Membership\nYou got the following perks :\n> Access to Voters Only Commands (Guess distance, Guess location, Atlas Quick, Atlas Rapid)\n> Custom Reactions for correct and wrong guesses\n> Can customize Atlas games\n\n__Set Custom Reaction with These commands__ :\n"
               +
               "`f!set correct_guess :emote:`\n" +
               "`f!set wrong_guess :emote:`\n" +
@@ -124,7 +124,6 @@ public class PatreonService {
   }
 
   public void handlePatreonCommand(SlashCommandInteractionEvent event) {
-    // event.deferReply().queue();
     long validity = PatronDao.getInstance().getUserPatreonValidity(event.getUser().getIdLong());
     if (validity >= System.currentTimeMillis()) {
       event.getHook().sendMessage("<:flagbot:1230836096548601907> **|** You are a active patreon member\n" +
@@ -145,7 +144,7 @@ public class PatreonService {
     eb.setTitle("Patreon Perks");
     eb.setColor(Color.pink);
     eb.setDescription(
-        "Access to following commands :\n> `/guess distance`\n> `/guess location`\nCustom Reactions for correct and wrong guesses");
+        "Access to following commands :\n> `/guess distance`\n> `/guess location`\n> `/atlas quick`\n> `/atlas rapid`\nCustom Reactions for correct and wrong guesses\nCustomize Atlas Game");
     eb.addField("__How to set custom reactions__ ?",
         "for correct guesses : `f!set correct_guess :emote:`\nfor wrong guesses : `f!set wrong_guess :emoji:`\nto remove wrong guess reaction : `f!remove wrong_guess`",
         false);

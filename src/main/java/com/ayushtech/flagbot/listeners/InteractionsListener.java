@@ -2,6 +2,7 @@ package com.ayushtech.flagbot.listeners;
 
 import javax.annotation.Nonnull;
 
+import com.ayushtech.flagbot.atlas.AtlasGameHandler;
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.distanceGuess.GuessDistanceHandler;
 import com.ayushtech.flagbot.game.continent.ContinentGameHandler;
@@ -164,6 +165,11 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
+		else if(event.getName().equals("atlas")) {
+			UtilService.getInstance().handleAtlasCommands(event);
+			return;
+		}
+
 		// Admin commands
 		else if (event.getName().equals("show_server_count")) {
 			event.getHook().sendMessage("Total Servers in : " + event.getJDA().getGuilds().size()).queue();
@@ -198,6 +204,11 @@ public class InteractionsListener extends ListenerAdapter {
 
 		else if (event.getName().equals("recent_votes")) {
 			VotingService.getInstance().handleVoteInfoCommand(event);
+			return;
+		}
+
+		else if (event.getName().equals("botinfo")) {
+			UtilService.getInstance().handleBotCommands(event);
 			return;
 		}
 	}
@@ -332,6 +343,10 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
+		else if (commandId.equals("cancelAtlas")) {
+			AtlasGameHandler.getInstance().handleCancelStartButton(event);
+			return;
+		}
 		// Commenting Captcha for now
 		// if (random.nextInt(BOUND) == 1) {
 		// event.deferReply().queue();
@@ -376,6 +391,11 @@ public class InteractionsListener extends ListenerAdapter {
 
 		else if (commandId.startsWith("playAgainLocation")) {
 			LocationGameHandler.getInstance().handleStartGameCommand(event);
+			return;
+		}
+
+		else if(commandId.startsWith("joinAtlas")) {
+			AtlasGameHandler.getInstance().handleJoinButton(event);
 			return;
 		}
 

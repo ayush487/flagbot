@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class CoinDao {
 
@@ -118,5 +120,26 @@ public class CoinDao {
             e.printStackTrace();
         }
         return 0;
+    }
+    public void transferCoinsFromMultipleUsers(long[] userIds, long receiverId, long amount) {
+        Connection conn = ConnectionProvider.getConnection();
+        try {
+            Statement stmt = conn.createStatement();
+            stmt.executeUpdate(createCommandToDeductMultipleUsers(userIds, amount));
+            stmt.executeUpdate(String.format("UPDATE coin_table SET coins = coins + %d WHERE user_id=%d;", amount * userIds.length,
+                    receiverId));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String createCommandToDeductMultipleUsers(long[] userIds, long amount) {
+        StringBuilder sb = new StringBuilder("UPDATE coin_table SET coins = coins - ");
+        sb.append(amount);
+        sb.append(" WHERE user_id in ");
+        String usersInsideBrackets = Arrays.stream(userIds).mapToObj(userId -> userId + "").collect(Collectors.joining(",", "(", ")"));
+        sb.append(usersInsideBrackets);
+        sb.append(";");
+        return sb.toString();
     }
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import com.ayushtech.flagbot.atlas.AtlasGameHandler;
 import com.ayushtech.flagbot.distanceGuess.GuessDistanceHandler;
 import com.ayushtech.flagbot.guessGame.GuessGameHandler;
 import com.ayushtech.flagbot.services.CaptchaService;
@@ -12,7 +13,6 @@ import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.PrivateServerService;
 import com.ayushtech.flagbot.services.VotingService;
 
-import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -63,14 +63,14 @@ public class MessageListener extends ListenerAdapter {
         }
         String messageText = event.getMessage().getContentDisplay();
 
-        if (CaptchaService.getInstance().userHasCaptched(event.getAuthor().getIdLong())) {
-            if (event.isFromType(ChannelType.PRIVATE)) {
-                CaptchaService.getInstance().handleCaptchaAnswer(event, messageText);
-                return;
-            } else {
-                return;
-            }
-        }
+        // if (CaptchaService.getInstance().userHasCaptched(event.getAuthor().getIdLong())) {
+        //     if (event.isFromType(ChannelType.PRIVATE)) {
+        //         CaptchaService.getInstance().handleCaptchaAnswer(event, messageText);
+        //         return;
+        //     } else {
+        //         return;
+        //     }
+        // }
 
         if (messageText.startsWith("f!set correct_guess")) {
             PatreonService.getInstance().setReactionsForCorrectGuess(event);
@@ -81,10 +81,17 @@ public class MessageListener extends ListenerAdapter {
         } else if (messageText.startsWith("f!remove wrong_guess")) {
             PatreonService.getInstance().removeReactionsForWrongGuess(event);
             return;
+        } else if (messageText.startsWith("f!exitatlas")) {
+            AtlasGameHandler.getInstance().requestCancelGame(event);
+            return;
         }
 
         if (GuessDistanceHandler.getInstance().isActiveGameInChannel(channelId)) {
             GuessDistanceHandler.getInstance().handleGuess(messageText, event);
+        }
+
+        if (AtlasGameHandler.getInstance().isGameExist(channelId)) {
+            AtlasGameHandler.getInstance().handleAnswer(messageText,event);
         }
 
         if (alternateNamesMap.containsKey(messageText.toLowerCase())) {

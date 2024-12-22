@@ -39,7 +39,6 @@ public class Main {
                 final int modThreshold = Integer.parseInt(properties.getProperty("modThreshold"));
                 final int staffThreshold = Integer.parseInt(properties.getProperty("staffThreshold"));
                 final int totalVotes = Integer.parseInt(properties.getProperty("totalVotes"));
-                final int shards = Integer.parseInt(properties.getProperty("shards"));
 
                 CountryNameFileReader.getInstance();
 
@@ -52,8 +51,7 @@ public class Main {
                 GuessGameUtil.getInstance();
 
                 DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(bot_token);
-                builder.setShardsTotal(shards);
-                builder.setActivity(Activity.playing("/guess"));
+                builder.setActivity(Activity.playing("/atlas"));
                 builder.addEventListeners(new MessageListener(), new InteractionsListener(),
                                 new GuildEventListener());
                 builder.build();

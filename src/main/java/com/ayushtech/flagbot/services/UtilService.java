@@ -7,6 +7,7 @@ import java.time.ZoneId;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import com.ayushtech.flagbot.atlas.AtlasGameHandler;
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.dbconnectivity.StocksDao;
 import com.ayushtech.flagbot.dbconnectivity.StocksTransactionsDao;
@@ -225,7 +226,7 @@ public class UtilService {
     eb.setDescription(
         "**__Guess Commands__**\n`/guess flag` : Start a flag guessing game in the channel\n`/guess map` : Start a map guessing game in the channel\n`/guess logo` : Start a logo guessing game in the channel\n`/guess capital` : Start a capital guessing game in the channel\n`/guess state_flag` : Start a flag guessing game for states of a country\n`/guess place` : Start a place guessing game in the channel\n`/guess continent` : State a continent guessing game in the channel\n`/guess location` : Start a location guessing game in the channel (**Only for voters**)\n`/guess distance` : A Multiplayer mode in which users can guess distance marked on the map (**Only for voters**)\n__Options__ :\n`mode` : Choose the mode you want to play :Soverign Only, Non-Soverign Only, All Countries (Soverign Only if not selected)\n`continent` : Specify the continent for the flag game\n`rounds` : Enter the number of rounds you want to play (maximum it would be 15) (optional)\n`include_non_soverign_countries` : True or False to include non soverign countries (false if not selected)\n`unit` : Enter your preffered unit (kilometer or miles)\n`country` : Select country for the state flag guess mode. Supported countries : `USA, Brazil, Germany, Spain, Switzerland, Canada, Italy, Russia, Netherlands, England, Australia`\n__Note__ : `Specifying continent will nullify mode selection and mode will automatically become 'All Countries'.`");
     eb.addField("__General Commands__",
-        "`/leaderboards` : Check the global leaderboard (Upto top 25)\n`/invite` : Invite the bot to your server\n`/language set` : Set language for the server (Only work for flag and map guessers)\n`/language info` : See your server language and other supported languages\n`/language remove` : Remove server language\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank\n`/give coins` : Send coins to other users.\n`/vote` : Vote for us and get rewards\n`/patreon` : Show information about Patreon Membership",
+        "`/atlas` : A quiz type multiplayer mode. Do `/atlas help` for more info.\n`/leaderboards` : Check the global leaderboard (Upto top 25)\n`/invite` : Invite the bot to your server\n`/language set` : Set language for the server (Only work for flag and map guessers)\n`/language info` : See your server language and other supported languages\n`/language remove` : Remove server language\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank\n`/give coins` : Send coins to other users.\n`/vote` : Vote for us and get rewards\n`/patreon` : Show information about Patreon Membership",
         false);
     eb.addField("__Battle Command__",
         "`/battle` : Start a 1v1 battle between two users.\n**__Options__**\n**opponent** : Mention the user with whom you wanna battle.\n**bet** : Amout to bet in the battle (optional)",
@@ -254,6 +255,43 @@ public class UtilService {
       return;
     }
 
+  }
+
+  public void handleAtlasCommands(SlashCommandInteractionEvent event) {
+    Member selfMember = event.getGuild().getSelfMember();
+    if (event.getGuild() != null) {
+      GuildChannel guildChannel = event.getGuild().getGuildChannelById(event.getChannel().getId());
+      if (!selfMember.hasPermission(guildChannel, Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND,
+          Permission.MESSAGE_EMBED_LINKS)) {
+        event.getHook().sendMessage(
+            "Missing Permissions : `VIEW_CHANNEL` or `MESSAGE_SEND` or `MESSAGE_EMBED_LINKS`\nPlease ask your server admin to grant me these permissions or try in a different channel.")
+            .queue();
+        return;
+      }
+    }
+    String commandName = event.getSubcommandName();
+    if (commandName.equals("classic")) {
+      AtlasGameHandler.getInstance().handleClassicMode(event);
+    } else if (commandName.equals("quick")) {
+      AtlasGameHandler.getInstance().handleQuickMode(event);
+    } else if (commandName.equals("rapid")) {
+      AtlasGameHandler.getInstance().handleRapidMode(event);
+    } else {
+      AtlasGameHandler.getInstance().handleAtlasHelp(event);
+    }
+  }
+
+  public void handleBotCommands(SlashCommandInteractionEvent event) {
+    String commandName = event.getSubcommandName();
+    if (commandName.equals("gc")) {
+      Runtime.getRuntime().gc();
+    event.getHook().sendMessage("Requested for Garbage Collection").queue();
+      return;
+    } else if (commandName.equals("memory")) {
+      long freeMemory = Runtime.getRuntime().freeMemory() / (1024 * 1024);
+      event.getHook().sendMessage("Available Free Memory: " + freeMemory + " MB").queue();
+      return;
+    }
   }
 
   public void handleGuessComnmands(SlashCommandInteractionEvent event) {
