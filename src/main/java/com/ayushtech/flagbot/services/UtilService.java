@@ -222,7 +222,7 @@ public class UtilService {
     EmbedBuilder eb = new EmbedBuilder();
     eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
     eb.setTitle("Commands");
-    eb.setColor(new Color(255, 153, 51)); // rgb (255,153,51)
+    eb.setColor(new Color(255, 153, 51));
     eb.setDescription(
         "**__Guess Commands__**\n`/guess flag` : Start a flag guessing game in the channel\n`/guess map` : Start a map guessing game in the channel\n`/guess logo` : Start a logo guessing game in the channel\n`/guess capital` : Start a capital guessing game in the channel\n`/guess state_flag` : Start a flag guessing game for states of a country\n`/guess place` : Start a place guessing game in the channel\n`/guess continent` : State a continent guessing game in the channel\n`/guess location` : Start a location guessing game in the channel (**Only for voters**)\n`/guess distance` : A Multiplayer mode in which users can guess distance marked on the map (**Only for voters**)\n__Options__ :\n`mode` : Choose the mode you want to play :Soverign Only, Non-Soverign Only, All Countries (Soverign Only if not selected)\n`continent` : Specify the continent for the flag game\n`rounds` : Enter the number of rounds you want to play (maximum it would be 15) (optional)\n`include_non_soverign_countries` : True or False to include non soverign countries (false if not selected)\n`unit` : Enter your preffered unit (kilometer or miles)\n`country` : Select country for the state flag guess mode. Supported countries : `USA, Brazil, Germany, Spain, Switzerland, Canada, Italy, Russia, Netherlands, England, Australia`\n__Note__ : `Specifying continent will nullify mode selection and mode will automatically become 'All Countries'.`");
     eb.addField("__General Commands__",
@@ -285,11 +285,16 @@ public class UtilService {
     String commandName = event.getSubcommandName();
     if (commandName.equals("gc")) {
       Runtime.getRuntime().gc();
-    event.getHook().sendMessage("Requested for Garbage Collection").queue();
+      event.getHook().sendMessage("Requested for Garbage Collection").queue();
       return;
     } else if (commandName.equals("memory")) {
-      long freeMemory = Runtime.getRuntime().freeMemory() / (1024 * 1024);
-      event.getHook().sendMessage("Available Free Memory: " + freeMemory + " MB").queue();
+      long totalMemory = Runtime.getRuntime().totalMemory();
+      long freeMemory = Runtime.getRuntime().freeMemory();
+      long usedMemory = totalMemory - freeMemory;
+      event.getHook()
+          .sendMessage(String.format("Memory Used : %d\nAvailable Free Memory: %d MB\nTotal Memory in JVM : %d MB",
+              usedMemory / (1024 * 1024), freeMemory / (1024 * 1024), totalMemory / (1024 * 1024)))
+          .queue();
       return;
     }
   }

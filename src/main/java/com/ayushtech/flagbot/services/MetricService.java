@@ -57,6 +57,12 @@ public class MetricService {
             commandMetricMap.get("memoflip_easy").get(), commandMetricMap.get("memoflip_medium").get(),
             commandMetricMap.get("memoflip_hard").get(), commandMetricMap.get("memoflip_scores").get()),
         true);
+    eb.addField("__Atlas__",
+        String.format("> Classic : %d\n> Quick : %d\n> Rapid : %d\n> Help : %d",
+            commandMetricMap.get("atlas_classic").get(),
+            commandMetricMap.get("atlas_quick").get(), commandMetricMap.get("atlas_rapid").get(),
+            commandMetricMap.get("atlas_help").get()),
+        false);
     eb.addField("__Stocks__",
         String.format("> List : %d\n> Sell : %d\n> Owned : %d",
             commandMetricMap.get("stocks_list").get(),
@@ -79,7 +85,7 @@ public class MetricService {
   public void registerCommandData(SlashCommandInteractionEvent event) {
     CompletableFuture.runAsync(() -> updateCommandData(event));
   }
-  
+
   public void registerCommandData(ButtonInteractionEvent event) {
     CompletableFuture.runAsync(() -> updateCommandData(event));
   }
@@ -199,6 +205,21 @@ public class MetricService {
       case "balance":
         commandMetricMap.get("balance").incrementAndGet();
         return;
+      case "atlas":
+        switch (event.getSubcommandName()) {
+          case "classic":
+            commandMetricMap.get("atlas_classic").incrementAndGet();
+            return;
+          case "quick":
+            commandMetricMap.get("atlas_quick").incrementAndGet();
+            return;
+          case "help":
+            commandMetricMap.get("atlas_help").incrementAndGet();
+            return;
+          default:
+            commandMetricMap.get("atlas_rapid").incrementAndGet();
+            return;
+        }
       default:
         return;
     }
@@ -265,5 +286,9 @@ public class MetricService {
     commandMetricMap.put("language_set", new AtomicLong());
     commandMetricMap.put("language_info", new AtomicLong());
     commandMetricMap.put("language_remove", new AtomicLong());
+    commandMetricMap.put("atlas_classic", new AtomicLong());
+    commandMetricMap.put("atlas_quick", new AtomicLong());
+    commandMetricMap.put("atlas_rapid", new AtomicLong());
+    commandMetricMap.put("atlas_help", new AtomicLong());
   }
 }
