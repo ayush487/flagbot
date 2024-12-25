@@ -8,12 +8,12 @@ import java.util.concurrent.TimeUnit;
 import com.ayushtech.flagbot.atlas.AtlasGame;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class ClassicAtlasGame extends AtlasGame {
 
-  public ClassicAtlasGame(long hostId, MessageChannel channel, int maxRounds, int maxScore, int roundTime,
+  public ClassicAtlasGame(long hostId, MessageChannelUnion channel, int maxRounds, int maxScore, int roundTime,
       int betAmount) {
     super(hostId, channel, "CLASSIC", maxRounds, maxScore, roundTime, betAmount);
     channel.sendMessageEmbeds(getStartGameEmbed())

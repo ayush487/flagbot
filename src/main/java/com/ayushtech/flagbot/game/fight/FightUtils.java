@@ -8,23 +8,23 @@ import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.guessGame.GuessGameUtil;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Emoji;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class FightUtils {
 
-  private String bar1empty = Emoji.fromEmote("bar1empty", 1195296826132287541l, false).getAsMention();
-  private String bar1half = Emoji.fromEmote("bar1half", 1195297050993115246l, true).getAsMention();
-  private String bar1full = Emoji.fromEmote("bar1full", 1195297246464442368l, true).getAsMention();
-  private String bar1max = Emoji.fromEmote("bar1max", 1195297353591173201l, true).getAsMention();
-  private String bar2empty = Emoji.fromEmote("bar2empty", 1195297658567413790l, false).getAsMention();
-  private String bar2half = Emoji.fromEmote("bar2half", 1195297926734426162l, true).getAsMention();
-  private String bar2full = Emoji.fromEmote("bar2full", 1195298061522587659l, true).getAsMention();
-  private String bar2max = Emoji.fromEmote("bar2max", 1195298660800528434l, true).getAsMention();
-  private String bar3empty = Emoji.fromEmote("bar3empty", 1195298974429618207l, false).getAsMention();
-  private String bar3half = Emoji.fromEmote("bar3half", 1195299147499192362l, true).getAsMention();
-  private String bar3full = Emoji.fromEmote("bar3full", 1195299364759941131l, true).getAsMention();
+  private String bar1empty = Emoji.fromCustom("bar1empty", 1195296826132287541l, false).getAsMention();
+  private String bar1half = Emoji.fromCustom("bar1half", 1195297050993115246l, true).getAsMention();
+  private String bar1full = Emoji.fromCustom("bar1full", 1195297246464442368l, true).getAsMention();
+  private String bar1max = Emoji.fromCustom("bar1max", 1195297353591173201l, true).getAsMention();
+  private String bar2empty = Emoji.fromCustom("bar2empty", 1195297658567413790l, false).getAsMention();
+  private String bar2half = Emoji.fromCustom("bar2half", 1195297926734426162l, true).getAsMention();
+  private String bar2full = Emoji.fromCustom("bar2full", 1195298061522587659l, true).getAsMention();
+  private String bar2max = Emoji.fromCustom("bar2max", 1195298660800528434l, true).getAsMention();
+  private String bar3empty = Emoji.fromCustom("bar3empty", 1195298974429618207l, false).getAsMention();
+  private String bar3half = Emoji.fromCustom("bar3half", 1195299147499192362l, true).getAsMention();
+  private String bar3full = Emoji.fromCustom("bar3full", 1195299364759941131l, true).getAsMention();
 
   private static FightUtils fightUtils = null;
   private List<String> isoList;

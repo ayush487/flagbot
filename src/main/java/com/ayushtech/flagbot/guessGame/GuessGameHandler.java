@@ -15,6 +15,7 @@ import com.ayushtech.flagbot.services.GameEndService;
 import com.ayushtech.flagbot.services.LanguageService;
 import com.ayushtech.flagbot.services.PatreonService;
 
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -46,7 +47,7 @@ public class GuessGameHandler {
         } catch (Exception e) {
         }
       } else {
-        event.getMessage().addReaction("U+1F389").queue();
+        event.getMessage().addReaction(Emoji.fromUnicode("U+1F389")).queue();
       }
       gameMap.get(channelId).endGameAsWin(event);
       return;
@@ -107,9 +108,13 @@ public class GuessGameHandler {
     }
     int rounds = roundsOption == null ? 0 : roundsOption.getAsInt();
     rounds = (rounds <= 0) ? 0 : (rounds > 15) ? 15 : rounds;
-    Optional<String> langOptional = LanguageService.getInstance()
-        .getLanguageSelected(event.getGuild().getIdLong());
-    GuessGame guessGame = new FlagGuessGame(event.getChannel(), difficulty, rounds, rounds, langOptional.orElse(null),
+    String optedLanguage = null;
+    if (event.isFromGuild()) {
+      Optional<String> langOptional = LanguageService.getInstance()
+          .getLanguageSelected(event.getGuild().getIdLong());
+      optedLanguage = langOptional.orElse(null);
+    }
+    GuessGame guessGame = new FlagGuessGame(event.getChannel(), difficulty, rounds, rounds, optedLanguage,
         continentCode, event.getHook());
     gameMap.put(event.getChannel().getIdLong(), guessGame);
     GameEndService.getInstance()
@@ -127,9 +132,13 @@ public class GuessGameHandler {
     boolean isHard = difficultyOption == null ? false : difficultyOption.getAsBoolean();
     int rounds = roundsOption == null ? 0 : roundsOption.getAsInt();
     rounds = (rounds <= 0) ? 0 : (rounds > 15) ? 15 : rounds;
-    Optional<String> langOptional = LanguageService.getInstance()
-        .getLanguageSelected(event.getGuild().getIdLong());
-    GuessGame guessGame = new MapGuessGame(event.getChannel(), isHard, rounds, rounds, langOptional.orElse(null),
+    String optedLanguage = null;
+    if (event.isFromGuild()) {
+      Optional<String> langOptional = LanguageService.getInstance()
+          .getLanguageSelected(event.getGuild().getIdLong());
+      optedLanguage = langOptional.orElse(null);
+    }
+    GuessGame guessGame = new MapGuessGame(event.getChannel(), isHard, rounds, rounds, optedLanguage,
         event.getHook());
     gameMap.put(event.getChannel().getIdLong(), guessGame);
     GameEndService.getInstance()
@@ -209,11 +218,14 @@ public class GuessGameHandler {
     byte difficulty = Byte.parseByte(commandData[1]);
     int rounds = Integer.parseInt(commandData[2]);
     String continentCode = commandData[3];
-    Optional<String> langOptional = LanguageService.getInstance()
-        .getLanguageSelected(event.getGuild().getIdLong());
+    String optedLanguage = null;
+    if (event.isFromGuild()) {
+      Optional<String> langOptional = LanguageService.getInstance()
+          .getLanguageSelected(event.getGuild().getIdLong());
+      optedLanguage = langOptional.orElse(null);
+    }
     GuessGame guessGame = new FlagGuessGame(event.getChannel(), difficulty, rounds, rounds,
-        langOptional.orElse(null),
-        continentCode, event.getHook());
+        optedLanguage, continentCode, event.getHook());
     gameMap.put(event.getChannel().getIdLong(), guessGame);
     GameEndService.getInstance()
         .scheduleEndGame(new GuessGameEndRunnable(guessGame, event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
@@ -229,9 +241,13 @@ public class GuessGameHandler {
     String[] commandData = event.getComponentId().split("_");
     boolean isHard = commandData[1].equals("Hard");
     int rounds = Integer.parseInt(commandData[2]);
-    Optional<String> langOptional = LanguageService.getInstance()
-        .getLanguageSelected(event.getGuild().getIdLong());
-    GuessGame guessGame = new MapGuessGame(event.getChannel(), isHard, rounds, rounds, langOptional.orElse(null),
+    String optedLanguage = null;
+    if (event.isFromGuild()) {
+      Optional<String> langOptional = LanguageService.getInstance()
+          .getLanguageSelected(event.getGuild().getIdLong());
+      optedLanguage = langOptional.orElse(null);
+    }
+    GuessGame guessGame = new MapGuessGame(event.getChannel(), isHard, rounds, rounds, optedLanguage,
         event.getHook());
     gameMap.put(event.getChannel().getIdLong(), guessGame);
     GameEndService.getInstance()

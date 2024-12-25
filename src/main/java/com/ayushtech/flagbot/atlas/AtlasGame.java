@@ -8,15 +8,15 @@ import java.util.stream.Collectors;
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public abstract class AtlasGame {
   private long hostId;
   private boolean isGameStarted;
-  protected MessageChannel channel;
+  protected MessageChannelUnion channel;
   protected Map<Long, Integer> scoreMap;
   private String mode;
   private String gameStartTimestamp;
@@ -31,7 +31,7 @@ public abstract class AtlasGame {
   protected final String atlasGameImageURL = "https://cdn.discordapp.com/attachments/1133277774010925206/1319749920852410420/globe_question.jpg?ex=67671864&is=6765c6e4&hm=8f7db66b8f9ba8f6f9962f261c6b55ce1815191068929a940604b07da9160d67&";
   protected final String thumbnailURL = "https://cdn.discordapp.com/attachments/1133277774010925206/1319633697279840287/robot_thinking.jpg?ex=6766ac27&is=67655aa7&hm=37cb0c0496cb40b04a6adca76072feef4b175bf3b78250ffd46e82c50207bdf9&";
 
-  public AtlasGame(long hostId, MessageChannel channel, String mode, int maxRounds, int maxScore, int roundTime,
+  public AtlasGame(long hostId, MessageChannelUnion channel, String mode, int maxRounds, int maxScore, int roundTime,
       int betAmount) {
     this.hostId = hostId;
     this.isGameStarted = false;
@@ -119,7 +119,7 @@ public abstract class AtlasGame {
   }
 
   protected int handleAnswer(long idLong, String messageText) {
-    if (this.currentRound!=null) {
+    if (this.currentRound != null) {
       return this.currentRound.handleAnswer(idLong, messageText);
     } else {
       return -1;

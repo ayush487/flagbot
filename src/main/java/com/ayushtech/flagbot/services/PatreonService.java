@@ -1,5 +1,6 @@
 package com.ayushtech.flagbot.services;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -8,11 +9,10 @@ import java.util.concurrent.TimeUnit;
 
 import com.ayushtech.flagbot.dbconnectivity.PatronDao;
 
-import java.awt.Color;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Emote;
-import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -26,6 +26,7 @@ public class PatreonService {
   private ScheduledThreadPoolExecutor executor;
   private Map<Long, String> correctGuessReactions;
   private Map<Long, String> wrongGuessReactions;
+  private final String WEBHOOK_URL = "https://discord.com/api/webhooks/1321493611002466357/lDs_hj8fJOm5JG65COGpL2KZB3u4P7Udc8I87t6PjfSucCZ3Nf24rYHYbSk13Bhty5Xp";
 
   private PatreonService() {
     this.patronUsers = PatronDao.getInstance().getValidPatronMembers();
@@ -56,8 +57,8 @@ public class PatreonService {
               "`f!remove wrong_guess`\n\nThese perks will be valid till "
               + TimeFormat.DATE_TIME_SHORT.atTimestamp(validTill)))
           .queue();
-      jda.getChannelById(MessageChannel.class, 1193603977821028402l)
-          .sendMessage(String.format("%s (`%s`) joined patreon Membership", user.getName(), user.getId())).queue();
+      UtilService.getInstance().sendMessageToWebhook(WEBHOOK_URL,
+          String.format("%s (`%s`) joined patreon Membership", user.getName(), user.getId()));
     });
 
   }
@@ -65,13 +66,13 @@ public class PatreonService {
   public void setReactionsForCorrectGuess(MessageReceivedEvent event) {
     long authorId = event.getAuthor().getIdLong();
     if (isUserPatron(authorId)) {
-      List<Emote> emotes = event.getMessage().getEmotes();
+      List<CustomEmoji> emotes = event.getMessage().getMentions().getCustomEmojis();
       if (emotes.isEmpty()) {
         event.getMessage().reply("You must include a custom emoji")
             .queue(m -> m.delete().queueAfter(8, TimeUnit.SECONDS));
         return;
       }
-      Emote e = emotes.get(0);
+      CustomEmoji e = emotes.get(0);
       correctGuessReactions.put(authorId, e.getName() + ":" + e.getIdLong());
       PatronDao.getInstance().setCorrectReaction(authorId, e.getIdLong(), e.getName());
       event.getMessage().reply(e.getAsMention() + " reaction will be added to your correct guesses!").queue();
@@ -86,13 +87,13 @@ public class PatreonService {
   public void setReactionsForWrongGuess(MessageReceivedEvent event) {
     long authorId = event.getAuthor().getIdLong();
     if (isUserPatron(authorId)) {
-      List<Emote> emotes = event.getMessage().getEmotes();
+      List<CustomEmoji> emotes = event.getMessage().getMentions().getCustomEmojis();
       if (emotes.isEmpty()) {
         event.getMessage().reply("You must include a custom emoji")
             .queue(m -> m.delete().queueAfter(8, TimeUnit.SECONDS));
         return;
       }
-      Emote e = emotes.get(0);
+      CustomEmoji e = emotes.get(0);
       wrongGuessReactions.put(authorId, e.getName() + ":" + e.getIdLong());
       PatronDao.getInstance().setWrongReaction(authorId, e.getIdLong(), e.getName());
       event.getMessage().reply(e.getAsMention() + " reaction will be added to your wrong guesses!").queue();
@@ -163,12 +164,12 @@ public class PatreonService {
     return this.wrongGuessReactions.containsKey(userId);
   }
 
-  public String getCorrectReaction(long userId) {
-    return this.correctGuessReactions.get(userId);
+  public Emoji getCorrectReaction(long userId) {
+    return Emoji.fromFormatted("<:" + this.correctGuessReactions.get(userId) + ">");
   }
 
-  public String getWrongReaction(long userId) {
-    return this.wrongGuessReactions.get(userId);
+  public Emoji getWrongReaction(long userId) {
+    return Emoji.fromFormatted("<:" + this.wrongGuessReactions.get(userId) + ">");
   }
 
 }

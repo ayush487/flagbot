@@ -3,8 +3,6 @@ package com.ayushtech.flagbot.listeners;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-
 import com.ayushtech.flagbot.atlas.AtlasGameHandler;
 import com.ayushtech.flagbot.distanceGuess.GuessDistanceHandler;
 import com.ayushtech.flagbot.guessGame.GuessGameHandler;
@@ -13,6 +11,7 @@ import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.PrivateServerService;
 import com.ayushtech.flagbot.services.VotingService;
 
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -33,7 +32,7 @@ public class MessageListener extends ListenerAdapter {
     }
 
     @Override
-    public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
+    public void onMessageReceived(MessageReceivedEvent event) {
 
         long channelId = event.getChannel().getIdLong();
         if (channelId == vote_notifs_channel) {
@@ -41,9 +40,9 @@ public class MessageListener extends ListenerAdapter {
             VotingService.getInstance().voteUser(event.getJDA(), voter_id);
             return;
         } else if (channelId == webhook_channel) {
-            event.getMessage().addReaction("U+1F44D").queue();
-            event.getMessage().addReaction("U+1F937").queue();
-            event.getMessage().addReaction("U+1F44E").queue();
+            event.getMessage().addReaction(Emoji.fromUnicode("U+1F44D")).queue();
+            event.getMessage().addReaction(Emoji.fromUnicode("U+1F937")).queue();
+            event.getMessage().addReaction(Emoji.fromUnicode("U+1F44E")).queue();
             return;
         } else if (channelId == newPledgeChannel || channelId == updatePledgeChannel) {
             String patreonId = event.getMessage().getContentDisplay();
@@ -63,13 +62,15 @@ public class MessageListener extends ListenerAdapter {
         }
         String messageText = event.getMessage().getContentDisplay();
 
-        // if (CaptchaService.getInstance().userHasCaptched(event.getAuthor().getIdLong())) {
-        //     if (event.isFromType(ChannelType.PRIVATE)) {
-        //         CaptchaService.getInstance().handleCaptchaAnswer(event, messageText);
-        //         return;
-        //     } else {
-        //         return;
-        //     }
+        // if
+        // (CaptchaService.getInstance().userHasCaptched(event.getAuthor().getIdLong()))
+        // {
+        // if (event.isFromType(ChannelType.PRIVATE)) {
+        // CaptchaService.getInstance().handleCaptchaAnswer(event, messageText);
+        // return;
+        // } else {
+        // return;
+        // }
         // }
 
         if (messageText.startsWith("f!set correct_guess")) {
@@ -91,7 +92,7 @@ public class MessageListener extends ListenerAdapter {
         }
 
         if (AtlasGameHandler.getInstance().isGameExist(channelId)) {
-            AtlasGameHandler.getInstance().handleAnswer(messageText,event);
+            AtlasGameHandler.getInstance().handleAnswer(messageText, event);
         }
 
         if (alternateNamesMap.containsKey(messageText.toLowerCase())) {

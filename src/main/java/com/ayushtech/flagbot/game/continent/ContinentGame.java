@@ -22,7 +22,8 @@ public class ContinentGame {
     this.countryCode = country.getCode();
     this.continentCode = country.getContinentCode();
     // setData();
-    event.getHook().sendMessageEmbeds(createEmbed()).addActionRows(getActionRows()).queue();
+    event.getHook().sendMessageEmbeds(createEmbed())
+    .addComponents(getActionRows()).queue();
   }
 
   public ContinentGame(ButtonInteractionEvent event) {
@@ -30,7 +31,7 @@ public class ContinentGame {
     this.country = GuessGameUtil.getInstance().getRandomCountry();
     this.countryCode = country.getCode();
     this.continentCode = country.getContinentCode();
-    event.getHook().sendMessageEmbeds(createEmbed()).addActionRows(getActionRows()).queue();
+    event.getHook().sendMessageEmbeds(createEmbed()).addComponents(getActionRows()).queue();
   }
 
   private ActionRow[] getActionRows() {

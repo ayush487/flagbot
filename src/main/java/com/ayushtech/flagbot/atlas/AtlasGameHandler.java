@@ -14,6 +14,7 @@ import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.VotingService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -283,7 +284,7 @@ public class AtlasGameHandler {
     if (atlasGameMap.get(channelId).isPlayerJoined(authorId)) {
       int atlasGameResponse = atlasGameMap.get(channelId).handleAnswer(authorId, messageText.toLowerCase());
       if (atlasGameResponse >= 0) {
-        event.getMessage().addReaction(getReaction(atlasGameResponse)).queue();
+        event.getMessage().addReaction(Emoji.fromUnicode(getReaction(atlasGameResponse))).queue();
       }
     }
   }

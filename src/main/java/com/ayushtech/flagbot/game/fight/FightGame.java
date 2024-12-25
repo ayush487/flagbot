@@ -4,8 +4,9 @@ import java.awt.Color;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
+
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
@@ -13,7 +14,7 @@ public class FightGame {
 
   private User player1;
   private User player2;
-  private MessageChannel channel;
+  private MessageChannelUnion channel;
   private int betAmount;
   private boolean isInteracted;
   private int player1Hp;
@@ -22,7 +23,7 @@ public class FightGame {
   private CountryOptions options;
   private Message message;
 
-  public FightGame(MessageChannel channel, User player1, User player2, int betAmount) {
+  public FightGame(MessageChannelUnion channel, User player1, User player2, int betAmount) {
     options = null;
     this.channel = channel;
     this.player1 = player1;

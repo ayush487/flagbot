@@ -11,15 +11,16 @@ import com.ayushtech.flagbot.guessGame.GuessGameUtil;
 import com.ayushtech.flagbot.services.GameEndService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageChannel;
+
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class PlaceGuessGame implements GuessGame {
 
-  private MessageChannel channel;
+  private MessageChannelUnion channel;
   private Place place;
   private MessageEmbed embed;
   private long messageId;
@@ -27,7 +28,7 @@ public class PlaceGuessGame implements GuessGame {
   private int roundSize;
   private long startTimeStamp;
 
-  public PlaceGuessGame(MessageChannel channel, int rounds, int roundSize, InteractionHook hook) {
+  public PlaceGuessGame(MessageChannelUnion channel, int rounds, int roundSize, InteractionHook hook) {
     this.channel = channel;
     this.rounds = rounds;
     this.roundSize = roundSize;
@@ -109,7 +110,7 @@ public class PlaceGuessGame implements GuessGame {
     return returnString;
   }
 
-  private static void startAgain(MessageChannel channel, int rounds, int roundSize) {
+  private static void startAgain(MessageChannelUnion channel, int rounds, int roundSize) {
     GuessGame placeGame = new PlaceGuessGame(channel, rounds, roundSize, null);
     GuessGameHandler.getInstance().addThisGame(channel.getIdLong(), placeGame);
     GameEndService.getInstance().scheduleEndGame(new GuessGameEndRunnable(placeGame, channel.getIdLong()), 30,

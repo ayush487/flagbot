@@ -65,7 +65,7 @@ public class ContinentGameHandler {
     eb.setColor(Color.red);
     eb.setImage(
         String.format("https://raw.githubusercontent.com/ayush487/image-library/main/flags/%s.png", country));
-    event.editMessageEmbeds(eb.build()).setActionRows(getDisabledActionRowsLose(selectedContinent, correctContinent))
+    event.editMessageEmbeds(eb.build()).setComponents(getDisabledActionRowsLose(selectedContinent, correctContinent))
         .queue();
     event.getHook().sendMessageEmbeds(getNotificationEmbedAsLose(user.getName(), country, correctContinent))
         .addActionRow(Button.primary("playAgainContinent", "Play Again")).queue();
@@ -79,7 +79,7 @@ public class ContinentGameHandler {
     eb.setColor(Color.green);
     eb.setImage(
         String.format("https://raw.githubusercontent.com/ayush487/image-library/main/flags/%s.png", country));
-    event.editMessageEmbeds(eb.build()).setActionRows(getDisabledActionRowsWin(correctContinent)).queue();
+    event.editMessageEmbeds(eb.build()).setComponents(getDisabledActionRowsWin(correctContinent)).queue();
     event.getHook()
         .sendMessageEmbeds(getNotificationEmbedAsWin(user.getIdLong(), country, correctContinent, userBalance))
         .addActionRow(Button.primary("playAgainContinent", "Play Again"))

@@ -11,15 +11,16 @@ import java.awt.Color;
 import java.util.concurrent.TimeUnit;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageChannel;
+
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class StateFlagGuessGame implements GuessGame {
 
-  private MessageChannel channel;
+  private MessageChannelUnion channel;
   private State state;
   private int rounds;
   private int roundSize;
@@ -29,7 +30,7 @@ public class StateFlagGuessGame implements GuessGame {
   private String countryCode;
   private String countryName;
 
-  public StateFlagGuessGame(MessageChannel channel, String countryCode, int rounds, int roundSize,
+  public StateFlagGuessGame(MessageChannelUnion channel, String countryCode, int rounds, int roundSize,
       InteractionHook hook) {
     this.channel = channel;
     this.countryCode = countryCode;
@@ -124,7 +125,7 @@ public class StateFlagGuessGame implements GuessGame {
     return returnString;
   }
 
-  private static void startAgain(MessageChannel channel, String countryCode, int rounds, int roundSize) {
+  private static void startAgain(MessageChannelUnion channel, String countryCode, int rounds, int roundSize) {
     GuessGame game = new StateFlagGuessGame(channel, countryCode, rounds, roundSize, null);
     GuessGameHandler.getInstance().addThisGame(channel.getIdLong(), game);
     GameEndService.getInstance().scheduleEndGame(new GuessGameEndRunnable(game, channel.getIdLong()), 30,

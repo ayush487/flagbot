@@ -9,13 +9,13 @@ import com.ayushtech.flagbot.atlas.AtlasQuestion;
 import com.ayushtech.flagbot.dbconnectivity.AtlasDao;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 
 public class ClassicAtlasGameRound implements AtlasGameRound {
   private AtlasQuestion question;
   private List<Long> answeredBy;
 
-  public ClassicAtlasGameRound(MessageChannel channel, int roundTime, int currentRound) {
+  public ClassicAtlasGameRound(MessageChannelUnion channel, int roundTime, int currentRound) {
     this.question = AtlasDao.getInstance().getQuestion();
     this.answeredBy = new ArrayList<>();
     EmbedBuilder eb = new EmbedBuilder();

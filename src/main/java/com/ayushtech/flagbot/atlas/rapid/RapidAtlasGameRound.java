@@ -9,13 +9,14 @@ import com.ayushtech.flagbot.atlas.AtlasQuestion;
 import com.ayushtech.flagbot.dbconnectivity.AtlasDao;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
+
 
 public class RapidAtlasGameRound implements AtlasGameRound {
   private AtlasQuestion question;
   private Map<Long, Integer> roundScoreMap;
 
-  public RapidAtlasGameRound(MessageChannel channel, int roundTime, int currentRound) {
+  public RapidAtlasGameRound(MessageChannelUnion channel, int roundTime, int currentRound) {
     this.question = AtlasDao.getInstance().getQuestion();
     this.roundScoreMap = new HashMap<>();
     EmbedBuilder eb = new EmbedBuilder();

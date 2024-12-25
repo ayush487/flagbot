@@ -13,15 +13,16 @@ import com.ayushtech.flagbot.services.GameEndService;
 import com.ayushtech.flagbot.services.LanguageService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageChannel;
+
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class MapGuessGame implements GuessGame {
 
-  private MessageChannel channel;
+  private MessageChannelUnion channel;
   private Country country;
   private int rounds;
   private int roundSize;
@@ -31,7 +32,7 @@ public class MapGuessGame implements GuessGame {
   private String lang;
   private MessageEmbed embed;
 
-  public MapGuessGame(MessageChannel channel, boolean isHard, int rounds, int roundSize, String lang,
+  public MapGuessGame(MessageChannelUnion channel, boolean isHard, int rounds, int roundSize, String lang,
       InteractionHook hook) {
     this.channel = channel;
     this.rounds = rounds;
@@ -132,7 +133,7 @@ public class MapGuessGame implements GuessGame {
     return returnString;
   }
 
-  private static void startAgain(MessageChannel channel, boolean isHard, int rounds, int roundSize, String lang) {
+  private static void startAgain(MessageChannelUnion channel, boolean isHard, int rounds, int roundSize, String lang) {
     GuessGame mapGame = new MapGuessGame(channel, isHard, rounds, roundSize, lang, null);
     GuessGameHandler.getInstance().addThisGame(channel.getIdLong(), mapGame);
     GameEndService.getInstance().scheduleEndGame(new GuessGameEndRunnable(mapGame, channel.getIdLong()), 30,

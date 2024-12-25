@@ -1,11 +1,11 @@
 package com.ayushtech.flagbot.services;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 import com.ayushtech.flagbot.atlas.AtlasGameHandler;
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
@@ -22,16 +22,20 @@ import com.ayushtech.flagbot.stocks.StocksHandler;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.GuildChannel;
-import net.dv8tion.jda.api.entities.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.unions.GuildChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 
 public class UtilService {
   private static UtilService utilService = null;
@@ -68,7 +72,7 @@ public class UtilService {
         channelService.enableChannel(event.getChannel().getIdLong());
         event.getHook().sendMessage("Commands are enabled for this channel now!").setEphemeral(true).queue();
       } else {
-        GuildMessageChannel channelOption = option.getAsMessageChannel();
+        GuildChannelUnion channelOption = option.getAsChannel();
         if (channelOption == null) {
           event.getHook().sendMessage("Mentioned channel is not a Message Channel").queue();
         } else {
@@ -104,7 +108,7 @@ public class UtilService {
         channelService.disableChannel(event.getChannel().getIdLong());
         event.getHook().sendMessage("Commands are disabled for this channel now!").setEphemeral(true).queue();
       } else {
-        GuildMessageChannel channelOption = option.getAsMessageChannel();
+        GuildChannelUnion channelOption = option.getAsChannel();
         if (channelOption == null) {
           event.getHook().sendMessage("Mentioned channel is not a Message Channel").setEphemeral(true).queue();
         } else {
@@ -133,7 +137,7 @@ public class UtilService {
         "Click on the **Delete My Data** button to delete your data permanetly.\nNote : It will wipe all your coins, stocks permanently.");
     user.openPrivateChannel()
         .flatMap(channel -> channel.sendMessageEmbeds(eb2.build())
-            .setActionRows(ActionRow.of(Button.primary("delete_data_" + user.getId(), "Delete My Data"))))
+            .setComponents(ActionRow.of(Button.primary("delete_data_" + user.getId(), "Delete My Data"))))
         .queue();
   }
 
@@ -300,8 +304,8 @@ public class UtilService {
   }
 
   public void handleGuessComnmands(SlashCommandInteractionEvent event) {
-    Member selfMember = event.getGuild().getSelfMember();
     if (event.getGuild() != null) {
+      Member selfMember = event.getGuild().getSelfMember();
       GuildChannel guildChannel = event.getGuild().getGuildChannelById(event.getChannel().getId());
       if (!selfMember.hasPermission(guildChannel, Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND,
           Permission.MESSAGE_EMBED_LINKS)) {
@@ -336,9 +340,6 @@ public class UtilService {
     } else if (commandName.equals("capital")) {
       GuessGameHandler.getInstance().handlePlayCapitalCommand(event);
       return;
-    } else if (commandName.equals("county_flag")) {
-      event.getHook().sendMessage("This command will be added soon!").queue(
-          m -> m.delete().queueAfter(10, TimeUnit.SECONDS));
     } else {
       ContinentGameHandler.getInstance().handlePlayCommand(event);
       return;
@@ -387,5 +388,17 @@ public class UtilService {
       }
     }
     return;
+  }
+
+  public void sendMessageToWebhook(String url, String message) {
+    OkHttpClient client = new OkHttpClient();
+    String jsonInputString = String.format("{\"content\" : \"%s\"}", message);
+    RequestBody body = RequestBody.create(jsonInputString, MediaType.parse("application/json; charset=utf-8"));
+    Request request = new Request.Builder().url(url).post(body).build();
+    try {
+      client.newCall(request).execute();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }

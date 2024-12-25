@@ -43,7 +43,7 @@ public class Memoflip {
       eb.setColor(Color.red);
     }
     ActionRow[] rows = MemoflipHandler.getInstance().getButtonsAsDisabled(cards);
-    message.editMessageEmbeds(eb.build()).setActionRows(rows).queue();
+    message.editMessageEmbeds(eb.build()).setComponents(rows).queue();
 
   }
 
@@ -56,7 +56,7 @@ public class Memoflip {
     eb.setColor(Color.green);
     ActionRow[] rows = MemoflipHandler.getInstance().getButtonsAsDisabled(cards);
     event.editMessageEmbeds(eb.build())
-        .setActionRows(rows).queue();
+        .setComponents(rows).queue();
     CoinDao.getInstance().addCoins(userId, (long)rewards);
     MemoflipDao.getInstance().setHighScore(userId, turns, difficulty);
   }

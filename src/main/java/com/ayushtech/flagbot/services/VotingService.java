@@ -14,7 +14,6 @@ import com.ayushtech.flagbot.dbconnectivity.VoterDao;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.utils.TimeFormat;
 
@@ -24,7 +23,7 @@ public class VotingService {
   private Map<Long, Long> voteData;
   private ScheduledThreadPoolExecutor executor;
 
-  private final long vote_logs_channel = 1191691729825435669l;
+  private final String WEBHOOK_URL = "https://discord.com/api/webhooks/1321487508235882507/l_URtGYkLvdbgSA5RCN2hBdnLMCrZRkdfc8FSWLptmRkIEhf-Ib1ZDtjJdd9mmAKqcrA";
 
   private VotingService() {
     voteData = VoterDao.getInstance().getRecentVoterData();
@@ -60,8 +59,9 @@ public class VotingService {
       voter.openPrivateChannel()
           .flatMap(channel -> channel.sendMessage(dmMsg))
           .queue();
-      jda.getChannelById(MessageChannel.class, vote_logs_channel)
-          .sendMessage("Rewards sent to User `" + voter.getName() + "`, id : `" + voter_id + "`").queue();
+      UtilService.getInstance().sendMessageToWebhook(WEBHOOK_URL,
+          "Rewards sent to User `" + voter.getName() + "`, id : `" +
+              voter_id + "`");
     });
     VoterDao.getInstance().addVoter(Long.parseLong(voter_id));
   }

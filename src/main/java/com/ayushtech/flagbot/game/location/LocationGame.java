@@ -12,7 +12,7 @@ public class LocationGame {
         public LocationGame(InteractionHook hook, LocationMap locationMap, long userId) {
 
                 hook.sendMessageEmbeds(getEmbed(locationMap))
-                                .addActionRows(getActionRows(locationMap, userId))
+                                .addComponents(getActionRows(locationMap, userId))
                                 .queue();
         }
 

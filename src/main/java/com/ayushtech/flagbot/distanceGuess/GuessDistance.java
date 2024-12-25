@@ -12,7 +12,8 @@ import com.ayushtech.flagbot.dbconnectivity.DistanceDao;
 import com.ayushtech.flagbot.services.GameEndService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
@@ -29,11 +30,11 @@ public class GuessDistance {
   private boolean isUnitKM;
   private long messageId;
   private int roundCount;
-  private MessageChannel channel;
+  private MessageChannelUnion channel;
   private boolean isStarted;
   private DistanceRound currentRound;
 
-  public GuessDistance(MessageChannel channel, long hostId, boolean isUnitKM, boolean isUserPatron) {
+  public GuessDistance(MessageChannelUnion channel, long hostId, boolean isUnitKM, boolean isUserPatron) {
     this.channel = channel;
     this.hostId = hostId;
     this.isUnitKM = isUnitKM;
@@ -49,7 +50,7 @@ public class GuessDistance {
     eb.addField("__Host__", "<@" + hostId + ">", false);
     eb.addField("__Players__", "<@" + hostId + ">", false);
     channel.sendMessageEmbeds(eb.build())
-        .setActionRows(
+        .setComponents(
             ActionRow.of(Button.success("startDistance_" + hostId, "Start"), Button.primary("joinDistance_" + isUserPatron, "Join")),
             ActionRow.of(Button.danger("cancelDistance_" + hostId, "Cancel"),
                 Button.primary("changeDistanceUnit_" + hostId, "Change Unit")))
@@ -68,7 +69,7 @@ public class GuessDistance {
     eb.addField("__Players__", sb.toString(), false);
     eb.setFooter("Game started!");
     event.editMessageEmbeds(eb.build())
-        .setActionRows(
+        .setComponents(
             ActionRow.of(Button.success("startDistance", "Start").asDisabled(),
                 Button.primary("joinDistance", "Join").asDisabled()),
             ActionRow.of(Button.danger("cancelDistance", "Cancel").asDisabled(),
@@ -161,7 +162,7 @@ public class GuessDistance {
     eb.addField("__Host__", "<@" + hostId + ">", false);
     eb.addField("__Players__", sb.toString(), false);
     event.editMessageEmbeds(eb.build())
-        .setActionRows(
+        .setComponents(
             ActionRow.of(Button.success("startDistance", "Start").asDisabled(),
                 Button.primary("joinDistance", "Join").asDisabled()),
             ActionRow.of(Button.danger("cancelDistance", "Cancel").asDisabled(),
@@ -180,7 +181,7 @@ public class GuessDistance {
     eb.addField("__Host__", "<@" + hostId + ">", false);
     eb.addField("__Players__", sb.toString(), false);
     event.editMessageEmbeds(eb.build())
-        .setActionRows(
+        .setComponents(
             ActionRow.of(Button.success("startDistance_" + hostId, "Start"), Button.primary("joinDistance", "Join")),
             ActionRow.of(Button.danger("cancelDistance_" + hostId, "Cancel"),
                 Button.primary("changeDistanceUnit_" + hostId, "Change Unit")))
@@ -197,7 +198,7 @@ public class GuessDistance {
     eb.addField("__Host__", "<@" + hostId + ">", false);
     eb.addField("__Players__", sb.toString(), false);
     channel.editMessageEmbedsById(messageId, eb.build())
-        .setActionRows(
+        .setComponents(
             ActionRow.of(Button.success("startDistance", "Start").asDisabled(),
                 Button.primary("joinDistance", "Join").asDisabled()),
             ActionRow.of(Button.danger("cancelDistance", "Cancel").asDisabled(),
@@ -216,7 +217,7 @@ public class GuessDistance {
     eb.addField("__Host__", "<@" + hostId + ">", false);
     eb.addField("__Players__", sb.toString(), false);
     event.editMessageEmbeds(eb.build())
-        .setActionRows(
+        .setComponents(
             ActionRow.of(Button.success("startDistance_" + hostId, "Start"), Button.primary("joinDistance", "Join")),
             ActionRow.of(Button.danger("cancelDistance_" + hostId, "Cancel"),
                 Button.primary("changeDistanceUnit_" + hostId, "Change Unit")))
@@ -229,7 +230,7 @@ public class GuessDistance {
     }
     int guessedDistance = Integer.parseInt(guess);
     this.currentRound.addGuess(userId, guessedDistance);
-    event.getMessage().addReaction("U+1F44D").queue();
+    event.getMessage().addReaction(Emoji.fromUnicode("U+1F44D")).queue();
   }
 
   public int getJoinedPlayersCount() {

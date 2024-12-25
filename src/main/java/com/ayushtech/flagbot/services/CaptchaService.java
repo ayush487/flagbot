@@ -15,10 +15,11 @@ import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
-import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.utils.FileUpload;
 
 public class CaptchaService {
 
@@ -65,9 +66,11 @@ public class CaptchaService {
     File captcheImage = createImage(captchText, event.getUser().getId());
     event.getHook().sendMessage(":warning: |" + event.getUser().getAsMention()
         + ", Please DM me with only the following 6 letter word to check that you are a human!\n :black_medium_square: | If you have trouble solving the captcha, please ask us in our support guild!")
-        .addFile(captcheImage).queue();
+        .addFiles(FileUpload.fromData(captcheImage)).queue();
     event.getUser().openPrivateChannel()
-        .flatMap(channel -> channel.sendMessage("Solve the captcha").addFile(captcheImage)).queue();
+        .flatMap(
+            channel -> channel.sendMessage("Solve the captcha").addFiles(FileUpload.fromData(captcheImage)))
+        .queue();
   }
 
   public void sendCaptcha(ButtonInteractionEvent event) {
@@ -77,9 +80,10 @@ public class CaptchaService {
     File captcheImage = createImage(captchText, event.getUser().getId());
     event.getHook().sendMessage(":warning: |" + event.getUser().getAsMention()
         + ", Please DM me with only the following 6 letter word to check that you are a human!\n :black_medium_square: | If you have trouble solving the captcha, please ask us in our support guild!")
-        .addFile(captcheImage).queue();
+        .addFiles(FileUpload.fromData(captcheImage)).queue();
     event.getUser().openPrivateChannel()
-        .flatMap(channel -> channel.sendMessage("Solve the captcha").addFile(captcheImage)).queue();
+        .flatMap(channel -> channel.sendMessage("Solve the captcha").addFiles(FileUpload.fromData(captcheImage)))
+        .queue();
   }
 
   public void blockUser(long userId) {
@@ -126,7 +130,7 @@ public class CaptchaService {
         captcheMap.remove(userId);
         userWarnsMap.remove(userId);
         removeFile(userId);
-        event.getJDA().getChannelById(MessageChannel.class, banLogChannelId)
+        event.getJDA().getChannelById(MessageChannelUnion.class, banLogChannelId)
             .sendMessage("Banned a user with id :" + userId).queue();
       }
 

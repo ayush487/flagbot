@@ -10,8 +10,8 @@ import com.ayushtech.flagbot.dbconnectivity.PollsDao;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -67,8 +67,8 @@ public class PrivateServerService {
     eb.setDescription("**" + pollText + "**");
     eb.setFooter("Staff Polls #" + pollId);
     eb.setColor(Color.yellow);
-    event.getJDA().getChannelById(MessageChannel.class, pollChannel).sendMessageEmbeds(eb.build())
-        .setActionRows(
+    event.getJDA().getChannelById(MessageChannelUnion.class, pollChannel).sendMessageEmbeds(eb.build())
+        .setComponents(
             ActionRow.of(Button.success("pollUpvote_" + pollId, "Upvote"),
                 Button.danger("pollDownvote_" + pollId, "Downvote")),
             ActionRow.of(Button.secondary("pollViewVotes_" + pollId, "View Votes"),
@@ -100,7 +100,7 @@ public class PrivateServerService {
       eb.setTitle("Decision approved");
       eb.setDescription("[Click here to view poll](https://discord.com/channels/835384407368007721/1255441568215597066/" +pollMessageId + ")");
       eb.setColor(Color.green);
-      event.getJDA().getChannelById(MessageChannel.class, pollLogsChannel).sendMessageEmbeds(eb.build()).queue();
+      event.getJDA().getChannelById(MessageChannelUnion.class, pollLogsChannel).sendMessageEmbeds(eb.build()).queue();
       return;
     } else if (voteData[0] + voteData[1] + voteData[2] + voteData[3] + voteData[4] + voteData[5] >= totalVoteLimit) {
       event.editComponents(ActionRow.of(Button.danger("disapproved", "Disapproved").asDisabled()),
@@ -110,7 +110,7 @@ public class PrivateServerService {
       eb.setTitle("Decision not approved");
       eb.setDescription("[Click here to view poll](https://discord.com/channels/835384407368007721/1255441568215597066/" +pollMessageId + ")");
       eb.setColor(Color.red);
-      event.getJDA().getChannelById(MessageChannel.class, pollLogsChannel).sendMessageEmbeds(eb.build()).queue();
+      event.getJDA().getChannelById(MessageChannelUnion.class, pollLogsChannel).sendMessageEmbeds(eb.build()).queue();
       return;
     } else {
       event.reply("You upvoted this poll").setEphemeral(true).queue();

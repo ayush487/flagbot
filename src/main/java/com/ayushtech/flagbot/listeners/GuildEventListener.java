@@ -1,6 +1,6 @@
 package com.ayushtech.flagbot.listeners;
 
-import javax.annotation.Nonnull;
+import com.ayushtech.flagbot.services.UtilService;
 
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class GuildEventListener extends ListenerAdapter {
 
-  private final long ownerUserId = 545656364173885440l;
+  private final String WEBHOOK_URL = "https://discord.com/api/webhooks/1321495363374420008/p1j6eW0D_bUj82qs1OHa3go-WGlqIadXj-uc9LZBY62eUf6CbXtLMVuoJX__npVhHIvb";
 
   @Override
   public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent event) {
@@ -38,16 +38,14 @@ public class GuildEventListener extends ListenerAdapter {
   }
 
   @Override
-  public void onGuildJoin(@Nonnull GuildJoinEvent event) {
-    event.getJDA().retrieveUserById(ownerUserId).complete().openPrivateChannel().flatMap(
-        privateChannel -> privateChannel.sendMessage("Flagbot joined server : **" + event.getGuild().getName() + "**"))
-        .queue();
+  public void onGuildJoin(GuildJoinEvent event) {
+    UtilService.getInstance().sendMessageToWebhook(WEBHOOK_URL,
+        "Flagbot joined server : **" + event.getGuild().getName() + "**");
   }
 
   @Override
-  public void onGuildLeave(@Nonnull GuildLeaveEvent event) {
-    event.getJDA().retrieveUserById(ownerUserId).complete().openPrivateChannel().flatMap(
-        privateChannel -> privateChannel.sendMessage("Flagbot Leaved server : **" + event.getGuild().getName() + "**"))
-        .queue();
+  public void onGuildLeave(GuildLeaveEvent event) {
+    UtilService.getInstance().sendMessageToWebhook(WEBHOOK_URL,
+        "Flagbot Leaved server : **" + event.getGuild().getName() + "**");
   }
 }

@@ -1,7 +1,5 @@
 package com.ayushtech.flagbot.listeners;
 
-import javax.annotation.Nonnull;
-
 import com.ayushtech.flagbot.atlas.AtlasGameHandler;
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.distanceGuess.GuessDistanceHandler;
@@ -40,7 +38,7 @@ public class InteractionsListener extends ListenerAdapter {
 	}
 
 	@Override
-	public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
+	public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
 
 		MetricService.getInstance().registerCommandData(event);
 
@@ -165,7 +163,7 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
-		else if(event.getName().equals("atlas")) {
+		else if (event.getName().equals("atlas")) {
 			UtilService.getInstance().handleAtlasCommands(event);
 			return;
 		}
@@ -217,7 +215,7 @@ public class InteractionsListener extends ListenerAdapter {
 	 * Button Interactions Listener
 	 */
 	@Override
-	public void onButtonInteraction(@Nonnull ButtonInteractionEvent event) {
+	public void onButtonInteraction(ButtonInteractionEvent event) {
 		super.onButtonInteraction(event);
 
 		String commandId = event.getComponentId();
@@ -379,7 +377,7 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
-		else if(commandId.startsWith("playAgainStateFlag_")) {
+		else if (commandId.startsWith("playAgainStateFlag_")) {
 			GuessGameHandler.getInstance().handlePlayStateFlagButton(event);
 			return;
 		}
@@ -394,7 +392,7 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
-		else if(commandId.startsWith("joinAtlas")) {
+		else if (commandId.startsWith("joinAtlas")) {
 			AtlasGameHandler.getInstance().handleJoinButton(event);
 			return;
 		}

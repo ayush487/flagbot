@@ -18,7 +18,9 @@ import com.ayushtech.flagbot.services.PrivateServerService;
 import com.ayushtech.flagbot.stocks.StocksHandler;
 
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 public class Main {
 
@@ -50,8 +52,12 @@ public class Main {
                 LanguageService.getInstance();
                 GuessGameUtil.getInstance();
 
-                DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(bot_token);
+                DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(bot_token,
+                                GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES,
+                                GatewayIntent.DIRECT_MESSAGES);
                 builder.setActivity(Activity.playing("/atlas"));
+                builder.disableCache(CacheFlag.VOICE_STATE, CacheFlag.EMOJI, CacheFlag.STICKER,
+                                CacheFlag.SCHEDULED_EVENTS);
                 builder.addEventListeners(new MessageListener(), new InteractionsListener(),
                                 new GuildEventListener());
                 builder.build();

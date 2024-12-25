@@ -11,15 +11,15 @@ import com.ayushtech.flagbot.guessGame.GuessGameUtil;
 import com.ayushtech.flagbot.services.GameEndService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class CapitalGuessGame implements GuessGame {
 
-  private MessageChannel channel;
+  private MessageChannelUnion channel;
   private Capital capital;
   private int rounds;
   private int roundSize;
@@ -27,7 +27,7 @@ public class CapitalGuessGame implements GuessGame {
   private long messageId;
   private MessageEmbed embed;
 
-  public CapitalGuessGame(MessageChannel channel, int rounds, int roundSize, InteractionHook hook) {
+  public CapitalGuessGame(MessageChannelUnion channel, int rounds, int roundSize, InteractionHook hook) {
     this.channel = channel;
     this.capital = GuessGameUtil.getInstance().getRandomCapital();
     this.roundSize = roundSize;
@@ -113,7 +113,7 @@ public class CapitalGuessGame implements GuessGame {
     return returnString;
   }
 
-  private static void startAgain(MessageChannel channel, int rounds, int roundSize) {
+  private static void startAgain(MessageChannelUnion channel, int rounds, int roundSize) {
     CapitalGuessGame game = new CapitalGuessGame(channel, rounds, roundSize, null);
     GuessGameHandler.getInstance().addThisGame(channel.getIdLong(), game);
     GameEndService.getInstance().scheduleEndGame(new GuessGameEndRunnable(game, channel.getIdLong()), 30,

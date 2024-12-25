@@ -12,7 +12,7 @@ import com.ayushtech.flagbot.dbconnectivity.MemoflipDao;
 import com.ayushtech.flagbot.services.GameEndService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Emoji;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
@@ -26,7 +26,7 @@ public class MemoflipHandler {
   private List<Card> easyCardList;
   private List<Card> mediumCardList;
   private List<Card> hardCardList;
-  private Emoji questionEmoji = Emoji.fromEmote("question_mark", 1231126072909631518l, false);
+  private Emoji questionEmoji = Emoji.fromCustom("question_mark", 1231126072909631518l, false);
 
   private MemoflipHandler() {
     memoflipGameMap = new HashMap<>();
@@ -82,7 +82,7 @@ public class MemoflipHandler {
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++) {
         if (i == 1 && j == 1) {
-          gameCards[i][j] = new Card(69, Emoji.fromEmote("flagbot", 1230836096548601907l, false));
+          gameCards[i][j] = new Card(69, Emoji.fromCustom("flagbot", 1230836096548601907l, false));
         } else {
           Card c = easyCardList.get(index);
           gameCards[i][j] = new Card(c.getId(), c.getEmoji());
@@ -96,7 +96,7 @@ public class MemoflipHandler {
     eb.setColor(Color.BLUE);
     ActionRow[] rows = getButtons(gameCards, event.getUser().getIdLong());
     event.getHook().sendMessageEmbeds(eb.build())
-        .addActionRows(rows[0], rows[1], rows[2])
+        .addComponents(rows[0], rows[1], rows[2])
         .queue(m -> {
           long messageId = m.getIdLong();
           Memoflip game = new Memoflip(event.getUser().getIdLong(), gameCards, m, Difficulty.EASY, 300);
@@ -127,7 +127,7 @@ public class MemoflipHandler {
     eb.setColor(Color.BLUE);
     ActionRow[] rows = getButtons(gameCards, event.getUser().getIdLong());
     event.getHook().sendMessageEmbeds(eb.build())
-        .addActionRows(rows[0], rows[1], rows[2], rows[3])
+        .addComponents(rows[0], rows[1], rows[2], rows[3])
         .queue(m -> {
           long messageId = m.getIdLong();
           Memoflip game = new Memoflip(event.getUser().getIdLong(), gameCards, m, Difficulty.MEDIUM, 600);
@@ -148,7 +148,7 @@ public class MemoflipHandler {
     for (int i = 0; i < 5; i++) {
       for (int j = 0; j < 5; j++) {
         if (i == 2 && j == 2) {
-          gameCards[i][j] = new Card(69, Emoji.fromEmote("flagbot", 1230836096548601907l, false));
+          gameCards[i][j] = new Card(69, Emoji.fromCustom("flagbot", 1230836096548601907l, false));
         } else {
           Card c = hardCardList.get(index);
           gameCards[i][j] = new Card(c.getId(), c.getEmoji());
@@ -162,7 +162,7 @@ public class MemoflipHandler {
     eb.setColor(Color.BLUE);
     ActionRow[] rows = getButtons(gameCards, event.getUser().getIdLong());
     event.getHook().sendMessageEmbeds(eb.build())
-        .addActionRows(rows[0], rows[1], rows[2], rows[3], rows[4])
+        .addComponents(rows[0], rows[1], rows[2], rows[3], rows[4])
         .queue(m -> {
           long messageId = m.getIdLong();
           Memoflip game = new Memoflip(event.getUser().getIdLong(), gameCards, m, Difficulty.HARD, 1000);
@@ -208,7 +208,7 @@ public class MemoflipHandler {
           return;
         } else {
           event.editMessageEmbeds(eb.build())
-              .setActionRows(getButtons(game.getCards(), game.getUserId()))
+              .setComponents(getButtons(game.getCards(), game.getUserId()))
               .queue();
           return;
         }
@@ -216,13 +216,13 @@ public class MemoflipHandler {
         selectedCard.setStatus(CardStatus.WRONG);
         choosenCard.setStatus(CardStatus.WRONG);
         event.editMessageEmbeds(eb.build())
-            .setActionRows(getButtonsAsDisabled(game.getCards()))
+            .setComponents(getButtonsAsDisabled(game.getCards()))
             .queue(hook -> {
               selectedCard.setStatus(CardStatus.HIDDEN);
               choosenCard.setStatus(CardStatus.HIDDEN);
               if (game.isNotEnd())
                 hook.editMessageEmbedsById(game.getMessageId(), eb.build())
-                    .setActionRows(getButtons(game.getCards(), game.getUserId())).queueAfter(1, TimeUnit.SECONDS);
+                    .setComponents(getButtons(game.getCards(), game.getUserId())).queueAfter(1, TimeUnit.SECONDS);
 
             });
       }
@@ -230,7 +230,7 @@ public class MemoflipHandler {
       game.getCard(i, j).setStatus(CardStatus.SELECTED);
       game.setSelectedCard(i, j);
       event.editMessageEmbeds(eb.build())
-          .setActionRows(getButtons(game.getCards(), game.getUserId()))
+          .setComponents(getButtons(game.getCards(), game.getUserId()))
           .queue();
     }
 
@@ -366,18 +366,18 @@ public class MemoflipHandler {
   }
 
   private void loadEmojis() {
-    emojis[0] = Emoji.fromEmote("mickey", 1227219971399094283l, false);
-    emojis[1] = Emoji.fromEmote("doramon", 1227201968766713869l, false);
-    emojis[2] = Emoji.fromEmote("DonaldDuck", 1227224502107377664l, false);
-    emojis[3] = Emoji.fromEmote("pepe", 1227202432442957874l, false);
-    emojis[4] = Emoji.fromEmote("peng", 1227207404651941959l, false);
-    emojis[5] = Emoji.fromEmote("tom", 1227216763478085654l, false);
-    emojis[6] = Emoji.fromEmote("Shinchan", 1227223965270020191l, false);
-    emojis[7] = Emoji.fromEmote("jerry", 1227218745135599668l, false);
-    emojis[8] = Emoji.fromEmote("spongebob", 1227219444238127176l, false);
-    emojis[9] = Emoji.fromEmote("Courage", 1227220836377825281l, false);
-    emojis[10] = Emoji.fromEmote("oggy", 1227221518157615168l, false);
-    emojis[11] = Emoji.fromEmote("tweety", 1227222248822276096l, false);
+    emojis[0] = Emoji.fromCustom("mickey", 1227219971399094283l, false);
+    emojis[1] = Emoji.fromCustom("doramon", 1227201968766713869l, false);
+    emojis[2] = Emoji.fromCustom("DonaldDuck", 1227224502107377664l, false);
+    emojis[3] = Emoji.fromCustom("pepe", 1227202432442957874l, false);
+    emojis[4] = Emoji.fromCustom("peng", 1227207404651941959l, false);
+    emojis[5] = Emoji.fromCustom("tom", 1227216763478085654l, false);
+    emojis[6] = Emoji.fromCustom("Shinchan", 1227223965270020191l, false);
+    emojis[7] = Emoji.fromCustom("jerry", 1227218745135599668l, false);
+    emojis[8] = Emoji.fromCustom("spongebob", 1227219444238127176l, false);
+    emojis[9] = Emoji.fromCustom("Courage", 1227220836377825281l, false);
+    emojis[10] = Emoji.fromCustom("oggy", 1227221518157615168l, false);
+    emojis[11] = Emoji.fromCustom("tweety", 1227222248822276096l, false);
     for (int i = 0; i < emojis.length; i++) {
       hardCardList.add(new Card(i + 1, emojis[i]));
       hardCardList.add(new Card(i + 1, emojis[i]));

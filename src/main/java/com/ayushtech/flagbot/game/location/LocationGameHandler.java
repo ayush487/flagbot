@@ -9,8 +9,8 @@ import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.VotingService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
@@ -22,11 +22,11 @@ public class LocationGameHandler {
   public static Emoji[] markerEmojis = new Emoji[5];
 
   static {
-    markerEmojis[0] = Emoji.fromEmote("mark1", 1248279606369190029l, false);
-    markerEmojis[1] = Emoji.fromEmote("mark2", 1248279612002271372l, false);
-    markerEmojis[2] = Emoji.fromEmote("mark3", 1248279617018662922l, false);
-    markerEmojis[3] = Emoji.fromEmote("mark4", 1248279620885680209l, false);
-    markerEmojis[4] = Emoji.fromEmote("mark5", 1248279628519313559l, false);
+    markerEmojis[0] = Emoji.fromCustom("mark1", 1248279606369190029l, false);
+    markerEmojis[1] = Emoji.fromCustom("mark2", 1248279612002271372l, false);
+    markerEmojis[2] = Emoji.fromCustom("mark3", 1248279617018662922l, false);
+    markerEmojis[3] = Emoji.fromCustom("mark4", 1248279620885680209l, false);
+    markerEmojis[4] = Emoji.fromCustom("mark5", 1248279628519313559l, false);
   }
 
   private LocationGameHandler() {
@@ -81,7 +81,7 @@ public class LocationGameHandler {
       event
           .editMessageEmbeds(
               getEmbed(mapCode, placeCode, userAvatar, Color.green, username + " selected correct option"))
-          .setActionRows(getDisabledActionRow(Integer.parseInt(correct)))
+          .setComponents(getDisabledActionRow(Integer.parseInt(correct)))
           .queue();
       Place place = PlacesDao.getInstance().getPlace(placeCode);
       long balance = CoinDao.getInstance().addCoinsAndGetBalance(actionUser, 100l);
@@ -90,7 +90,7 @@ public class LocationGameHandler {
 
     } else {
       event.editMessageEmbeds(getEmbed(mapCode, placeCode, userAvatar, Color.red, username + " selected wrong option"))
-          .setActionRows(getDisabledActionRow(Integer.parseInt(correct), Integer.parseInt(selection)))
+          .setComponents(getDisabledActionRow(Integer.parseInt(correct), Integer.parseInt(selection)))
           .queue();
       Place place = PlacesDao.getInstance().getPlace(placeCode);
       event.getHook().sendMessageEmbeds(getLoseNotifyEmbed(actionUser, correct, place))
@@ -112,7 +112,7 @@ public class LocationGameHandler {
     String username = event.getUser().getName();
     String userAvatar = event.getUser().getAvatarUrl();
     event.editMessageEmbeds(getEmbed(mapCode, placeCode, userAvatar, Color.gray, "Skipped by " + username))
-        .setActionRows(getDisabledActionRow(correct),
+        .setComponents(getDisabledActionRow(correct),
             ActionRow.of(Button.primary("playAgainLocation", "Play Again")))
         .queue();
   }
