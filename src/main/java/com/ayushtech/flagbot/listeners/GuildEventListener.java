@@ -9,7 +9,11 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class GuildEventListener extends ListenerAdapter {
 
-  private final String WEBHOOK_URL = "https://discord.com/api/webhooks/1321495363374420008/p1j6eW0D_bUj82qs1OHa3go-WGlqIadXj-uc9LZBY62eUf6CbXtLMVuoJX__npVhHIvb";
+  private static String WEBHOOK_URL = "";
+
+  public static void setJoinUpdateWebhookUrl(String url) {
+    WEBHOOK_URL = url;
+  }
 
   @Override
   public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent event) {

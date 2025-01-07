@@ -23,7 +23,7 @@ public class VotingService {
   private Map<Long, Long> voteData;
   private ScheduledThreadPoolExecutor executor;
 
-  private final String WEBHOOK_URL = "https://discord.com/api/webhooks/1321487508235882507/l_URtGYkLvdbgSA5RCN2hBdnLMCrZRkdfc8FSWLptmRkIEhf-Ib1ZDtjJdd9mmAKqcrA";
+  private static String VOTER_WEBHOOK_URL;
 
   private VotingService() {
     voteData = VoterDao.getInstance().getRecentVoterData();
@@ -59,7 +59,7 @@ public class VotingService {
       voter.openPrivateChannel()
           .flatMap(channel -> channel.sendMessage(dmMsg))
           .queue();
-      UtilService.getInstance().sendMessageToWebhook(WEBHOOK_URL,
+      UtilService.getInstance().sendMessageToWebhook(VOTER_WEBHOOK_URL,
           "Rewards sent to User `" + voter.getName() + "`, id : `" +
               voter_id + "`");
     });
@@ -86,4 +86,7 @@ public class VotingService {
     return (day.equals("SATURDAY") || day.equals("SUNDAY"));
   }
 
+  public static void setVotingWebhookUrl(String webhookUrl) {
+    VOTER_WEBHOOK_URL = webhookUrl;
+  }
 }

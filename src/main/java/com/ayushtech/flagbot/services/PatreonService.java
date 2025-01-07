@@ -26,7 +26,7 @@ public class PatreonService {
   private ScheduledThreadPoolExecutor executor;
   private Map<Long, String> correctGuessReactions;
   private Map<Long, String> wrongGuessReactions;
-  private final String WEBHOOK_URL = "https://discord.com/api/webhooks/1321493611002466357/lDs_hj8fJOm5JG65COGpL2KZB3u4P7Udc8I87t6PjfSucCZ3Nf24rYHYbSk13Bhty5Xp";
+  private String WEBHOOK_URL = "";
 
   private PatreonService() {
     this.patronUsers = PatronDao.getInstance().getValidPatronMembers();
@@ -170,6 +170,10 @@ public class PatreonService {
 
   public Emoji getWrongReaction(long userId) {
     return Emoji.fromFormatted("<:" + this.wrongGuessReactions.get(userId) + ">");
+  }
+
+  public void setPatreonWebhookUrl(String webhookUrl) {
+    this.WEBHOOK_URL = webhookUrl;
   }
 
 }
