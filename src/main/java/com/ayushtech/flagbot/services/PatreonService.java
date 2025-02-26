@@ -23,9 +23,9 @@ public class PatreonService {
   private static PatreonService patreonService = null;
 
   private Set<Long> patronUsers;
-  private ScheduledThreadPoolExecutor executor;
-  private Map<Long, String> correctGuessReactions;
-  private Map<Long, String> wrongGuessReactions;
+  private final ScheduledThreadPoolExecutor executor;
+  private final Map<Long, String> correctGuessReactions;
+  private final Map<Long, String> wrongGuessReactions;
   private String WEBHOOK_URL = "";
 
   private PatreonService() {

@@ -75,18 +75,6 @@ public class FightUtils {
         .queue();
   }
 
-  // public String createImageURL(String countryName) {
-  // StringBuffer sb = new
-  // StringBuffer("https://maps.lib.utexas.edu/maps/cia16/");
-  // if (MapGame.countryOverrideMap.containsKey(countryName)) {
-  // countryName = MapGame.countryOverrideMap.get(countryName);
-  // } else {
-  // countryName = countryName.toLowerCase().replace(' ', '_');
-  // }
-  // sb.append(countryName);
-  // sb.append("_sm_2016.gif");
-  // return sb.toString();
-  // }
 
   public CountryOptions getOptions() {
     int[] options = get4randomNumbers(isoList.size());

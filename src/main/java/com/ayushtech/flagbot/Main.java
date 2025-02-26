@@ -1,6 +1,7 @@
 package com.ayushtech.flagbot;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 import javax.security.auth.login.LoginException;
@@ -29,7 +30,7 @@ public class Main {
                 Properties properties = new Properties();
                 try {
                         properties.load(new FileInputStream("credential.properties"));
-                } catch (Exception e) {
+                } catch (IOException e) {
                         e.printStackTrace();
                 }
 

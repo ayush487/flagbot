@@ -21,14 +21,14 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 public class PrivateServerService {
 
   private static PrivateServerService privateServerService = null;
-  private Map<Long, Long> slowdownMap;
-  private long slowdown = 30000l;
-  private long ownerRole = 855371903116115979l;
-  private long adminRole = 896430596136525915l;
-  private long modRole = 855370894696382496l;
-  private long staffRole = 967323301628243979l;
-  private long pollChannel = 1255441568215597066l;
-  private long pollLogsChannel = 1115697363126857829l;
+  private final Map<Long, Long> slowdownMap;
+  private final long slowdown = 30000l;
+  private final long ownerRole = 855371903116115979l;
+  private final long adminRole = 896430596136525915l;
+  private final long modRole = 855370894696382496l;
+  private final long staffRole = 967323301628243979l;
+  private final long pollChannel = 1255441568215597066l;
+  private final long pollLogsChannel = 1115697363126857829l;
   private int adminThreshold;
   private int modThreshold;
   private int staffThreshold;
@@ -223,7 +223,7 @@ public class PrivateServerService {
     eb.setTitle("__Download Our Games__");
     eb.setColor(Color.GREEN);
     eb.setDescription(
-        "<:psychoworld:1244236059676774403> **Psychoworld** : [Psychoworld Android & PC](https://gamesofvaibhav.itch.io/psychoworld)\n<:shinchan_game:1227575613792190589> **Shinchan** : [Shinchan Android](https://drive.google.com/drive/folders/1-nsh9Yrabauevgk9xXA5nBBAuxrl1GmL?usp=share_link) **|** [Shinchan PC](https://drive.google.com/drive/folders/1bbWi_qgRxuOm1BCNPZq72zpp0g36tGQN)\n<:Doraemon_Icon:1227847489869053982> **Doraemon** : [Doraemon Android](https://drive.google.com/drive/folders/12kfjAw6nsKgiW9X5RbgvdkPFAJEuCpiX?usp=sharing) **|** [Doraemon PC](https://drive.google.com/drive/folders/100N2Ym5Q1Ep8UNYB7NwX4OKt4rqvCdpC?usp=sharing)\n<:Ninja_Hattori:1227847481619124304> **Ninja Hattori** : [Ninja Hattori Android](https://drive.google.com/drive/folders/1nQ3Bs3xf3vjkxPEF9suG4s3wtP1n3XM4?usp=sharing) **|** [Ninja Hattori PC](https://drive.google.com/file/d/1LHctYejYVhb75ltBtkn6MaND-uJA9Vcz/view?usp=sharing)\n<:pyaari_nani:1227575628589568070> **Pyaari Nani** : [Pyaari Nani Android](https://play.google.com/store/apps/details?id=com.GamesOfVaibhav.PyariNani) **|** [Pyaari Nani PC](https://gamesofvaibhav.itch.io/pyari-nani-a-horror-robbery)\n<:skibidi:1227575620641361963> **Skibidi Toilet** : [Skibidi Android](https://drive.google.com/drive/folders/1MkL675w-obLRfJHuNoaa8-J5R-LgLp3d?usp=drive_link) **|** [Skibidi PC](https://drive.google.com/drive/folders/1YJPj_zu0533T4K5fZbvDQcoVBn9yHP-T)");
+        "<:dumbcastle:1327287921958588496> **Dumb Castle** : [Dumb Castle on Steam](https://store.steampowered.com/app/2750760/Dumb_Castle)\n<:psychoworld:1244236059676774403> **Psychoworld** : [Psychoworld Android & PC](https://gamesofvaibhav.itch.io/psychoworld)\n<:shinchan_game:1227575613792190589> **Shinchan** : [Shinchan Android](https://drive.google.com/drive/folders/1-nsh9Yrabauevgk9xXA5nBBAuxrl1GmL?usp=share_link) **|** [Shinchan PC](https://drive.google.com/drive/folders/1bbWi_qgRxuOm1BCNPZq72zpp0g36tGQN)\n<:Doraemon_Icon:1227847489869053982> **Doraemon** : [Doraemon Android](https://drive.google.com/drive/folders/12kfjAw6nsKgiW9X5RbgvdkPFAJEuCpiX?usp=sharing) **|** [Doraemon PC](https://drive.google.com/drive/folders/100N2Ym5Q1Ep8UNYB7NwX4OKt4rqvCdpC?usp=sharing)\n<:Ninja_Hattori:1227847481619124304> **Ninja Hattori** : [Ninja Hattori Android](https://drive.google.com/drive/folders/1nQ3Bs3xf3vjkxPEF9suG4s3wtP1n3XM4?usp=sharing) **|** [Ninja Hattori PC](https://drive.google.com/file/d/1LHctYejYVhb75ltBtkn6MaND-uJA9Vcz/view?usp=sharing)\n<:pyaari_nani:1227575628589568070> **Pyaari Nani** : [Pyaari Nani Android](https://play.google.com/store/apps/details?id=com.GamesOfVaibhav.PyariNani) **|** [Pyaari Nani PC](https://gamesofvaibhav.itch.io/pyari-nani-a-horror-robbery)\n<:skibidi:1227575620641361963> **Skibidi Toilet** : [Skibidi Android](https://drive.google.com/drive/folders/1MkL675w-obLRfJHuNoaa8-J5R-LgLp3d?usp=drive_link) **|** [Skibidi PC](https://drive.google.com/drive/folders/1YJPj_zu0533T4K5fZbvDQcoVBn9yHP-T)");
     eb.setFooter("Click on the links to download them", "https://cdn.discordapp.com/emojis/1227575632930668555.png");
     eb.addField("__Can't find your favourite game__ ?",
         "Check out these channels :\n<#895963312678895626>\n<#895963211101270046>", false);

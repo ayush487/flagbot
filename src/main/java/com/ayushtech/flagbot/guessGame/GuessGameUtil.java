@@ -67,7 +67,7 @@ public class GuessGameUtil {
   }
 
   public Country getRandomCountry() {
-    return countryList.get(random.nextInt(capitalList.size()));
+    return countryList.get(random.nextInt(countryList.size()));
   }
 
   public Country getRandomCountry(boolean isSovereign) {
@@ -334,7 +334,7 @@ public class GuessGameUtil {
     alternativeCountryNames.put("gs", "South Georgia");
     alternativeCountryNames.put("sea", "Sealand");
     alternativeCountryNames.put("ncy", "Northern Cyprus");
-    alternativeCountryNames.put("vi", "US Virgin Islands, United States Virgin Islands");
+    alternativeCountryNames.put("vi", "United States Virgin Islands, USVI");
     mapImageOverrideMap.put("Myanmar", "burma");
     mapImageOverrideMap.put("North Macedonia", "macedonia");
     mapImageOverrideMap.put("South Korea", "korea_south");
@@ -347,6 +347,6 @@ public class GuessGameUtil {
     mapImageOverrideMap.put("Ivory Coast", "cote_divoire");
     mapImageOverrideMap.put("Congo", "congo_republic_of_the");
     mapImageOverrideMap.put("Czechia", "czech_republic");
-    mapImageOverrideMap.put("U.S. Virgin Islands", "virgin_islands");
+    mapImageOverrideMap.put("US Virgin Islands", "virgin_islands");
   }
 }
