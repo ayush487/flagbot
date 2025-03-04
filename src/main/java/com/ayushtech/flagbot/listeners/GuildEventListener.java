@@ -36,7 +36,7 @@ public class GuildEventListener extends ListenerAdapter {
       event.replyChoiceStrings("Kilometers", "Miles").queue();
     } else if (event.getSubcommandName().equals("set")) {
       event.replyChoiceStrings("Arabic", "Dutch", "French", "German", "Japanese", "Korean", "Portuguese", "Russian",
-          "Spanish", "Swedish", "Turkish").queue();
+          "Spanish", "Swedish", "Turkish", "Croatian").queue();
 
     }
   }

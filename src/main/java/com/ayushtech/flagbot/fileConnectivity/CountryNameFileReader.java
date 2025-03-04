@@ -36,6 +36,7 @@ public class CountryNameFileReader {
     Map<String, String> germanMap = new HashMap<>(285);
     Map<String, String> dutchMap = new HashMap<>(285);
     Map<String, String> arabicMap = new HashMap<>(285);
+    Map<String, String> croatianMap = new HashMap<>(285);
     try {
       BufferedReader reader = new BufferedReader(
           new InputStreamReader(
@@ -55,6 +56,7 @@ public class CountryNameFileReader {
         swedishMap.put(records[0], records[10]);
         turkishMap.put(records[0], records[11]);
         arabicMap.put(records[0], records[12]);
+        croatianMap.put(records[0], records[13]);
       }
       csvReader.close();
       reader.close();
@@ -74,6 +76,7 @@ public class CountryNameFileReader {
     languageMap.put("german", germanMap);
     languageMap.put("dutch", dutchMap);
     languageMap.put("arabic", arabicMap);
+    languageMap.put("croatian", croatianMap);
     return languageMap;
   }
 }
