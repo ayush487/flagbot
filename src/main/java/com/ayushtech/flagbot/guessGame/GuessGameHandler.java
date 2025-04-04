@@ -65,9 +65,11 @@ public class GuessGameHandler {
       return;
     }
     OptionMapping roundsOption = event.getOption("rounds");
+    OptionMapping skippableOption = event.getOption("skippable");
+    boolean isSkippable = skippableOption == null ? true : skippableOption.getAsBoolean();
     int rounds = roundsOption == null ? 0 : roundsOption.getAsInt();
     rounds = (rounds <= 0) ? 0 : (rounds > 15) ? 15 : rounds;
-    GuessGame guessGame = new CapitalGuessGame(event.getChannel(), rounds, rounds, event.getHook());
+    GuessGame guessGame = new CapitalGuessGame(event.getChannel(), rounds, rounds, isSkippable, event.getHook());
     gameMap.put(event.getChannel().getIdLong(), guessGame);
     GameEndService.getInstance()
         .scheduleEndGame(new GuessGameEndRunnable(guessGame, event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
@@ -82,6 +84,8 @@ public class GuessGameHandler {
     OptionMapping difficultyOption = event.getOption("mode");
     OptionMapping roundsOption = event.getOption("rounds");
     OptionMapping continentOption = event.getOption("continent");
+    OptionMapping skippableOption = event.getOption("skippable");
+    boolean isSkippable = skippableOption == null ? true : skippableOption.getAsBoolean();
     String difficultyString = difficultyOption == null ? "sovereign countries only"
         : difficultyOption.getAsString().toLowerCase();
     byte difficulty = 0;
@@ -114,7 +118,7 @@ public class GuessGameHandler {
           .getLanguageSelected(event.getGuild().getIdLong());
       optedLanguage = langOptional.orElse(null);
     }
-    GuessGame guessGame = new FlagGuessGame(event.getChannel(), difficulty, rounds, rounds, optedLanguage,
+    GuessGame guessGame = new FlagGuessGame(event.getChannel(), difficulty, rounds, rounds, isSkippable, optedLanguage,
         continentCode, event.getHook());
     gameMap.put(event.getChannel().getIdLong(), guessGame);
     GameEndService.getInstance()
@@ -129,6 +133,8 @@ public class GuessGameHandler {
     }
     OptionMapping difficultyOption = event.getOption("include_non_sovereign_countries");
     OptionMapping roundsOption = event.getOption("rounds");
+    OptionMapping skippableOption = event.getOption("skippable");
+    boolean isSkippable = skippableOption == null ? true : skippableOption.getAsBoolean();
     boolean isHard = difficultyOption == null ? false : difficultyOption.getAsBoolean();
     int rounds = roundsOption == null ? 0 : roundsOption.getAsInt();
     rounds = (rounds <= 0) ? 0 : (rounds > 15) ? 15 : rounds;
@@ -138,7 +144,7 @@ public class GuessGameHandler {
           .getLanguageSelected(event.getGuild().getIdLong());
       optedLanguage = langOptional.orElse(null);
     }
-    GuessGame guessGame = new MapGuessGame(event.getChannel(), isHard, rounds, rounds, optedLanguage,
+    GuessGame guessGame = new MapGuessGame(event.getChannel(), isHard, rounds, rounds, isSkippable, optedLanguage,
         event.getHook());
     gameMap.put(event.getChannel().getIdLong(), guessGame);
     GameEndService.getInstance()
@@ -152,9 +158,11 @@ public class GuessGameHandler {
       return;
     }
     OptionMapping roundsOption = event.getOption("rounds");
+    OptionMapping skippableOption = event.getOption("skippable");
+    boolean isSkippable = skippableOption == null ? true : skippableOption.getAsBoolean();
     int rounds = roundsOption == null ? 0 : roundsOption.getAsInt();
     rounds = (rounds <= 0) ? 0 : (rounds > 15) ? 15 : rounds;
-    GuessGame guessGame = new LogoGuessGame(event.getChannel(), rounds, rounds, event.getHook());
+    GuessGame guessGame = new LogoGuessGame(event.getChannel(), rounds, rounds, isSkippable, event.getHook());
     gameMap.put(event.getChannel().getIdLong(), guessGame);
     GameEndService.getInstance()
         .scheduleEndGame(new GuessGameEndRunnable(guessGame, event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
@@ -167,9 +175,11 @@ public class GuessGameHandler {
       return;
     }
     OptionMapping roundsOption = event.getOption("rounds");
+    OptionMapping skippableOption = event.getOption("skippable");
+    boolean isSkippable = skippableOption == null ? true : skippableOption.getAsBoolean();
     int rounds = roundsOption == null ? 0 : roundsOption.getAsInt();
     rounds = (rounds <= 0) ? 0 : (rounds > 15) ? 15 : rounds;
-    GuessGame guessGame = new PlaceGuessGame(event.getChannel(), rounds, rounds, event.getHook());
+    GuessGame guessGame = new PlaceGuessGame(event.getChannel(), rounds, rounds, isSkippable, event.getHook());
     gameMap.put(event.getChannel().getIdLong(), guessGame);
     GameEndService.getInstance()
         .scheduleEndGame(new GuessGameEndRunnable(guessGame, event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
@@ -182,12 +192,15 @@ public class GuessGameHandler {
       return;
     }
     OptionMapping countryOption = event.getOption("country");
+    OptionMapping skippableOption = event.getOption("skippable");
+    boolean isSkippable = skippableOption == null ? true : skippableOption.getAsBoolean();
     String countrySelection = countryOption.getAsString();
     String countryCode = GuessGameUtil.getInstance().getCountryCode(countrySelection.toLowerCase());
     OptionMapping roundsOption = event.getOption("rounds");
     int rounds = roundsOption == null ? 0 : roundsOption.getAsInt();
     rounds = (rounds <= 0) ? 0 : (rounds > 15) ? 15 : rounds;
-    GuessGame guessGame = new StateFlagGuessGame(event.getChannel(), countryCode, rounds, rounds, event.getHook());
+    GuessGame guessGame = new StateFlagGuessGame(event.getChannel(), countryCode, rounds, rounds, isSkippable,
+        event.getHook());
     gameMap.put(event.getChannel().getIdLong(), guessGame);
     GameEndService.getInstance()
         .scheduleEndGame(new GuessGameEndRunnable(guessGame, event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
@@ -200,8 +213,10 @@ public class GuessGameHandler {
           message -> message.delete().queueAfter(10, TimeUnit.SECONDS));
       return;
     }
-    int roundSize = Integer.parseInt(event.getComponentId().split("_")[1]);
-    GuessGame guessGame = new CapitalGuessGame(event.getChannel(), roundSize, roundSize, event.getHook());
+    String[] cmdData = event.getComponentId().split("_");
+    int roundSize = Integer.parseInt(cmdData[1]);
+    boolean isSkippable = Boolean.parseBoolean(cmdData[2]);
+    GuessGame guessGame = new CapitalGuessGame(event.getChannel(), roundSize, roundSize, isSkippable, event.getHook());
     gameMap.put(event.getChannel().getIdLong(), guessGame);
     GameEndService.getInstance()
         .scheduleEndGame(new GuessGameEndRunnable(guessGame, event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
@@ -218,13 +233,14 @@ public class GuessGameHandler {
     byte difficulty = Byte.parseByte(commandData[1]);
     int rounds = Integer.parseInt(commandData[2]);
     String continentCode = commandData[3];
+    boolean isSkippable = Boolean.parseBoolean(commandData[4]);
     String optedLanguage = null;
     if (event.isFromGuild()) {
       Optional<String> langOptional = LanguageService.getInstance()
           .getLanguageSelected(event.getGuild().getIdLong());
       optedLanguage = langOptional.orElse(null);
     }
-    GuessGame guessGame = new FlagGuessGame(event.getChannel(), difficulty, rounds, rounds,
+    GuessGame guessGame = new FlagGuessGame(event.getChannel(), difficulty, rounds, rounds, isSkippable,
         optedLanguage, continentCode, event.getHook());
     gameMap.put(event.getChannel().getIdLong(), guessGame);
     GameEndService.getInstance()
@@ -241,13 +257,14 @@ public class GuessGameHandler {
     String[] commandData = event.getComponentId().split("_");
     boolean isHard = commandData[1].equals("Hard");
     int rounds = Integer.parseInt(commandData[2]);
+    boolean isSkippable = Boolean.parseBoolean(commandData[3]);
     String optedLanguage = null;
     if (event.isFromGuild()) {
       Optional<String> langOptional = LanguageService.getInstance()
           .getLanguageSelected(event.getGuild().getIdLong());
       optedLanguage = langOptional.orElse(null);
     }
-    GuessGame guessGame = new MapGuessGame(event.getChannel(), isHard, rounds, rounds, optedLanguage,
+    GuessGame guessGame = new MapGuessGame(event.getChannel(), isHard, rounds, rounds, isSkippable, optedLanguage,
         event.getHook());
     gameMap.put(event.getChannel().getIdLong(), guessGame);
     GameEndService.getInstance()
@@ -263,7 +280,8 @@ public class GuessGameHandler {
     }
     String[] commandData = event.getComponentId().split("_");
     int rounds = Integer.parseInt(commandData[1]);
-    GuessGame guessGame = new LogoGuessGame(event.getChannel(), rounds, rounds, event.getHook());
+    boolean isSkippable = Boolean.parseBoolean(commandData[2]);
+    GuessGame guessGame = new LogoGuessGame(event.getChannel(), rounds, rounds, isSkippable, event.getHook());
     gameMap.put(event.getChannel().getIdLong(), guessGame);
     GameEndService.getInstance()
         .scheduleEndGame(new GuessGameEndRunnable(guessGame, event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
@@ -278,7 +296,8 @@ public class GuessGameHandler {
     }
     String[] commandData = event.getComponentId().split("_");
     int rounds = Integer.parseInt(commandData[1]);
-    GuessGame guessGame = new PlaceGuessGame(event.getChannel(), rounds, rounds, event.getHook());
+    boolean isSkippable = Boolean.parseBoolean(commandData[2]);
+    GuessGame guessGame = new PlaceGuessGame(event.getChannel(), rounds, rounds, isSkippable, event.getHook());
     gameMap.put(event.getChannel().getIdLong(), guessGame);
     GameEndService.getInstance()
         .scheduleEndGame(new GuessGameEndRunnable(guessGame, event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);
@@ -294,7 +313,9 @@ public class GuessGameHandler {
     String[] commandData = event.getComponentId().split("_");
     String countryCode = commandData[1];
     int rounds = Integer.parseInt(commandData[2]);
-    GuessGame guessGame = new StateFlagGuessGame(event.getChannel(), countryCode, rounds, rounds, event.getHook());
+    boolean isSkippable = Boolean.parseBoolean(commandData[3]);
+    GuessGame guessGame = new StateFlagGuessGame(event.getChannel(), countryCode, rounds, rounds, isSkippable,
+        event.getHook());
     gameMap.put(event.getChannel().getIdLong(), guessGame);
     GameEndService.getInstance()
         .scheduleEndGame(new GuessGameEndRunnable(guessGame, event.getChannel().getIdLong()), 30, TimeUnit.SECONDS);

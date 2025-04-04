@@ -32,13 +32,16 @@ public class FlagGuessGame implements GuessGame {
   private String lang;
   private String continentCode;
   private String continentName;
+  private boolean isSkippable;
 
-  public FlagGuessGame(MessageChannelUnion channel, byte difficulty, int rounds, int roundSize, String lang,
+  public FlagGuessGame(MessageChannelUnion channel, byte difficulty, int rounds, int roundSize, boolean isSkippable,
+      String lang,
       String continentCode,
       InteractionHook hook) {
     this.channel = channel;
     this.roundSize = roundSize;
     this.rounds = rounds;
+    this.isSkippable = isSkippable;
     this.lang = lang;
     this.difficulty = difficulty;
     this.continentCode = continentCode;
@@ -71,11 +74,18 @@ public class FlagGuessGame implements GuessGame {
     if (hook != null) {
       hook.sendMessage("Starting game now!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
     }
-    channel.sendMessageEmbeds(embed)
-        .setActionRow(Button.primary("skipGuess", "Skip"),
-            difficulty == 0 ? Button.primary("checkRegionButton_" + country.getCode(), "See Region")
-                : Button.primary("checkRegionButton", "See Region").asDisabled())
-        .queue(message -> this.messageId = message.getIdLong());
+    if (isSkippable) {
+      channel.sendMessageEmbeds(embed)
+          .setActionRow(Button.primary("skipGuess", "Skip"),
+              difficulty == 0 ? Button.primary("checkRegionButton_" + country.getCode(), "See Region")
+                  : Button.primary("checkRegionButton", "See Region").asDisabled())
+          .queue(message -> this.messageId = message.getIdLong());
+    } else {
+      channel.sendMessageEmbeds(embed)
+          .setActionRow(difficulty == 0 ? Button.primary("checkRegionButton_" + country.getCode(), "See Region")
+              : Button.primary("checkRegionButton", "See Region").asDisabled())
+          .queue(message -> this.messageId = message.getIdLong());
+    }
     return;
   }
 
@@ -104,12 +114,13 @@ public class FlagGuessGame implements GuessGame {
     eb.setColor(new Color(13, 240, 52));
     if (rounds <= 1) {
       event.getChannel().sendMessageEmbeds(eb.build())
-          .setActionRow(Button.primary("playAgainFlag_" + difficulty + "_" + roundSize + "_" + continentCode,
-              roundSize <= 1 ? "Play Again" : "Start Round Again"))
+          .setActionRow(
+              Button.primary("playAgainFlag_" + difficulty + "_" + roundSize + "_" + continentCode + "_" + isSkippable,
+                  roundSize <= 1 ? "Play Again" : "Start Round Again"))
           .queue();
     } else {
       event.getChannel().sendMessageEmbeds(eb.build()).queue();
-      startAgain(channel, difficulty, rounds - 1, roundSize, lang, continentCode);
+      startAgain(channel, difficulty, rounds - 1, roundSize, isSkippable, lang, continentCode);
     }
     disableButtons();
   }
@@ -130,12 +141,12 @@ public class FlagGuessGame implements GuessGame {
     eb.setColor(new Color(240, 13, 52));
     if (rounds <= 1) {
       this.channel.sendMessageEmbeds(eb.build())
-          .setActionRow(Button.primary("playAgainFlag_" + difficulty + "_" + roundSize + "_" + continentCode,
+          .setActionRow(Button.primary("playAgainFlag_" + difficulty + "_" + roundSize + "_" + continentCode + "_" + isSkippable,
               roundSize <= 1 ? "Play Again" : "Start Round Again"))
           .queue();
     } else {
       this.channel.sendMessageEmbeds(eb.build()).queue();
-      startAgain(channel, difficulty, rounds - 1, roundSize, lang, continentCode);
+      startAgain(channel, difficulty, rounds - 1, roundSize, isSkippable, lang, continentCode);
     }
     disableButtons();
   }
@@ -160,9 +171,11 @@ public class FlagGuessGame implements GuessGame {
     return returnString;
   }
 
-  private static void startAgain(MessageChannelUnion channel, byte difficulty, int rounds, int roundSize, String lang,
+  private static void startAgain(MessageChannelUnion channel, byte difficulty, int rounds, int roundSize,
+      boolean isSkippable, String lang,
       String continentCode) {
-    FlagGuessGame game = new FlagGuessGame(channel, difficulty, rounds, roundSize, lang, continentCode, null);
+    FlagGuessGame game = new FlagGuessGame(channel, difficulty, rounds, roundSize, isSkippable, lang, continentCode,
+        null);
     GuessGameHandler.getInstance().addThisGame(channel.getIdLong(), game);
     GameEndService.getInstance().scheduleEndGame(new GuessGameEndRunnable(game, channel.getIdLong()), 30,
         TimeUnit.SECONDS);

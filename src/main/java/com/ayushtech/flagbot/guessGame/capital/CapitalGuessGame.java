@@ -26,12 +26,15 @@ public class CapitalGuessGame implements GuessGame {
   private long startTimeStamp;
   private long messageId;
   private MessageEmbed embed;
+  private boolean isSkippable;
 
-  public CapitalGuessGame(MessageChannelUnion channel, int rounds, int roundSize, InteractionHook hook) {
+  public CapitalGuessGame(MessageChannelUnion channel, int rounds, int roundSize, boolean isSkippable,
+      InteractionHook hook) {
     this.channel = channel;
     this.capital = GuessGameUtil.getInstance().getRandomCapital();
     this.roundSize = roundSize;
     this.rounds = rounds;
+    this.isSkippable = isSkippable;
     this.startTimeStamp = System.currentTimeMillis();
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Guess Capital of this Country");
@@ -44,8 +47,13 @@ public class CapitalGuessGame implements GuessGame {
     if (hook != null) {
       hook.sendMessage("Starting game now!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
     }
-    channel.sendMessageEmbeds(embed).setActionRow(Button.primary("skipGuess", "Skip"))
-        .queue(message -> this.messageId = message.getIdLong());
+    if (isSkippable) {
+      channel.sendMessageEmbeds(embed).setActionRow(Button.primary("skipGuess", "Skip"))
+          .queue(message -> this.messageId = message.getIdLong());
+    } else {
+      channel.sendMessageEmbeds(embed)
+          .queue(message -> this.messageId = message.getIdLong());
+    }
     return;
   }
 
@@ -65,12 +73,12 @@ public class CapitalGuessGame implements GuessGame {
     eb.setDescription(sb.toString());
     if (rounds <= 1) {
       event.getChannel().sendMessageEmbeds(eb.build())
-          .setActionRow(Button.primary("playAgainCapital_" + roundSize,
+          .setActionRow(Button.primary("playAgainCapital_" + roundSize + "_" + isSkippable,
               roundSize <= 1 ? "Play Again" : "Start Round Again"))
           .queue();
     } else {
       event.getChannel().sendMessageEmbeds(eb.build()).queue();
-      startAgain(channel, rounds - 1, roundSize);
+      startAgain(channel, rounds - 1, roundSize, isSkippable);
     }
     disableButtons();
   }
@@ -86,12 +94,12 @@ public class CapitalGuessGame implements GuessGame {
     eb.setColor(Color.red);
     if (rounds <= 1) {
       channel.sendMessageEmbeds(eb.build())
-          .setActionRow(Button.primary("playAgainCapital_" + roundSize,
+          .setActionRow(Button.primary("playAgainCapital_" + roundSize + "_" + isSkippable,
               roundSize <= 1 ? "Play Again" : "Start Round Again"))
           .queue();
     } else {
       channel.sendMessageEmbeds(eb.build()).queue();
-      startAgain(channel, rounds - 1, roundSize);
+      startAgain(channel, rounds - 1, roundSize, isSkippable);
     }
     disableButtons();
   }
@@ -113,8 +121,8 @@ public class CapitalGuessGame implements GuessGame {
     return returnString;
   }
 
-  private static void startAgain(MessageChannelUnion channel, int rounds, int roundSize) {
-    CapitalGuessGame game = new CapitalGuessGame(channel, rounds, roundSize, null);
+  private static void startAgain(MessageChannelUnion channel, int rounds, int roundSize, boolean isSkippable) {
+    CapitalGuessGame game = new CapitalGuessGame(channel, rounds, roundSize, isSkippable, null);
     GuessGameHandler.getInstance().addThisGame(channel.getIdLong(), game);
     GameEndService.getInstance().scheduleEndGame(new GuessGameEndRunnable(game, channel.getIdLong()), 30,
         TimeUnit.SECONDS);

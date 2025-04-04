@@ -27,13 +27,16 @@ public class LogoGuessGame implements GuessGame {
   private int rounds;
   private int roundSize;
   private long startTimeStamp;
+  private boolean isSkippable;
 
-  public LogoGuessGame(MessageChannelUnion channel, int rounds, int roundSize, InteractionHook hook) {
+  public LogoGuessGame(MessageChannelUnion channel, int rounds, int roundSize, boolean isSkippable,
+      InteractionHook hook) {
     this.channel = channel;
     this.brandCode = GuessGameUtil.getInstance().getRandomBrandCode();
     this.brandName = GuessGameUtil.getInstance().getBrandName(brandCode);
     this.rounds = rounds;
     this.roundSize = roundSize;
+    this.isSkippable = isSkippable;
     this.startTimeStamp = System.currentTimeMillis();
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Guess the Brand");
@@ -43,8 +46,13 @@ public class LogoGuessGame implements GuessGame {
     if (hook != null) {
       hook.sendMessage("Starting game now!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
     }
-    channel.sendMessageEmbeds(embed).setActionRow(Button.primary("skipGuess", "Skip"))
-        .queue(message -> this.messageId = message.getIdLong());
+    if (isSkippable) {
+      channel.sendMessageEmbeds(embed).setActionRow(Button.primary("skipGuess", "Skip"))
+          .queue(message -> this.messageId = message.getIdLong());
+    } else {
+      channel.sendMessageEmbeds(embed)
+          .queue(message -> this.messageId = message.getIdLong());
+    }
     return;
   }
 
@@ -63,11 +71,12 @@ public class LogoGuessGame implements GuessGame {
     eb.setColor(new Color(13, 240, 52));
     if (rounds <= 1) {
       event.getChannel().sendMessageEmbeds(eb.build()).setActionRow(
-          Button.primary("playAgainLogo_" + roundSize, roundSize <= 1 ? "Play Again" : "Start Round Again"))
+          Button.primary("playAgainLogo_" + roundSize + "_" + isSkippable,
+              roundSize <= 1 ? "Play Again" : "Start Round Again"))
           .queue();
     } else {
       event.getChannel().sendMessageEmbeds(eb.build()).queue();
-      startAgain(channel, rounds - 1, roundSize);
+      startAgain(channel, rounds - 1, roundSize, isSkippable);
     }
     disableButtons();
   }
@@ -84,12 +93,13 @@ public class LogoGuessGame implements GuessGame {
     if (rounds <= 1) {
       this.channel.sendMessageEmbeds(eb.build())
           .setActionRow(
-              Button.primary("playAgainLogo_" + roundSize, roundSize <= 1 ? "Play Again" : "Start Round Again"))
+              Button.primary("playAgainLogo_" + roundSize + "_" + isSkippable,
+                  roundSize <= 1 ? "Play Again" : "Start Round Again"))
           .queue();
     } else {
       this.channel.sendMessageEmbeds(eb.build())
           .queue();
-      startAgain(channel, rounds - 1, roundSize);
+      startAgain(channel, rounds - 1, roundSize, isSkippable);
     }
     disableButtons();
   }
@@ -112,8 +122,8 @@ public class LogoGuessGame implements GuessGame {
     return returnString;
   }
 
-  private static void startAgain(MessageChannelUnion channel, int rounds, int roundSize) {
-    GuessGame logoGame = new LogoGuessGame(channel, rounds, roundSize, null);
+  private static void startAgain(MessageChannelUnion channel, int rounds, int roundSize, boolean isSkippable) {
+    GuessGame logoGame = new LogoGuessGame(channel, rounds, roundSize, isSkippable, null);
     GuessGameHandler.getInstance().addThisGame(channel.getIdLong(), logoGame);
     GameEndService.getInstance().scheduleEndGame(new GuessGameEndRunnable(logoGame, channel.getIdLong()), 30,
         TimeUnit.SECONDS);

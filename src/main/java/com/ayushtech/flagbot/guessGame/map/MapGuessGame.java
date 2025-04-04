@@ -31,13 +31,16 @@ public class MapGuessGame implements GuessGame {
   private long messageId;
   private String lang;
   private MessageEmbed embed;
+  private boolean isSkippable;
 
-  public MapGuessGame(MessageChannelUnion channel, boolean isHard, int rounds, int roundSize, String lang,
+  public MapGuessGame(MessageChannelUnion channel, boolean isHard, int rounds, int roundSize, boolean isSkippable,
+      String lang,
       InteractionHook hook) {
     this.channel = channel;
     this.rounds = rounds;
     this.isHard = isHard;
     this.roundSize = roundSize;
+    this.isSkippable = isSkippable;
     this.lang = lang;
     this.country = GuessGameUtil.getInstance().getRandomCountryForMapGuess(!isHard);
     this.startTimeStamp = System.currentTimeMillis();
@@ -50,8 +53,15 @@ public class MapGuessGame implements GuessGame {
     if (hook != null) {
       hook.sendMessage("Starting game now!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
     }
-    channel.sendMessageEmbeds(embed).setActionRow(Button.primary("skipGuess", "Skip"))
-        .queue(message -> this.messageId = message.getIdLong());
+    if (isSkippable) {
+      channel.sendMessageEmbeds(embed).setActionRow(Button.primary("skipGuess", "Skip"))
+          .queue(message -> this.messageId = message.getIdLong());
+
+    } else {
+      channel.sendMessageEmbeds(embed)
+          .queue(message -> this.messageId = message.getIdLong());
+
+    }
     return;
   }
 
@@ -76,12 +86,13 @@ public class MapGuessGame implements GuessGame {
     eb.setColor(new Color(13, 240, 52));
     if (rounds <= 1) {
       event.getChannel().sendMessageEmbeds(eb.build())
-          .setActionRow(Button.primary("playAgainMap_" + (isHard ? "Hard" : "Easy") + "_" + roundSize,
-              roundSize <= 1 ? "Play Again" : "Start Round Again"))
+          .setActionRow(
+              Button.primary("playAgainMap_" + (isHard ? "Hard" : "Easy") + "_" + roundSize + "_" + isSkippable,
+                  roundSize <= 1 ? "Play Again" : "Start Round Again"))
           .queue();
     } else {
       event.getChannel().sendMessageEmbeds(eb.build()).queue();
-      startAgain(channel, isHard, rounds - 1, roundSize, lang);
+      startAgain(channel, isHard, rounds - 1, roundSize, isSkippable, lang);
     }
     disableButtons();
   }
@@ -100,16 +111,17 @@ public class MapGuessGame implements GuessGame {
     eb.setDescription(sb.toString());
     eb.setThumbnail(country.getFlagImage());
     eb.setColor(new Color(240, 13, 52));
-		if (rounds <= 1) {
-			this.channel.sendMessageEmbeds(eb.build())
-					.setActionRow(Button.primary("playAgainMap_" + (isHard ? "Hard" : "Easy") + "_" + roundSize,
-							roundSize <= 1 ? "Play Again" : "Start Round Again"))
-					.queue();
-		} else {
-			this.channel.sendMessageEmbeds(eb.build()).queue();
-			startAgain(channel, isHard, rounds - 1, roundSize, lang);
-		}
-		disableButtons();
+    if (rounds <= 1) {
+      this.channel.sendMessageEmbeds(eb.build())
+          .setActionRow(
+              Button.primary("playAgainMap_" + (isHard ? "Hard" : "Easy") + "_" + roundSize + "_" + isSkippable,
+                  roundSize <= 1 ? "Play Again" : "Start Round Again"))
+          .queue();
+    } else {
+      this.channel.sendMessageEmbeds(eb.build()).queue();
+      startAgain(channel, isHard, rounds - 1, roundSize, isSkippable, lang);
+    }
+    disableButtons();
   }
 
   @Override
@@ -133,8 +145,9 @@ public class MapGuessGame implements GuessGame {
     return returnString;
   }
 
-  private static void startAgain(MessageChannelUnion channel, boolean isHard, int rounds, int roundSize, String lang) {
-    GuessGame mapGame = new MapGuessGame(channel, isHard, rounds, roundSize, lang, null);
+  private static void startAgain(MessageChannelUnion channel, boolean isHard, int rounds, int roundSize,
+      boolean isSkippable, String lang) {
+    GuessGame mapGame = new MapGuessGame(channel, isHard, rounds, roundSize, isSkippable, lang, null);
     GuessGameHandler.getInstance().addThisGame(channel.getIdLong(), mapGame);
     GameEndService.getInstance().scheduleEndGame(new GuessGameEndRunnable(mapGame, channel.getIdLong()), 30,
         TimeUnit.SECONDS);

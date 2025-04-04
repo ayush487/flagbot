@@ -27,11 +27,14 @@ public class PlaceGuessGame implements GuessGame {
   private int rounds;
   private int roundSize;
   private long startTimeStamp;
+  private boolean isSkippable;
 
-  public PlaceGuessGame(MessageChannelUnion channel, int rounds, int roundSize, InteractionHook hook) {
+  public PlaceGuessGame(MessageChannelUnion channel, int rounds, int roundSize, boolean isSkippable,
+      InteractionHook hook) {
     this.channel = channel;
     this.rounds = rounds;
     this.roundSize = roundSize;
+    this.isSkippable = isSkippable;
     this.place = GuessGameUtil.getInstance().getRandomPlace();
     this.startTimeStamp = System.currentTimeMillis();
     EmbedBuilder eb = new EmbedBuilder();
@@ -42,8 +45,13 @@ public class PlaceGuessGame implements GuessGame {
     if (hook != null) {
       hook.sendMessage("Starting game now!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
     }
-    channel.sendMessageEmbeds(embed).setActionRow(Button.primary("skipGuess", "Skip"))
-        .queue(message -> this.messageId = message.getIdLong());
+    if (isSkippable) {
+      channel.sendMessageEmbeds(embed).setActionRow(Button.primary("skipGuess", "Skip"))
+          .queue(message -> this.messageId = message.getIdLong());
+    } else {
+      channel.sendMessageEmbeds(embed)
+          .queue(message -> this.messageId = message.getIdLong());
+    }
     return;
   }
 
@@ -63,11 +71,12 @@ public class PlaceGuessGame implements GuessGame {
     if (rounds <= 1) {
       event.getChannel().sendMessageEmbeds(eb.build())
           .setActionRow(
-              Button.primary("playAgainPlace_" + roundSize, roundSize <= 1 ? "Play Again" : "Start Round Again"))
+              Button.primary("playAgainPlace_" + roundSize + "_" + isSkippable,
+                  roundSize <= 1 ? "Play Again" : "Start Round Again"))
           .queue();
     } else {
       event.getChannel().sendMessageEmbeds(eb.build()).queue();
-      startAgain(channel, rounds - 1, roundSize);
+      startAgain(channel, rounds - 1, roundSize, isSkippable);
     }
     disableButtons();
   }
@@ -82,12 +91,13 @@ public class PlaceGuessGame implements GuessGame {
     if (rounds <= 1) {
       this.channel.sendMessageEmbeds(eb.build())
           .setActionRow(
-              Button.primary("playAgainPlace_" + roundSize, roundSize <= 1 ? "Play Again" : "Start Round Again"))
+              Button.primary("playAgainPlace_" + roundSize + "_" + isSkippable,
+                  roundSize <= 1 ? "Play Again" : "Start Round Again"))
           .queue();
     } else {
       this.channel.sendMessageEmbeds(eb.build())
           .queue();
-      startAgain(channel, rounds - 1, roundSize);
+      startAgain(channel, rounds - 1, roundSize, isSkippable);
     }
     disableButtons();
   }
@@ -110,8 +120,8 @@ public class PlaceGuessGame implements GuessGame {
     return returnString;
   }
 
-  private static void startAgain(MessageChannelUnion channel, int rounds, int roundSize) {
-    GuessGame placeGame = new PlaceGuessGame(channel, rounds, roundSize, null);
+  private static void startAgain(MessageChannelUnion channel, int rounds, int roundSize, boolean isSkippable) {
+    GuessGame placeGame = new PlaceGuessGame(channel, rounds, roundSize, isSkippable, null);
     GuessGameHandler.getInstance().addThisGame(channel.getIdLong(), placeGame);
     GameEndService.getInstance().scheduleEndGame(new GuessGameEndRunnable(placeGame, channel.getIdLong()), 30,
         TimeUnit.SECONDS);
