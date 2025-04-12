@@ -14,7 +14,6 @@ import java.util.stream.Stream;
 
 import com.ayushtech.flagbot.guessGame.Country;
 import com.ayushtech.flagbot.guessGame.capital.Capital;
-import com.ayushtech.flagbot.guessGame.state_flag.State;
 
 public class RegionDao {
 
@@ -171,36 +170,4 @@ public class RegionDao {
 		return logoMap;
 	}
 
-	public Map<String, Map<String, State>> getStateMap() {
-		Map<String, Map<String, State>> stateMap = new HashMap<>();
-		stateMap.put("us", new HashMap<>());
-		stateMap.put("br", new HashMap<>());
-		stateMap.put("de", new HashMap<>());
-		stateMap.put("es", new HashMap<>());
-		stateMap.put("ch", new HashMap<>());
-		stateMap.put("ca", new HashMap<>());
-		stateMap.put("it", new HashMap<>());
-		stateMap.put("ru", new HashMap<>());
-		stateMap.put("nl", new HashMap<>());
-		stateMap.put("en", new HashMap<>());
-		stateMap.put("au", new HashMap<>());
-		stateMap.put("jp", new HashMap<>());
-		Connection conn = ConnectionProvider.getConnection();
-		try {
-			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT state_code,state_name,country_code,alternative_name FROM states;");
-			while (rs.next()) {
-				String countryCode = rs.getString("country_code");
-				State state = new State(rs.getString("state_code"), rs.getString("state_name"), countryCode);
-				if (rs.getString("alternative_name") != null) {
-					state.setAlternativeName(rs.getString("alternative_name"));
-				}
-				stateMap.get(countryCode).put(state.getStateCode(), state);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.exit(0);
-		}
-		return stateMap;
-	}
 }

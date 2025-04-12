@@ -8,18 +8,19 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ayushtech.flagbot.guessGame.state_flag.State;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 
-public class CountryNameFileReader {
-  private static CountryNameFileReader countryNameFileReader = null;
+public class CSVFileReader {
+  private static CSVFileReader countryNameFileReader = null;
 
-  private CountryNameFileReader() {
+  private CSVFileReader() {
   }
 
-  public static synchronized CountryNameFileReader getInstance() {
+  public static synchronized CSVFileReader getInstance() {
     if (countryNameFileReader == null) {
-      countryNameFileReader = new CountryNameFileReader();
+      countryNameFileReader = new CSVFileReader();
     }
     return countryNameFileReader;
   }
@@ -64,7 +65,7 @@ public class CountryNameFileReader {
       e.printStackTrace();
       System.exit(0);
     }
-    Map<String, Map<String, String>> languageMap = new HashMap<>(10);
+    Map<String, Map<String, String>> languageMap = new HashMap<>(12);
     languageMap.put("spanish", spanishMap);
     languageMap.put("japanese", japaneseMap);
     languageMap.put("portuguese", portugueseMap);
@@ -78,5 +79,41 @@ public class CountryNameFileReader {
     languageMap.put("arabic", arabicMap);
     languageMap.put("croatian", croatianMap);
     return languageMap;
+  }
+
+  public Map<String, Map<String, State>> getStateMap() {
+    Map<String, Map<String, State>> stateMap = new HashMap<>();
+    stateMap.put("us", new HashMap<>());
+    stateMap.put("br", new HashMap<>());
+    stateMap.put("de", new HashMap<>());
+    stateMap.put("es", new HashMap<>());
+    stateMap.put("ch", new HashMap<>());
+    stateMap.put("ca", new HashMap<>());
+    stateMap.put("it", new HashMap<>());
+    stateMap.put("ru", new HashMap<>());
+    stateMap.put("nl", new HashMap<>());
+    stateMap.put("en", new HashMap<>());
+    stateMap.put("au", new HashMap<>());
+    stateMap.put("jp", new HashMap<>());
+    try {
+      BufferedReader reader = new BufferedReader(
+          new InputStreamReader(
+              new FileInputStream("states.csv"), StandardCharsets.UTF_8));
+      CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
+      String[] records;
+      while ((records = csvReader.readNext()) != null) {
+        State newState = new State(records[0], records[1], records[3]);
+        if (!records[2].isBlank()) {
+					newState.setAlternativeName(records[2]);
+				}
+        stateMap.get(records[3]).put(newState.getStateCode(), newState);
+      }
+      csvReader.close();
+      reader.close();
+    } catch (IOException e) {
+      System.out.println("\n\n--------------------\nFailed to ready states.csv\nTerminating the Application\n----------------------\n");
+      System.exit(0);
+    }
+    return stateMap;
   }
 }

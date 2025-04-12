@@ -10,6 +10,7 @@ import java.util.Set;
 
 import com.ayushtech.flagbot.dbconnectivity.PlacesDao;
 import com.ayushtech.flagbot.dbconnectivity.RegionDao;
+import com.ayushtech.flagbot.fileConnectivity.CSVFileReader;
 import com.ayushtech.flagbot.guessGame.capital.Capital;
 import com.ayushtech.flagbot.guessGame.place.Place;
 import com.ayushtech.flagbot.guessGame.state_flag.State;
@@ -48,7 +49,7 @@ public class GuessGameUtil {
     this.brandMap = RegionDao.getInstance().getLogoMap();
     this.placeList = PlacesDao.getInstance().getPlacesList();
     this.countryCodeMap = RegionDao.getInstance().getCountryCodeMap();
-    this.stateMap = RegionDao.getInstance().getStateMap();
+    this.stateMap = CSVFileReader.getInstance().getStateMap();
     this.stateList = new HashMap<>();
     this.brandCodeList = new ArrayList<>(brandMap.keySet());
     this.reverseCountryCodeMap = new HashMap<>();
@@ -211,7 +212,7 @@ public class GuessGameUtil {
     this.subdivisionType.put("it","Region");
     this.subdivisionType.put("ru","Federal Subject");
     this.subdivisionType.put("nl","Province");
-    this.subdivisionType.put("jp","Perfecture");
+    this.subdivisionType.put("jp","Prefecture");
     this.stateList.put("us", new ArrayList<String>(stateMap.get("us").keySet()));
     this.stateList.put("au", new ArrayList<String>(stateMap.get("au").keySet()));
     this.stateList.put("br", new ArrayList<String>(stateMap.get("br").keySet()));

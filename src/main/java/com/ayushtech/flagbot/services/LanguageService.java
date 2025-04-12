@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import com.ayushtech.flagbot.dbconnectivity.LanguageDao;
-import com.ayushtech.flagbot.fileConnectivity.CountryNameFileReader;
+import com.ayushtech.flagbot.fileConnectivity.CSVFileReader;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -19,7 +19,7 @@ public class LanguageService {
 
   private LanguageService() {
     serverLanguageMapping = LanguageDao.getInstance().getLanguageMap();
-    this.languageMap = CountryNameFileReader.getInstance().getLangMap();
+    this.languageMap = CSVFileReader.getInstance().getLangMap();
   }
 
   public static LanguageService getInstance() {
