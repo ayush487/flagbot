@@ -138,6 +138,7 @@ public class MessageListener extends ListenerAdapter {
         alternateNamesMap.put("Åland islands", "Aland Islands");
         alternateNamesMap.put("northern cyprus", "Turkish Republic of Northern Cyprus");
         alternateNamesMap.put("usvi", "US Virgin Islands");
+        alternateNamesMap.put("artsakh", "Nagorno-Karabakh");
         alternateNamesMap.put("united states virgin islands", "US Virgin Islands");
         alternateNamesMap.put("الإمارات", "الإمارات العربية المتحدة");
 

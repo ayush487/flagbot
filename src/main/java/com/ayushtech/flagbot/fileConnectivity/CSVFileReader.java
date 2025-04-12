@@ -26,18 +26,18 @@ public class CSVFileReader {
   }
 
   public Map<String, Map<String, String>> getLangMap() {
-    Map<String, String> spanishMap = new HashMap<>(285);
-    Map<String, String> portugueseMap = new HashMap<>(285);
-    Map<String, String> japaneseMap = new HashMap<>(285);
-    Map<String, String> koreanMap = new HashMap<>(285);
-    Map<String, String> turkishMap = new HashMap<>(285);
-    Map<String, String> frenchMap = new HashMap<>(285);
-    Map<String, String> russianMap = new HashMap<>(285);
-    Map<String, String> swedishMap = new HashMap<>(285);
-    Map<String, String> germanMap = new HashMap<>(285);
-    Map<String, String> dutchMap = new HashMap<>(285);
-    Map<String, String> arabicMap = new HashMap<>(285);
-    Map<String, String> croatianMap = new HashMap<>(285);
+    Map<String, String> spanishMap = new HashMap<>(290);
+    Map<String, String> portugueseMap = new HashMap<>(290);
+    Map<String, String> japaneseMap = new HashMap<>(290);
+    Map<String, String> koreanMap = new HashMap<>(290);
+    Map<String, String> turkishMap = new HashMap<>(290);
+    Map<String, String> frenchMap = new HashMap<>(290);
+    Map<String, String> russianMap = new HashMap<>(290);
+    Map<String, String> swedishMap = new HashMap<>(290);
+    Map<String, String> germanMap = new HashMap<>(290);
+    Map<String, String> dutchMap = new HashMap<>(290);
+    Map<String, String> arabicMap = new HashMap<>(290);
+    Map<String, String> croatianMap = new HashMap<>(290);
     try {
       BufferedReader reader = new BufferedReader(
           new InputStreamReader(
@@ -62,7 +62,7 @@ public class CSVFileReader {
       csvReader.close();
       reader.close();
     } catch (IOException e) {
-      e.printStackTrace();
+      System.out.print("\n\n--------------------\nFailed to ready country-names.csv\nTerminating the Application\n----------------------\n");
       System.exit(0);
     }
     Map<String, Map<String, String>> languageMap = new HashMap<>(12);
@@ -111,7 +111,7 @@ public class CSVFileReader {
       csvReader.close();
       reader.close();
     } catch (IOException e) {
-      System.out.println("\n\n--------------------\nFailed to ready states.csv\nTerminating the Application\n----------------------\n");
+      System.out.print("\n\n--------------------\nFailed to ready states.csv\nTerminating the Application\n----------------------\n");
       System.exit(0);
     }
     return stateMap;

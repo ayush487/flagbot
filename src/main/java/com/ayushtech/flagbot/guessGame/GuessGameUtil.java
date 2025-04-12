@@ -306,6 +306,10 @@ public class GuessGameUtil {
     ignoreSetMapGuess.add("tra");
     ignoreSetMapGuess.add("tdf");
     ignoreSetMapGuess.add("tat");
+    ignoreSetMapGuess.add("cat");
+    ignoreSetMapGuess.add("kur");
+    ignoreSetMapGuess.add("lib");
+    ignoreSetMapGuess.add("tib");
     continentMap.put("as", "Asia");
     continentMap.put("af", "Africa");
     continentMap.put("an", "Antarctica");
@@ -338,6 +342,7 @@ public class GuessGameUtil {
     alternativeCountryNames.put("gs", "South Georgia");
     alternativeCountryNames.put("sea", "Sealand");
     alternativeCountryNames.put("ncy", "Northern Cyprus");
+    alternativeCountryNames.put("nag", "Artsakh");
     alternativeCountryNames.put("vi", "United States Virgin Islands, USVI");
     mapImageOverrideMap.put("Myanmar", "burma");
     mapImageOverrideMap.put("North Macedonia", "macedonia");
