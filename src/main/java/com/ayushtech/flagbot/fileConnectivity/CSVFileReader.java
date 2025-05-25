@@ -38,6 +38,7 @@ public class CSVFileReader {
     Map<String, String> dutchMap = new HashMap<>(290);
     Map<String, String> arabicMap = new HashMap<>(290);
     Map<String, String> croatianMap = new HashMap<>(290);
+    Map<String, String> thaiMap = new HashMap<>(290);
     try {
       BufferedReader reader = new BufferedReader(
           new InputStreamReader(
@@ -58,6 +59,7 @@ public class CSVFileReader {
         turkishMap.put(records[0], records[11]);
         arabicMap.put(records[0], records[12]);
         croatianMap.put(records[0], records[13]);
+        thaiMap.put(records[0], records[14]);
       }
       csvReader.close();
       reader.close();
@@ -65,7 +67,7 @@ public class CSVFileReader {
       System.out.print("\n\n--------------------\nFailed to ready country-names.csv\nTerminating the Application\n----------------------\n");
       System.exit(0);
     }
-    Map<String, Map<String, String>> languageMap = new HashMap<>(12);
+    Map<String, Map<String, String>> languageMap = new HashMap<>(13);
     languageMap.put("spanish", spanishMap);
     languageMap.put("japanese", japaneseMap);
     languageMap.put("portuguese", portugueseMap);
@@ -78,6 +80,7 @@ public class CSVFileReader {
     languageMap.put("dutch", dutchMap);
     languageMap.put("arabic", arabicMap);
     languageMap.put("croatian", croatianMap);
+    languageMap.put("thai", thaiMap);
     return languageMap;
   }
 

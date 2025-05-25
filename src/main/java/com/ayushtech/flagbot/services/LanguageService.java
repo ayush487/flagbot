@@ -137,7 +137,7 @@ public class LanguageService {
       eb.setDescription("No language selected for this server");
     }
     eb.addField("__Supported Languages__",
-        "`Arabic`, `Dutch`, `French`, `German`, `Japanese`, `Korean`, `Portuguese`, `Russian`, `Spanish`,`Swedish`, `Turkish`, `Croatian`", false);
+        "`Arabic`, `Dutch`, `French`, `German`, `Japanese`, `Korean`, `Portuguese`, `Russian`, `Spanish`,`Swedish`, `Turkish`, `Croatian`, `Thai`", false);
     event.getHook().sendMessageEmbeds(eb.build()).queue();
   }
 }
