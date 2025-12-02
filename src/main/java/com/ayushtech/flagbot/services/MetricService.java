@@ -18,7 +18,7 @@ public class MetricService {
 
   private MetricService() {
     startingInstance = System.currentTimeMillis();
-    commandMetricMap = new HashMap<>(37);
+    commandMetricMap = new HashMap<>(38);
     loadCommandMetricMap();
   }
 
@@ -79,6 +79,7 @@ public class MetricService {
             commandMetricMap.get("language_info").get(),
             commandMetricMap.get("language_remove").get()),
         false);
+    eb.addField("Patreon Requests Sents", commandMetricMap.get("patreon_request").get()+"", false);
     event.getHook().sendMessageEmbeds(eb.build()).queue();
   }
 
@@ -88,6 +89,15 @@ public class MetricService {
 
   public void registerCommandData(ButtonInteractionEvent event) {
     CompletableFuture.runAsync(() -> updateCommandData(event));
+  }
+
+  public void incrementCommandData(String commandName) {
+    CompletableFuture.runAsync(() -> {
+      AtomicLong metric = commandMetricMap.get(commandName);
+      if (metric != null) {
+        metric.incrementAndGet();
+      }
+    });
   }
 
   private void updateCommandData(SlashCommandInteractionEvent event) {
@@ -290,5 +300,6 @@ public class MetricService {
     commandMetricMap.put("atlas_quick", new AtomicLong());
     commandMetricMap.put("atlas_rapid", new AtomicLong());
     commandMetricMap.put("atlas_help", new AtomicLong());
+    commandMetricMap.put("patreon_request", new AtomicLong());
   }
 }

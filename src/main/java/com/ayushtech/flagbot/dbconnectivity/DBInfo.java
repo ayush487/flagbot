@@ -16,10 +16,4 @@ public class DBInfo {
 			password = password_;
 		}
 	}
-
-//    static String url = "jdbc:mysql://sql.freedb.tech:3306/freedb_flagbot";
-//	static String user = "freedb_ayush487";
-//	static String password = "&3gZJ@ewMkEZ@Mv";
-//	static String DB_DRIVER = "com.mysql.cj.jdbc.Driver";
-
 }

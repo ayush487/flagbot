@@ -1,5 +1,7 @@
 package com.ayushtech.flagbot.listeners;
 
+import java.util.Random;
+
 import com.ayushtech.flagbot.atlas.AtlasGameHandler;
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.distanceGuess.GuessDistanceHandler;
@@ -28,13 +30,13 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class InteractionsListener extends ListenerAdapter {
 
 	private ChannelService channelService;
-	// private Random random;
-	// private final int BOUND = 500;
+	private Random random;
+	private final int BOUND = 250;
 
 	public InteractionsListener() {
 		super();
 		channelService = ChannelService.getInstance();
-		// random = new Random();
+		random = new Random();
 	}
 
 	@Override
@@ -153,12 +155,13 @@ public class InteractionsListener extends ListenerAdapter {
 		}
 
 		// Commenting Captcha for now
-		// if (random.nextInt(BOUND) == 1) {
+		if (random.nextInt(BOUND) == 1) {
+			PatreonService.getInstance().sendPatreonRequestMessage(event.getChannel());
 		// CaptchaService.getInstance().sendCaptcha(event);
 		// return;
-		// }
+		}
 
-		else if (event.getName().equals("guess")) {
+		if (event.getName().equals("guess")) {
 			UtilService.getInstance().handleGuessComnmands(event);
 			return;
 		}
@@ -170,6 +173,7 @@ public class InteractionsListener extends ListenerAdapter {
 
 		// Admin commands
 		else if (event.getName().equals("show_server_count")) {
+			PrivateServerService.getInstance().updateEmbedDescription();
 			event.getHook().sendMessage("Total Servers in : " + event.getJDA().getGuilds().size()).queue();
 		}
 
@@ -346,13 +350,14 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 		// Commenting Captcha for now
-		// if (random.nextInt(BOUND) == 1) {
+		if (random.nextInt(BOUND) == 1) {
+			PatreonService.getInstance().sendPatreonRequestMessage(event.getChannel());
 		// event.deferReply().queue();
 		// CaptchaService.getInstance().sendCaptcha(event);
 		// return;
-		// }
+		}
 
-		else if (commandId.startsWith("playAgainFlag")) {
+		if (commandId.startsWith("playAgainFlag")) {
 			GuessGameHandler.getInstance().handlePlayFlagButton(event);
 			return;
 		}

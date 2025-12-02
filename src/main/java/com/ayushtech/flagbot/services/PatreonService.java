@@ -11,6 +11,7 @@ import com.ayushtech.flagbot.dbconnectivity.PatronDao;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -170,6 +171,17 @@ public class PatreonService {
 
   public Emoji getWrongReaction(long userId) {
     return Emoji.fromFormatted("<:" + this.wrongGuessReactions.get(userId) + ">");
+  }
+
+  public void sendPatreonRequestMessage(MessageChannel channel) {
+    EmbedBuilder eb = new EmbedBuilder();
+    eb.setTitle("Support Flagbot on Patreon!");
+    eb.setColor(162000276);
+    eb.setDescription("Love Flagbot? Help keep it running and get new features by supporting its development on Patreon! Your support covers server costs and helps me constantly improve the bot.\n\n[*Check out the Patreon here*](https://www.patreon.com/FlagBot)");
+    eb.setFooter("Thank you for being an awesome community!", "https://cdn.discordapp.com/emojis/1230836096548601907.png");
+    eb.setThumbnail("https://cdn.discordapp.com/emojis/1264163057618124921.png");
+    channel.sendMessageEmbeds(eb.build()).queue();
+    MetricService.getInstance().incrementCommandData("patreon_request");
   }
 
   public void setPatreonWebhookUrl(String webhookUrl) {
