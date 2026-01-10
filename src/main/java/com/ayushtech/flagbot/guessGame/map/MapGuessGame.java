@@ -46,7 +46,7 @@ public class MapGuessGame implements GuessGame {
     this.startTimeStamp = System.currentTimeMillis();
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Guess the country");
-    eb.setImage(GuessGameUtil.getInstance().getMapImage(country.getName()));
+    eb.setImage(GuessGameUtil.getInstance().getMapImage(country.getCode()));
     eb.setColor(new Color(235, 206, 129));
     eb.setFooter("Map credit : utexas.edu");
     embed = eb.build();
