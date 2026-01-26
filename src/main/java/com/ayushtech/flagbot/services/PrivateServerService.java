@@ -234,7 +234,7 @@ public class PrivateServerService {
     eb.setDescription(embedDescription);
     eb.setFooter("Click on the links to download them", "https://cdn.discordapp.com/emojis/1227575632930668555.png");
     eb.addField("__Can't find your favourite game__ ?",
-        "Check out these channels :\n<#895963312678895626>\n<#895963211101270046>", false);
+        "Check out these channels :\n<#1465252474398183568>\n<#1465252368902783058>", false);
     eb.addField("__How to download and install games__", "[Click here](https://www.youtube.com/watch?v=sPy45fv_L6A)",
         false);
     event.getMessage().replyEmbeds(eb.build()).queue(

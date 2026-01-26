@@ -20,7 +20,7 @@ public class MessageListener extends ListenerAdapter {
     private final long vote_notifs_channel = 1190982948804100108l;
     private Map<String, String> alternateNamesMap;
     private String[] keywords = { "link", "games", "download game" };
-    private long privateServerId = 835384407368007721l;
+    private long privateServerId = 1465232854681129065l;
     private long webhook_channel = 1118507065439174677l;
     private long newPledgeChannel = 1263027212194414644l;
     private long updatePledgeChannel = 1263027292322529301l;
