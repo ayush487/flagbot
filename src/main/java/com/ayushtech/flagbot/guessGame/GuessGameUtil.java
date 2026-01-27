@@ -217,6 +217,8 @@ public class GuessGameUtil {
     this.subdivisionType.put("ru","Federal Subject");
     this.subdivisionType.put("nl","Province");
     this.subdivisionType.put("jp","Prefecture");
+    this.subdivisionType.put("pl", "Voivodeship");
+    this.subdivisionType.put("ar", "Province");
     this.stateList.put("us", new ArrayList<String>(stateMap.get("us").keySet()));
     this.stateList.put("au", new ArrayList<String>(stateMap.get("au").keySet()));
     this.stateList.put("br", new ArrayList<String>(stateMap.get("br").keySet()));
@@ -229,6 +231,8 @@ public class GuessGameUtil {
     this.stateList.put("nl", new ArrayList<String>(stateMap.get("nl").keySet()));
     this.stateList.put("en", new ArrayList<String>(stateMap.get("en").keySet()));
     this.stateList.put("jp", new ArrayList<String>(stateMap.get("jp").keySet()));
+    this.stateList.put("pl", new ArrayList<String>(stateMap.get("pl").keySet()));
+    this.stateList.put("ar", new ArrayList<String>(stateMap.get("ar").keySet()));
     reverseCountryCodeMap.put("united states", "us");
     reverseCountryCodeMap.put("united states of america", "us");
     reverseCountryCodeMap.put("usa", "us");
@@ -245,6 +249,8 @@ public class GuessGameUtil {
     reverseCountryCodeMap.put("uk", "en");
     reverseCountryCodeMap.put("japan", "jp");
     reverseCountryCodeMap.put("australia", "au");
+    reverseCountryCodeMap.put("poland", "pl");
+    reverseCountryCodeMap.put("argentina", "ar");
     ignoreSetMapGuess.add("baq");
     ignoreSetMapGuess.add("ei");
     ignoreSetMapGuess.add("mq");

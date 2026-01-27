@@ -98,6 +98,8 @@ public class CSVFileReader {
     stateMap.put("en", new HashMap<>());
     stateMap.put("au", new HashMap<>());
     stateMap.put("jp", new HashMap<>());
+    stateMap.put("pl", new HashMap<>());
+    stateMap.put("ar", new HashMap<>());
     try {
       BufferedReader reader = new BufferedReader(
           new InputStreamReader(
