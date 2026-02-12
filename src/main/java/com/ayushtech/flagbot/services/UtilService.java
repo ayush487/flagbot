@@ -23,9 +23,11 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.unions.GuildChannelUnion;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
@@ -222,33 +224,243 @@ public class UtilService {
         .queue();
   }
 
-  public void handleHelpCommand(InteractionHook hook) {
+  // public void handleHelpCommand(SlashCommandInteractionEvent event) {
+  // sendGeneralHelpEmbed(event.getHook(), event.getUser().getAvatarUrl());
+  // sendGuessHelpEmbed(event.getHook(), event.getUser().getAvatarUrl());
+  // sendAtlasHelpEmbed(event.getHook(), event.getUser().getAvatarUrl());
+  // sendMemoflipHelpEmbed(event.getHook(), event.getUser().getAvatarUrl());
+  // sendRaceHelpEmbed(event.getHook(), event.getUser().getAvatarUrl());
+  // sendConfigHelpEmbed(event.getHook(), event.getUser().getAvatarUrl());
+  // }
+
+  public void handleHelpCommand(SlashCommandInteractionEvent event) {
+    // event.getJDA().upsertCommand("help", "Help command")
+    // .addSubcommandGroups(
+    //   new SubcommandGroupData("overview", "Overview about all the commands of the bot"),
+    //   new SubcommandGroupData("guess", "Information about the guess commands."),
+    //   new SubcommandGroupData("atlas", "Information about the atlas commands."),
+    //   new SubcommandGroupData("memoflip", "Information about the memoflip commands."),
+    //   new SubcommandGroupData("race", "Information about the race commands."),
+    //   new SubcommandGroupData("config", "Information about bot configuration and setup.")
+    // ).queue();
+    String subcommandName = event.getSubcommandName();
+    if (subcommandName == null)
+      subcommandName = "";
+    int page = 1;
+    String userPfp = event.getUser().getAvatarUrl();
+    MessageEmbed embed;
+    switch (subcommandName) {
+      case "overview":
+        embed = generalHelpEmbed(userPfp);
+        break;
+      case "guess":
+        embed = guessHelpEmbed(userPfp);
+        page = 2;
+        break;
+      case "atlas":
+        embed = atlasHelpEmbed(userPfp);
+        page = 3;
+        break;
+      case "memoflip":
+        embed = memoflipHelpEmbed(userPfp);
+        page = 4;
+        break;
+      case "race":
+        embed = raceHelpEmbed(userPfp);
+        page = 5;
+        break;
+      case "config":
+        embed = configHelpEmbed(userPfp);
+        page = 6;
+        break;
+      default:
+        embed = generalHelpEmbed(userPfp);
+        break;
+    }
+    int prevPage = page == 1 ? 6 : page - 1;
+    int nextPage = page == 6 ? 1 : page + 1;
+    event.getHook().sendMessageEmbeds(embed)
+        .addActionRow(Button.secondary("help_" + prevPage, Emoji.fromFormatted("<:left_tri:1471426605263097999>")),
+            Button.secondary("help_" + nextPage, Emoji.fromFormatted("<:right_tri:1471426673131126954>")))
+        .queue();
+  }
+
+  public void handleHelpButton(ButtonInteractionEvent event) {
+    int helpPage = Integer.parseInt(event.getComponentId().split("_")[1]);
+    String userPfp = event.getUser().getAvatarUrl();
+    MessageEmbed embed;
+    switch (helpPage) {
+      case 1:
+        embed = generalHelpEmbed(userPfp);
+        break;
+      case 2:
+        embed = guessHelpEmbed(userPfp);
+        break;
+      case 3:
+        embed = atlasHelpEmbed(userPfp);
+        break;
+      case 4:
+        embed = memoflipHelpEmbed(userPfp);
+        break;
+      case 5:
+        embed = raceHelpEmbed(userPfp);
+        break;
+      case 6:
+        embed = configHelpEmbed(userPfp);
+        break;
+      default:
+        embed = generalHelpEmbed(userPfp);
+        break;
+    }
+    int prevPage = helpPage == 1 ? 6 : helpPage - 1;
+    int nextPage = helpPage == 6 ? 1 : helpPage + 1;
+    event.editMessageEmbeds(embed)
+        .setActionRow(Button.link("https://discord.gg/RqvTRMmVgR", "Support Server"),
+            Button.link("https://top.gg/bot/1129789320165867662/vote", "❤️Vote"))
+        .setActionRow(Button.secondary("help_" + prevPage, Emoji.fromFormatted("<:left_tri:1471426605263097999>")),
+            Button.secondary("help_" + nextPage, Emoji.fromFormatted("<:right_tri:1471426673131126954>")))
+        .queue();
+  }
+
+  private MessageEmbed generalHelpEmbed(String userPfp) {
     EmbedBuilder eb = new EmbedBuilder();
+    eb.setTitle("Help Command");
     eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
-    eb.setTitle("Commands");
     eb.setColor(new Color(255, 153, 51));
-    eb.setDescription(
-        "**__Guess Commands__**\n`/guess flag` : Start a flag guessing game in the channel\n`/guess map` : Start a map guessing game in the channel\n`/guess logo` : Start a logo guessing game in the channel\n`/guess capital` : Start a capital guessing game in the channel\n`/guess state_flag` : Start a flag guessing game for states of a country\n`/guess place` : Start a place guessing game in the channel\n`/guess continent` : State a continent guessing game in the channel\n`/guess location` : Start a location guessing game in the channel (**Only for voters**)\n`/guess distance` : A Multiplayer mode in which users can guess distance marked on the map (**Only for voters**)\n__Options__ :\n`mode` : Choose the mode you want to play :Soverign Only, Non-Soverign Only, All Countries (Soverign Only if not selected)\n`continent` : Specify the continent for the flag game\n`rounds` : Enter the number of rounds you want to play (maximum it would be 15) (optional)\n`include_non_soverign_countries` : True or False to include non soverign countries (false if not selected)\n`unit` : Enter your preffered unit (kilometer or miles)\n`country` : Select country for the state flag guess mode. Supported countries : `USA, Brazil, Germany, Spain, Switzerland, Canada, Italy, Russia, Netherlands, England, Australia, Japan, Poland, Argentina`\n`skippable` : Set whether the games can be skipped or not.\n__Note__ : `Specifying continent will nullify mode selection and mode will automatically become 'All Countries'.`");
-    eb.addField("__General Commands__",
-        "`/atlas` : A quiz type multiplayer mode. Do `/atlas help` for more info.\n`/leaderboards` : Check the global leaderboard (Upto top 25)\n`/invite` : Invite the bot to your server\n`/language set` : Set language for the server (Only work for flag and map guessers)\n`/language info` : See your server language and other supported languages\n`/language remove` : Remove server language\n`/disable` : Disable the commands in the given channel\n`/enable` : Enable the commands in the given channel\n`/disable_all_channels` : Disable the commands for all the channels of the server\n`/delete_my_data` : Will Delete your data from the bot\n`/balance` : You can see your coins and rank\n`/give coins` : Send coins to other users.\n`/vote` : Vote for us and get rewards\n`/patreon` : Show information about Patreon Membership",
-        false);
-    eb.addField("__Battle Command__",
-        "`/battle` : Start a 1v1 battle between two users.\n**__Options__**\n**opponent** : Mention the user with whom you wanna battle.\n**bet** : Amout to bet in the battle (optional)",
-        false);
-    eb.addField("__Memoflip Game__",
-        "`/memoflip easy` : Start a memoflip game in easy mode (8 cards)\n`/memoflip medium` : Start a memoflip game in medium mode (16 cards)\n`/memoflip hard` : Start a memoflip game in hard mode (24 cards)",
-        false);
-    eb.addField("__Race Command__",
-        "`/race flags` : Start a race in the following channel of Flag mode\n`/race maps` : Start a race in the following channel of Flag mode\n`/race logo` : Start a race in the following channel of Logo mode\n`/race maths` : Start a race in the following channel of maths mode",
-        false);
+    StringBuilder description = new StringBuilder();
+    description.append("**/help guess :** `info about guess commands`\n");
+    description.append("**/help atlas :** `info about atlas commands`\n");
+    description.append("**/help race  :** `info about race commands`\n");
+    description.append("**/help memoflip :** `info about memoflip command`\n");
+    description.append("**/help language :** `info about setting up languages in the bot`\n");
+    description.append("**/help config :** `info about bot configuration into the server`");
+    eb.setDescription(description.toString());
+    StringBuilder sb = new StringBuilder();
+    sb.append("`/leaderboards` : Check the global leaderboard (upto top 25)\n");
+    sb.append("`/invite` : Invite the bot to your server\n");
+    sb.append("`/balance` : You can see your coins and rank\n");
+    sb.append("`/give coins` : Send coins to other users.\n");
+    sb.append("`/vote` : Vote for us and get rewards\n");
+    sb.append("`/patreon` : Show information about Patreon Membership");
+    eb.addField("Commands", sb.toString(), false);
+    eb.setDescription(description.toString());
     eb.addField("Other Information",
         "[Terms of Services](https://github.com/ayush487/flagbot/blob/main/TERMSOFSERVICE.md)\n[Privacy Policy](https://github.com/ayush487/flagbot/blob/main/PRIVACY.md)",
         false);
-    eb.setFooter("You can earn 1000 coins by voting for us");
-    hook.sendMessageEmbeds(eb.build())
-        .addActionRow(Button.link("https://discord.gg/RqvTRMmVgR", "Support Server"),
-            Button.link("https://top.gg/bot/1129789320165867662/vote", "❤️Vote"))
-        .queue();
+    eb.setFooter("Page 1/6", userPfp);
+    return eb.build();
+  }
+
+  private MessageEmbed guessHelpEmbed(String userPfp) {
+    EmbedBuilder eb = new EmbedBuilder();
+    eb.setTitle("Guess Commands");
+    eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
+    eb.setColor(new Color(255, 153, 51));
+    StringBuilder descBuilder = new StringBuilder();
+    descBuilder.append("`/guess flag` : Start a flag guessing game in the channel\n");
+    descBuilder.append("`/guess map` : Start a map guessing game in the channel\n");
+    descBuilder.append("`/guess logo` : Start a logo guessing game in the channel\n");
+    descBuilder.append("`/guess capital` : Start a capital guessing game in the channel\n");
+    descBuilder.append("`/guess state_flag` : Start a flag guessing game for states of a country\n");
+    descBuilder.append("`/guess place` : Start a place guessing game in the channel\n");
+    descBuilder.append("`/guess continent` : State a continent guessing game in the channel\n");
+    descBuilder.append("`/guess location` : Start a location guessing game in the channel (**Only for voters**)\n");
+    descBuilder.append(
+        "`/guess distance` : A Multiplayer mode in which users can guess distance marked on the map (**Only for voters**)\n");
+    eb.setDescription(descBuilder.toString());
+    StringBuilder optionsBuilder = new StringBuilder();
+    optionsBuilder.append("`mode` : choose mode you want to play (Soverign Only, Non-Soverign Only, All Countries)\n");
+    optionsBuilder.append("`continent` : specify the continent for the flag game\n");
+    optionsBuilder.append("`rounds` : enter number of rounds you want to play (maximum it would be 15) (optional)\n");
+    optionsBuilder.append("`unit` : enter your preffered unit (kilometer or miles)\n");
+    optionsBuilder.append("`skippable` : Set whether the games can be skipped or not.\n");
+    eb.addField("__Options__", optionsBuilder.toString(), false);
+    StringBuilder noteBuilder = new StringBuilder();
+    noteBuilder.append(
+        "Specifying continent will nullify mode selection and mode will automatically become 'All Countries'.\n");
+    noteBuilder.append(
+        "Supported countries for state flag mode: `USA, Brazil, Germany, Spain, Switzerland, Canada, Italy, Russia, Netherlands, England, Australia, Japan, Poland, Argentina`");
+    eb.addField("__Extra Info__", noteBuilder.toString(), false);
+    eb.setFooter("Page 2/6", userPfp);
+    return eb.build();
+  }
+
+  private MessageEmbed atlasHelpEmbed(String userPfp) {
+    EmbedBuilder eb = new EmbedBuilder();
+    eb.setTitle("Atlas - Discover the World with Flag Bot!");
+    eb.setThumbnail(
+        "https://cdn.discordapp.com/attachments/1133277774010925206/1319749920852410420/globe_question.jpg?ex=67671864&is=6765c6e4&hm=8f7db66b8f9ba8f6f9962f261c6b55ce1815191068929a940604b07da9160d67&");
+    eb.setColor(new Color(255, 153, 51));
+    eb.setDescription(
+        "Embark on an epic geographical adventure with the **Atlas** command, an exciting multiplayer mode in Flag Bot!\nTest your knowledge of the world and compete with friends in various modes. 🌍🗺️");
+    StringBuilder sb = new StringBuilder(
+        "\n__Classic Mode__ : *Submit one answer per question. The first correct answer earns 5 points, the second 3 points, and the rest 1 point.*\n");
+    sb.append("\n__Quick Mode__ : *Only the first correct answer wins, earning 5 points. Speed is key!*\n");
+    sb.append(
+        "\n__Rapid Mode__ : *Submit as many answers as you can. Points are awarded based on the number of correct answers given.*\n");
+    sb.append(
+        "\n__Note__ : `Quick and Rapid mode is only available for Patrons and users who voted for the bot in last 24 hours.`");
+    eb.addField("__Modes__", sb.toString(), false);
+    StringBuilder sb2 = new StringBuilder(
+        "Options can be used to customize the game **(Restricted to Patrons only)**.\n");
+    sb2.append(
+        "`bet_amount` : *Set an entry fee for the game where the winner takes all. Default is 0 (max bet can be 10,000).*\n");
+    sb2.append(
+        "`rounds` : *Set the number of rounds the game will run. Default is 10 (customizable between 2 to 25).*\n");
+    sb2.append(
+        "`time` *Set the time provided each round to answer. Default is 15 seconds (modifiable between 5 and 60 seconds).*\n");
+    sb2.append("`max_score` : *Set the score limit for the game. Default is 30 (customizable between 8 to 100).*\n");
+    sb2.append("\n**f!exitatlas** to quit the game midway");
+    eb.addField("__Options__", sb2.toString(), false);
+    eb.setFooter("Page 3/6", userPfp);
+    return eb.build();
+  }
+
+  private MessageEmbed memoflipHelpEmbed(String userPfp) {
+    EmbedBuilder eb = new EmbedBuilder();
+    eb.setTitle("Memoflip Game");
+    eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
+    eb.setColor(new Color(255, 153, 51));
+    StringBuilder descBuilder = new StringBuilder();
+    descBuilder.append("`/memoflip easy` : Start a memoflip game in easy mode (8 cards)\n");
+    descBuilder.append("`/memoflip medium` : Start a memoflip game in medium mode (16 cards)\n");
+    descBuilder.append("`/memoflip hard` : Start a memoflip game in hard mode (24 cards)\n");
+    descBuilder.append("`/memoflip scores` : Sends your best scores in each mode.");
+    eb.setDescription(descBuilder.toString());
+    eb.setFooter("Page 4/6", userPfp);
+    return eb.build();
+  }
+
+  private MessageEmbed raceHelpEmbed(String userPfp) {
+    EmbedBuilder eb = new EmbedBuilder();
+    eb.setTitle("Race Command");
+    eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
+    eb.setColor(new Color(255, 153, 51));
+    StringBuilder descBuilder = new StringBuilder();
+    descBuilder.append("`/race flags` : Start a race in the following channel of Flag mode\n");
+    descBuilder.append("`/race maps` : Start a race in the following channel of Map mode\n");
+    descBuilder.append("`/race logo` : Start a race in the following channel of Logo mode\n");
+    descBuilder.append("`/race maths` : Start a race in the following channel of Maths mode");
+    eb.setDescription(descBuilder.toString());
+    eb.setFooter("Page 5/6", userPfp);
+    return eb.build();
+  }
+
+  private MessageEmbed configHelpEmbed(String userPfp) {
+    EmbedBuilder eb = new EmbedBuilder();
+    eb.setTitle("Bot Config Commands");
+    eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
+    eb.setColor(new Color(255, 153, 51));
+    StringBuilder descBuilder = new StringBuilder();
+    descBuilder.append("`/language set` : set language for the server (Only work for flag and map guessers)\n");
+    descBuilder.append("`/language info` : see your server language and other supported languages\n");
+    descBuilder.append("`/language remove` : remove server language\n");
+    descBuilder.append("`/disable` : Disable the commands in the given channel\n");
+    descBuilder.append("`/enable` : Enable the commands in the given channel\n");
+    descBuilder.append("`/disable_all_channels` : Disable the commands for all the channels of the server\n");
+    eb.setDescription(descBuilder.toString());
+    eb.setFooter("Page 6/6", userPfp);
+    return eb.build();
   }
 
   public void handleGiveCommands(SlashCommandInteractionEvent event) {

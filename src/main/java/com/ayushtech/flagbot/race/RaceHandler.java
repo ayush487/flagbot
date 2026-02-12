@@ -7,8 +7,8 @@ import java.util.Random;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import com.ayushtech.flagbot.game.fight.CountryOptions;
-import com.ayushtech.flagbot.game.fight.FightUtils;
+// import com.ayushtech.flagbot.game.fight.CountryOptions;
+// import com.ayushtech.flagbot.game.fight.FightUtils;
 import com.ayushtech.flagbot.guessGame.GuessGameUtil;
 import com.ayushtech.flagbot.guessGame.logo.LogoOptions;
 import com.ayushtech.flagbot.guessGame.logo.LogoUtils;
@@ -160,7 +160,7 @@ public class RaceHandler {
 
   private void sendMapsOptions(ButtonInteractionEvent event) {
     EmbedBuilder eb = new EmbedBuilder();
-    CountryOptions options = FightUtils.getInstance().getOptions();
+    CountryOptions options = MathUtils.getInstance().getOptions();
     eb.setTitle("Select the correct country");
     eb.setColor(Color.YELLOW);
     eb.setImage(GuessGameUtil.getInstance().getMapImage(options.getCorrectOption().getName()));
@@ -212,7 +212,7 @@ public class RaceHandler {
 
   private void sendFlagOptions(ButtonInteractionEvent event) {
     EmbedBuilder eb = new EmbedBuilder();
-    CountryOptions options = FightUtils.getInstance().getOptions();
+    CountryOptions options = MathUtils.getInstance().getOptions();
     eb.setTitle("Select the correct country");
     eb.setColor(Color.blue);
     eb.setImage("https://flagcdn.com/256x192/" + options.getCorrectOption().getIsoCode() + ".png");

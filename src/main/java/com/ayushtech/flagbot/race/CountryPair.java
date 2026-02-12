@@ -1,4 +1,4 @@
-package com.ayushtech.flagbot.game.fight;
+package com.ayushtech.flagbot.race;
 
 public class CountryPair {
   private String isoCode;

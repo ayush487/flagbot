@@ -6,8 +6,6 @@ import com.ayushtech.flagbot.atlas.AtlasGameHandler;
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.distanceGuess.GuessDistanceHandler;
 import com.ayushtech.flagbot.game.continent.ContinentGameHandler;
-import com.ayushtech.flagbot.game.fight.Damage;
-import com.ayushtech.flagbot.game.fight.FightHandler;
 import com.ayushtech.flagbot.game.location.LocationGameHandler;
 import com.ayushtech.flagbot.guessGame.GuessGameHandler;
 import com.ayushtech.flagbot.guessGame.flag.RegionHandler;
@@ -83,7 +81,8 @@ public class InteractionsListener extends ListenerAdapter {
 		}
 
 		if (event.getName().equals("battle")) {
-			FightHandler.getInstance().handleFightCommand(event);
+			// FightHandler.getInstance().handleFightCommand(event);
+			event.reply("This command has been removed.").queue();
 			return;
 		}
 
@@ -120,7 +119,7 @@ public class InteractionsListener extends ListenerAdapter {
 		}
 
 		else if (event.getName().equals("help")) {
-			UtilService.getInstance().handleHelpCommand(event.getHook());
+			UtilService.getInstance().handleHelpCommand(event);
 			return;
 		}
 
@@ -157,8 +156,8 @@ public class InteractionsListener extends ListenerAdapter {
 		// Commenting Captcha for now
 		if (random.nextInt(BOUND) == 1) {
 			PatreonService.getInstance().sendPatreonRequestMessage(event.getChannel());
-		// CaptchaService.getInstance().sendCaptcha(event);
-		// return;
+			// CaptchaService.getInstance().sendCaptcha(event);
+			// return;
 		}
 
 		if (event.getName().equals("guess")) {
@@ -250,16 +249,21 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
-		if (commandId.startsWith("punchSelection")) {
-			FightHandler.getInstance().handleSelection(event, Damage.PUNCH, commandId.split("-")[1]);
-			return;
-		} else if (commandId.startsWith("joinDistance")) {
+		// if (commandId.startsWith("punchSelection")) {
+		// FightHandler.getInstance().handleSelection(event, Damage.PUNCH,
+		// commandId.split("-")[1]);
+		// return;
+		// }
+		if (commandId.startsWith("joinDistance")) {
 			GuessDistanceHandler.getInstance().handleJoinCommand(event);
 			return;
-		} else if (commandId.startsWith("kickSelection")) {
-			FightHandler.getInstance().handleSelection(event, Damage.KICK, commandId.split("-")[1]);
-			return;
-		} else if (commandId.startsWith("stockTransactions")) {
+		} 
+		// else if (commandId.startsWith("kickSelection")) {
+		// 	FightHandler.getInstance().handleSelection(event, Damage.KICK,
+		// 	commandId.split("-")[1]);
+		// 	return;
+		// }
+		 else if (commandId.startsWith("stockTransactions")) {
 			StocksHandler.getInstance().handleStockTransactionButton(event);
 			return;
 		} else if (commandId.startsWith("accelerate_")) {
@@ -313,6 +317,9 @@ public class InteractionsListener extends ListenerAdapter {
 		} else if (commandId.startsWith("checkRegionButton")) {
 			RegionHandler.getInstance().handleRegionButton(event);
 			return;
+		} else if (commandId.startsWith("help")) {
+			UtilService.getInstance().handleHelpButton(event);
+			return;
 		}
 
 		else if (commandId.startsWith("skipGuess")) {
@@ -320,30 +327,30 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
-		else if (commandId.equals("rejectBattle")) {
-			FightHandler.getInstance().handleCancelButton(event);
-			return;
-		}
+		// else if (commandId.equals("rejectBattle")) {
+		// 	FightHandler.getInstance().handleCancelButton(event);
+		// 	return;
+		// }
 
-		else if (commandId.equals("acceptBattle")) {
-			FightHandler.getInstance().handleAcceptButton(event);
-			return;
-		}
+		// else if (commandId.equals("acceptBattle")) {
+		// 	FightHandler.getInstance().handleAcceptButton(event);
+		// 	return;
+		// }
 
-		else if (commandId.equals("punchInBattle")) {
-			FightHandler.getInstance().handlePunchButton(event);
-			return;
-		}
+		// else if (commandId.equals("punchInBattle")) {
+		// 	FightHandler.getInstance().handlePunchButton(event);
+		// 	return;
+		// }
 
-		else if (commandId.equals("kickInBattle")) {
-			FightHandler.getInstance().handleKickButton(event);
-			return;
-		}
+		// else if (commandId.equals("kickInBattle")) {
+		// 	FightHandler.getInstance().handleKickButton(event);
+		// 	return;
+		// }
 
-		else if (commandId.equals("runInBattle")) {
-			FightHandler.getInstance().handleRunButton(event);
-			return;
-		}
+		// else if (commandId.equals("runInBattle")) {
+		// 	FightHandler.getInstance().handleRunButton(event);
+		// 	return;
+		// }
 
 		else if (commandId.equals("cancelAtlas")) {
 			AtlasGameHandler.getInstance().handleCancelStartButton(event);
@@ -352,9 +359,9 @@ public class InteractionsListener extends ListenerAdapter {
 		// Commenting Captcha for now
 		if (random.nextInt(BOUND) == 1) {
 			PatreonService.getInstance().sendPatreonRequestMessage(event.getChannel());
-		// event.deferReply().queue();
-		// CaptchaService.getInstance().sendCaptcha(event);
-		// return;
+			// event.deferReply().queue();
+			// CaptchaService.getInstance().sendCaptcha(event);
+			// return;
 		}
 
 		if (commandId.startsWith("playAgainFlag")) {

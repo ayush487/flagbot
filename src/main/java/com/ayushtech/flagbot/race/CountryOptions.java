@@ -1,4 +1,4 @@
-package com.ayushtech.flagbot.game.fight;
+package com.ayushtech.flagbot.race;
 
 public class CountryOptions {
   private CountryPair correctOption;
@@ -14,4 +14,3 @@ public class CountryOptions {
     return this.options;
   }
 }
-
