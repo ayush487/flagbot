@@ -71,7 +71,7 @@ public class StateFlagGuessGame implements GuessGame {
     StringBuilder sb = new StringBuilder();
     sb.append(event.getAuthor().getAsMention() + " is correct!\n");
     long userBalance = CoinDao.getInstance().addCoinsAndGetBalance(event.getAuthor().getIdLong(), 100);
-    sb.append(String.format("**Coins** : `%d(+100)` :coin:\n", userBalance));
+    sb.append(String.format("**Coins** : `%d(+100)` <:flag_coin:1472232340523843767>\n", userBalance));
     sb.append(String.format("**%s** : `%s`\n", GuessGameUtil.getInstance().getSubdivionTypeName(countryCode),
         state.getName()));
     sb.append(String.format("**Country** : `%s`\n", countryName));

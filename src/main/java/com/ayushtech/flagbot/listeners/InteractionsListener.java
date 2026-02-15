@@ -3,6 +3,7 @@ package com.ayushtech.flagbot.listeners;
 import java.util.Random;
 
 import com.ayushtech.flagbot.atlas.AtlasGameHandler;
+import com.ayushtech.flagbot.crossword.CrosswordGameHandler;
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.distanceGuess.GuessDistanceHandler;
 import com.ayushtech.flagbot.game.continent.ContinentGameHandler;
@@ -14,12 +15,13 @@ import com.ayushtech.flagbot.race.RaceHandler;
 import com.ayushtech.flagbot.services.CaptchaService;
 import com.ayushtech.flagbot.services.ChannelService;
 import com.ayushtech.flagbot.services.LanguageService;
+import com.ayushtech.flagbot.services.LevelAppendService;
 import com.ayushtech.flagbot.services.MetricService;
 import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.PrivateServerService;
+import com.ayushtech.flagbot.services.UserService;
 import com.ayushtech.flagbot.services.UtilService;
 import com.ayushtech.flagbot.services.VotingService;
-import com.ayushtech.flagbot.stocks.StocksHandler;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -52,22 +54,24 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
-		if (event.getName().equals("disable")) {
+		String slashCommandName = event.getName();
+
+		if (slashCommandName.equals("disable")) {
 			UtilService.getInstance().handleDisableCommand(event);
 			return;
 		}
 
-		else if (event.getName().equals("disable_all_channels")) {
+		else if (slashCommandName.equals("disable_all_channels")) {
 			UtilService.getInstance().handleDisableAllCommand(event);
 			return;
 		}
 
-		else if (event.getName().equals("enable")) {
+		else if (slashCommandName.equals("enable")) {
 			UtilService.getInstance().handleEnableCommand(event);
 			return;
 		}
 
-		else if (event.getName().equals("staff_poll")) {
+		else if (slashCommandName.equals("staff_poll")) {
 			PrivateServerService.getInstance().handlePollCommand(event);
 			return;
 		}
@@ -80,78 +84,88 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
-		if (event.getName().equals("battle")) {
-			// FightHandler.getInstance().handleFightCommand(event);
+		if (slashCommandName.equals("battle")) {
 			event.reply("This command has been removed.").queue();
 			return;
 		}
 
-		else if (event.getName().equals("race")) {
+		else if (slashCommandName.equals("race")) {
 			RaceHandler.getInstance().handleRaceCommand(event);
+			return;
+		}
+
+		else if (slashCommandName.equals("crossword")) {
+			CrosswordGameHandler.getInstance().handleCrosswordSlashCommand(event);
+			return;
+		}
+
+		else if (slashCommandName.equals("extra_words")) {
+			CrosswordGameHandler.getInstance().handleExtraWordCommand(event);
 			return;
 		}
 
 		event.deferReply().queue();
 
-		if (event.getName().equals("memoflip")) {
+		if (slashCommandName.equals("memoflip")) {
 			MemoflipHandler.getInstance().handleMemoflipCommand(event);
 			return;
 		}
 
-		else if (event.getName().equals("vote")) {
+		else if (slashCommandName.equals("vote")) {
 			UtilService.getInstance().handleVoteCommand(event.getHook());
 			return;
 		}
 
-		else if (event.getName().equals("leaderboards")) {
+		else if (slashCommandName.equals("daily")) {
+			UserService.getInstance().handleDailyCommand(event);
+			return;
+		}
+
+		else if (slashCommandName.equals("leaderboards")) {
 			UtilService.getInstance().handleLeaderboardCommand(event);
 			return;
 		}
 
-		else if (event.getName().equals("invite")) {
+		else if (slashCommandName.equals("invite")) {
 			UtilService.getInstance().handleInviteCommand(event.getHook());
 			return;
 		}
 
-		else if (event.getName().equals("patreon")) {
+		else if (slashCommandName.equals("patreon")) {
 			PatreonService.getInstance().handlePatreonCommand(event);
 			return;
 		}
 
-		else if (event.getName().equals("help")) {
+		else if (slashCommandName.equals("help")) {
 			UtilService.getInstance().handleHelpCommand(event);
 			return;
 		}
 
-		else if (event.getName().equals("support")) {
+		else if (slashCommandName.equals("support")) {
 			UtilService.getInstance().handleSupportCommand(event.getHook());
 			return;
 		}
 
-		else if (event.getName().equals("language")) {
+		else if (slashCommandName.equals("language")) {
 			LanguageService.getInstance().handleLanguageCommand(event);
 			return;
 		}
 
-		else if (event.getName().equals("delete_my_data")) {
+		else if (slashCommandName.equals("delete_my_data")) {
 			UtilService.getInstance().handleDataDeletionRequest(event.getUser(), event.getHook());
 			return;
 		}
 
-		else if (event.getName().equals("balance")) {
+		else if (slashCommandName.equals("balance")) {
 			UtilService.getInstance().handleBalanceCommand(event.getUser(), event.getHook());
 			return;
 		}
 
-		else if (event.getName().equals("give")) {
+		else if (slashCommandName.equals("give")) {
 			UtilService.getInstance().handleGiveCommands(event);
 			return;
 		}
 
-		else if (event.getName().equals("stocks")) {
-			UtilService.getInstance().handleStockCommands(event);
-			return;
-		}
 
 		// Commenting Captcha for now
 		if (random.nextInt(BOUND) == 1) {
@@ -160,29 +174,29 @@ public class InteractionsListener extends ListenerAdapter {
 			// return;
 		}
 
-		if (event.getName().equals("guess")) {
+		if (slashCommandName.equals("guess")) {
 			UtilService.getInstance().handleGuessComnmands(event);
 			return;
 		}
 
-		else if (event.getName().equals("atlas")) {
+		else if (slashCommandName.equals("atlas")) {
 			UtilService.getInstance().handleAtlasCommands(event);
 			return;
 		}
 
 		// Admin commands
-		else if (event.getName().equals("show_server_count")) {
+		else if (slashCommandName.equals("show_server_count")) {
 			PrivateServerService.getInstance().updateEmbedDescription();
 			event.getHook().sendMessage("Total Servers in : " + event.getJDA().getGuilds().size()).queue();
 		}
 
-		else if (event.getName().equals("reset_coins")) {
+		else if (slashCommandName.equals("reset_coins")) {
 			String user_id = event.getOption("user_id").getAsString();
 			long coinsDedecuted = CoinDao.getInstance().resetUserCoins(Long.parseLong(user_id));
 			event.getHook().sendMessage("Deducted " + coinsDedecuted + " coins from the User").queue();
 		}
 
-		else if (event.getName().equals("send_dm")) {
+		else if (slashCommandName.equals("send_dm")) {
 			String user_id = event.getOption("user_id").getAsString();
 			String message = event.getOption("message").getAsString();
 			event.getJDA().retrieveUserById(Long.parseLong(user_id)).queue(user -> {
@@ -191,25 +205,45 @@ public class InteractionsListener extends ListenerAdapter {
 			event.getHook().sendMessage("Message Sent").queue();
 		}
 
-		else if (event.getName().equals("unblock")) {
+		else if (slashCommandName.equals("unblock")) {
 			String user_id = event.getOption("user_id").getAsString();
 			CaptchaService.getInstance().removeBlock(Long.parseLong(user_id));
 			event.getHook().sendMessage("Unblocked User").queue();
 			return;
 		}
 
-		else if (event.getName().equals("metrics")) {
+		else if (slashCommandName.equals("metrics")) {
 			MetricService.getInstance().handleMetricCommand(event);
 			return;
 		}
 
-		else if (event.getName().equals("recent_votes")) {
+		else if (slashCommandName.equals("recent_votes")) {
 			VotingService.getInstance().handleVoteInfoCommand(event);
 			return;
 		}
 
-		else if (event.getName().equals("botinfo")) {
+		else if (slashCommandName.equals("botinfo")) {
 			UtilService.getInstance().handleBotCommands(event);
+			return;
+		}
+
+		else if (slashCommandName.equals("add_words")) {
+			UtilService.getInstance().handleAddWordCommand(event);
+			return;
+		}
+
+		else if (slashCommandName.equals("remove_words")) {
+			UtilService.getInstance().handleRemoveWordCommand(event);
+			return;
+		}
+
+		else if (slashCommandName.equals("view_level")) {
+			CrosswordGameHandler.getInstance().handleViewLevelCommand(event);
+			return;
+		}
+
+		else if (slashCommandName.equals("add_level")) {
+			LevelAppendService.getInstance().handleLevelAddCommand(event);
 			return;
 		}
 	}
@@ -221,7 +255,7 @@ public class InteractionsListener extends ListenerAdapter {
 	public void onButtonInteraction(ButtonInteractionEvent event) {
 		super.onButtonInteraction(event);
 
-		String commandId = event.getComponentId();
+		String buttonCommandId = event.getComponentId();
 
 		MetricService.getInstance().registerCommandData(event);
 
@@ -235,124 +269,117 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
-		if (commandId.equals("raceCancel")) {
+		if (buttonCommandId.equals("raceCancel")) {
 			RaceHandler.getInstance().handleCancelRace(event);
 			return;
-		} else if (commandId.equals("raceJoin")) {
+		} else if (buttonCommandId.equals("raceJoin")) {
 			RaceHandler.getInstance().handleJoinRace(event);
 			return;
-		} else if (commandId.equals("raceStart")) {
+		} else if (buttonCommandId.equals("raceStart")) {
 			RaceHandler.getInstance().handleStartRace(event);
 			return;
-		} else if (commandId.equals("viewPatreonPerks")) {
+		} else if (buttonCommandId.equals("viewPatreonPerks")) {
 			PatreonService.getInstance().showPatreonPerks(event);
 			return;
 		}
 
-		// if (commandId.startsWith("punchSelection")) {
-		// FightHandler.getInstance().handleSelection(event, Damage.PUNCH,
-		// commandId.split("-")[1]);
-		// return;
-		// }
-		if (commandId.startsWith("joinDistance")) {
+		if (buttonCommandId.startsWith("joinDistance")) {
 			GuessDistanceHandler.getInstance().handleJoinCommand(event);
 			return;
-		} 
-		// else if (commandId.startsWith("kickSelection")) {
-		// 	FightHandler.getInstance().handleSelection(event, Damage.KICK,
-		// 	commandId.split("-")[1]);
-		// 	return;
-		// }
-		 else if (commandId.startsWith("stockTransactions")) {
-			StocksHandler.getInstance().handleStockTransactionButton(event);
+		}
+
+		else if (buttonCommandId.startsWith("newCrossword")) {
+			CrosswordGameHandler.getInstance().handleCrosswordButton(event);
 			return;
-		} else if (commandId.startsWith("accelerate_")) {
+		} else if (buttonCommandId.startsWith("quitCrossword")) {
+			CrosswordGameHandler.getInstance().handleCrosswordQuitButton(event);
+			return;
+		} else if (buttonCommandId.startsWith("cancelCrossword")) {
+			CrosswordGameHandler.getInstance().handleCrosswordCancelButton(event);
+			return;
+		} else if (buttonCommandId.startsWith("hintCrossword")) {
+			CrosswordGameHandler.getInstance().handleHintButton(event);
+			return;
+		} else if (buttonCommandId.startsWith("shuffleCrossword")) {
+			CrosswordGameHandler.getInstance().handleShuffleButton(event);
+			return;
+		} else if (buttonCommandId.startsWith("extraWords")) {
+			CrosswordGameHandler.getInstance().handleExtraWordButton(event);
+			return;
+		} else if (buttonCommandId.startsWith("claimExtraWords")) {
+			UserService.getInstance().claimExtraWordCoins(event);
+			return;
+		} else if (buttonCommandId.startsWith("cancelThenNewCrossword")) {
+			CrosswordGameHandler.getInstance().handleCancelThenNewCrosswordButton(event);
+			return;
+		}
+
+		// else if (buttonCommandId.startsWith("stockTransactions")) {
+		// 	StocksHandler.getInstance().handleStockTransactionButton(event);
+		// 	return;
+		// } 
+		else if (buttonCommandId.startsWith("accelerate_")) {
 			RaceHandler.getInstance().handleAccelerate(event);
 			return;
-		} else if (commandId.startsWith("correct")) {
+		} else if (buttonCommandId.startsWith("correct")) {
 			RaceHandler.getInstance().handleCorrectSelection(event);
 			return;
-		} else if (commandId.startsWith("wrong")) {
+		} else if (buttonCommandId.startsWith("wrong")) {
 			RaceHandler.getInstance().handleWrongSelection(event);
 			return;
-		} else if (commandId.startsWith("cardButton")) {
+		} else if (buttonCommandId.startsWith("cardButton")) {
 			MemoflipHandler.getInstance().handleCardButton(event);
 			return;
-		} else if (commandId.startsWith("selectContinent")) {
+		} else if (buttonCommandId.startsWith("selectContinent")) {
 			ContinentGameHandler.getInstance().handleSelection(event);
 			return;
-		} else if (commandId.startsWith("changeDistanceUnit")) {
+		} else if (buttonCommandId.startsWith("changeDistanceUnit")) {
 			GuessDistanceHandler.getInstance().handleChangeUnitCommand(event);
 			return;
-		} else if (commandId.startsWith("cancelDistance")) {
+		} else if (buttonCommandId.startsWith("cancelDistance")) {
 			GuessDistanceHandler.getInstance().handleCancelCommand(event);
 			return;
-		} else if (commandId.startsWith("startDistance")) {
+		} else if (buttonCommandId.startsWith("startDistance")) {
 			GuessDistanceHandler.getInstance().handleStartCommand(event);
 			return;
-		} else if (commandId.startsWith("viewPlace")) {
+		} else if (buttonCommandId.startsWith("viewPlace")) {
 			LocationGameHandler.getInstance().handleViewPlaceButton(event);
 			return;
-		} else if (commandId.startsWith("skipLocation")) {
+		} else if (buttonCommandId.startsWith("skipLocation")) {
 			LocationGameHandler.getInstance().handleSkipButton(event);
 			return;
-		} else if (commandId.startsWith("selectLocation")) {
+		} else if (buttonCommandId.startsWith("selectLocation")) {
 			LocationGameHandler.getInstance().handleSelection(event);
 			return;
-		} else if (commandId.startsWith("pollUpvote")) {
+		} else if (buttonCommandId.startsWith("pollUpvote")) {
 			PrivateServerService.getInstance().handlePollUpvote(event);
 			return;
-		} else if (commandId.startsWith("pollDownvote")) {
+		} else if (buttonCommandId.startsWith("pollDownvote")) {
 			PrivateServerService.getInstance().handlePollDownvote(event);
 			return;
-		} else if (commandId.startsWith("pollViewVotes")) {
+		} else if (buttonCommandId.startsWith("pollViewVotes")) {
 			PrivateServerService.getInstance().handlePollViewVotes(event);
 			return;
-		} else if (commandId.startsWith("pollRemovevote")) {
+		} else if (buttonCommandId.startsWith("pollRemovevote")) {
 			PrivateServerService.getInstance().handleRemoveVote(event);
 			return;
-		} else if (commandId.startsWith("delete_data")) {
+		} else if (buttonCommandId.startsWith("delete_data")) {
 			UtilService.getInstance().handleConfirmDeleteButton(event);
 			return;
-		} else if (commandId.startsWith("checkRegionButton")) {
+		} else if (buttonCommandId.startsWith("checkRegionButton")) {
 			RegionHandler.getInstance().handleRegionButton(event);
 			return;
-		} else if (commandId.startsWith("help")) {
+		} else if (buttonCommandId.startsWith("help")) {
 			UtilService.getInstance().handleHelpButton(event);
 			return;
 		}
 
-		else if (commandId.startsWith("skipGuess")) {
+		else if (buttonCommandId.startsWith("skipGuess")) {
 			GuessGameHandler.getInstance().handleSkipRequest(event);
 			return;
 		}
 
-		// else if (commandId.equals("rejectBattle")) {
-		// 	FightHandler.getInstance().handleCancelButton(event);
-		// 	return;
-		// }
-
-		// else if (commandId.equals("acceptBattle")) {
-		// 	FightHandler.getInstance().handleAcceptButton(event);
-		// 	return;
-		// }
-
-		// else if (commandId.equals("punchInBattle")) {
-		// 	FightHandler.getInstance().handlePunchButton(event);
-		// 	return;
-		// }
-
-		// else if (commandId.equals("kickInBattle")) {
-		// 	FightHandler.getInstance().handleKickButton(event);
-		// 	return;
-		// }
-
-		// else if (commandId.equals("runInBattle")) {
-		// 	FightHandler.getInstance().handleRunButton(event);
-		// 	return;
-		// }
-
-		else if (commandId.equals("cancelAtlas")) {
+		else if (buttonCommandId.equals("cancelAtlas")) {
 			AtlasGameHandler.getInstance().handleCancelStartButton(event);
 			return;
 		}
@@ -364,47 +391,47 @@ public class InteractionsListener extends ListenerAdapter {
 			// return;
 		}
 
-		if (commandId.startsWith("playAgainFlag")) {
+		if (buttonCommandId.startsWith("playAgainFlag")) {
 			GuessGameHandler.getInstance().handlePlayFlagButton(event);
 			return;
 		}
 
-		else if (commandId.startsWith("playAgainMap")) {
+		else if (buttonCommandId.startsWith("playAgainMap")) {
 			GuessGameHandler.getInstance().handlePlayMapButton(event);
 			return;
 		}
 
-		else if (commandId.startsWith("playAgainLogo")) {
+		else if (buttonCommandId.startsWith("playAgainLogo")) {
 			GuessGameHandler.getInstance().handlePlayLogoButton(event);
 			return;
 		}
 
-		else if (commandId.startsWith("playAgainPlace")) {
+		else if (buttonCommandId.startsWith("playAgainPlace")) {
 			GuessGameHandler.getInstance().handlePlayPlaceButton(event);
 			return;
 		}
 
-		else if (commandId.startsWith("playAgainCapital")) {
+		else if (buttonCommandId.startsWith("playAgainCapital")) {
 			GuessGameHandler.getInstance().handlePlayCapitalButton(event);
 			return;
 		}
 
-		else if (commandId.startsWith("playAgainStateFlag_")) {
+		else if (buttonCommandId.startsWith("playAgainStateFlag_")) {
 			GuessGameHandler.getInstance().handlePlayStateFlagButton(event);
 			return;
 		}
 
-		else if (commandId.startsWith("playAgainContinent")) {
+		else if (buttonCommandId.startsWith("playAgainContinent")) {
 			ContinentGameHandler.getInstance().handlePlayCommand(event);
 			return;
 		}
 
-		else if (commandId.startsWith("playAgainLocation")) {
+		else if (buttonCommandId.startsWith("playAgainLocation")) {
 			LocationGameHandler.getInstance().handleStartGameCommand(event);
 			return;
 		}
 
-		else if (commandId.startsWith("joinAtlas")) {
+		else if (buttonCommandId.startsWith("joinAtlas")) {
 			AtlasGameHandler.getInstance().handleJoinButton(event);
 			return;
 		}

@@ -63,11 +63,12 @@ public class MetricService {
             commandMetricMap.get("atlas_quick").get(), commandMetricMap.get("atlas_rapid").get(),
             commandMetricMap.get("atlas_help").get()),
         false);
-    eb.addField("__Stocks__",
-        String.format("> List : %d\n> Sell : %d\n> Owned : %d",
-            commandMetricMap.get("stocks_list").get(),
-            commandMetricMap.get("stocks_sell").get(), commandMetricMap.get("stocks_owned").get()),
+    eb.addField("__Crossword__",
+        String.format("> Crossword slash : %d\n> Crossword button : %d",
+            commandMetricMap.get("crossword_slash").get(),
+            commandMetricMap.get("crossword_button").get()),
         true);
+
     eb.addField("__Other Commands__",
         String.format(
             "Battle : %d\nInvite : %d\nLeaderboards : %d\nBalance : %d\nVote : %d\nHelp : %d\nGive Coins : %d\n__Language__\n> set : %d\n> info : %d\n> remove : %d",
@@ -79,7 +80,7 @@ public class MetricService {
             commandMetricMap.get("language_info").get(),
             commandMetricMap.get("language_remove").get()),
         false);
-    eb.addField("Patreon Requests Sents", commandMetricMap.get("patreon_request").get()+"", false);
+    eb.addField("Patreon Requests Sents", commandMetricMap.get("patreon_request").get() + "", false);
     event.getHook().sendMessageEmbeds(eb.build()).queue();
   }
 
@@ -215,6 +216,8 @@ public class MetricService {
       case "balance":
         commandMetricMap.get("balance").incrementAndGet();
         return;
+      case "crossword":
+        commandMetricMap.get("crossword_slash").incrementAndGet();
       case "atlas":
         switch (event.getSubcommandName()) {
           case "classic":
@@ -253,6 +256,8 @@ public class MetricService {
       commandMetricMap.get("play_capital").incrementAndGet();
     } else if (buttonId.startsWith("playAgainStateFlag")) {
       commandMetricMap.get("play_stateflag").incrementAndGet();
+    } else if (buttonId.startsWith("newCrossword")) {
+      commandMetricMap.get("crossword_button").incrementAndGet();
     }
     return;
   }
@@ -267,6 +272,8 @@ public class MetricService {
     commandMetricMap.put("guess_location", new AtomicLong());
     commandMetricMap.put("guess_capital", new AtomicLong());
     commandMetricMap.put("guess_stateflag", new AtomicLong());
+    commandMetricMap.put("crossword_slash", new AtomicLong());
+    commandMetricMap.put("crossword_button", new AtomicLong());
     commandMetricMap.put("play_flag", new AtomicLong());
     commandMetricMap.put("play_map", new AtomicLong());
     commandMetricMap.put("play_logo", new AtomicLong());

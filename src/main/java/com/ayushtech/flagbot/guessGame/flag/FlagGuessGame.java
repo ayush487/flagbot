@@ -103,7 +103,7 @@ public class FlagGuessGame implements GuessGame {
     }
     StringBuilder sb = new StringBuilder();
     sb.append(event.getAuthor().getAsMention() + " is correct!\n**Coins :** `"
-        + CoinDao.getInstance().addCoinsAndGetBalance(event.getAuthor().getIdLong(), 100) + "(+100)` " + ":coin:"
+        + CoinDao.getInstance().addCoinsAndGetBalance(event.getAuthor().getIdLong(), 100) + "(+100)` " + "<:flag_coin:1472232340523843767>"
         + "  \n**Correct Answer :** " + answerString);
     if (GuessGameUtil.getInstance().hasAlternativeName(country.getCode())) {
       sb.append("\n**Alternative Answers :** " + GuessGameUtil.getInstance().getAlternativeNames(country.getCode()));

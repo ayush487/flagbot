@@ -143,7 +143,7 @@ public class LocationGameHandler {
     eb.setTitle("Correct!");
     eb.setColor(Color.green);
     eb.setDescription(
-        String.format("<@%d> selected the correct option!\n**Coins** : `%d(+100)`:coin:\n**Correct Option** : `%s`",
+        String.format("<@%d> selected the correct option!\n**Coins** : `%d(+100)`<:flag_coin:1472232340523843767>\n**Correct Option** : `%s`",
             userId,
             coins, correctAnswer));
     eb.addField("__Place Information__",

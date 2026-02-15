@@ -59,7 +59,7 @@ public abstract class AtlasGame {
     long winnerId = scoreMap.keySet().stream().sorted((a, b) -> scoreMap.get(b) - scoreMap.get(a)).findFirst()
         .orElse(0l);
     sb.append("<@" + winnerId + "> wins the game!\n");
-    sb.append(betAmount > 0 ? "**Bet** : `" + betAmount + "` :coin: \n" : "");
+    sb.append(betAmount > 0 ? "**Bet** : `" + betAmount + "` <:flag_coin:1472232340523843767> \n" : "");
     sb.append("\n__Final Standings__:\n");
     scoreMap.keySet().stream().sorted((a, b) -> scoreMap.get(b) - scoreMap.get(a)).forEach(id -> {
       sb.append("<@" + id + "> : " + scoreMap.get(id) + "\n");
@@ -193,7 +193,7 @@ public abstract class AtlasGame {
     sb.append("**Max Rounds** : `" + maxRounds + "`\n");
     sb.append("**Max Score** : `" + maxScore + "`\n");
     sb.append("**Round Time** : `" + roundTime + "s`\n");
-    sb.append("**Bet** : `" + betAmount + "` :coin: \n");
+    sb.append("**Bet** : `" + betAmount + "` <:flag_coin:1472232340523843767> \n");
     eb.addField("__Game details__", sb.toString(), false);
     return eb.build();
   }

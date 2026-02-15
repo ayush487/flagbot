@@ -37,7 +37,7 @@ public class Memoflip {
     end();
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Memory Flip");
-    eb.setDescription(String.format("**Difficulty** : `%s`\n**Turns** : `%d`\n__Reward__ : `%d` :coin:", difficulty, turns, rewards));
+    eb.setDescription(String.format("**Difficulty** : `%s`\n**Turns** : `%d`\n__Reward__ : `%d` <:flag_coin:1472232340523843767>", difficulty, turns, rewards));
     if (isTimeout) {
       eb.setFooter("Game end due to time out!");
       eb.setColor(Color.red);
@@ -51,7 +51,7 @@ public class Memoflip {
     end();
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Memory Flip");
-    eb.setDescription(String.format("**Difficulty** : `%s`\n**Turns** : `%d`\n__Reward__ : `%d` :coin:", difficulty, turns, rewards));
+    eb.setDescription(String.format("**Difficulty** : `%s`\n**Turns** : `%d`\n__Reward__ : `%d` <:flag_coin:1472232340523843767>", difficulty, turns, rewards));
     eb.setFooter("You win!");
     eb.setColor(Color.green);
     ActionRow[] rows = MemoflipHandler.getInstance().getButtonsAsDisabled(cards);

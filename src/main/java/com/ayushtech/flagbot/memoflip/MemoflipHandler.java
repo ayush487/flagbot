@@ -92,7 +92,7 @@ public class MemoflipHandler {
     }
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Memory Flip");
-    eb.setDescription("**Difficulty** : `Easy`\n__Rewards__ : `300` :coin:");
+    eb.setDescription("**Difficulty** : `Easy`\n__Rewards__ : `300` <:flag_coin:1472232340523843767>");
     eb.setColor(Color.BLUE);
     ActionRow[] rows = getButtons(gameCards, event.getUser().getIdLong());
     event.getHook().sendMessageEmbeds(eb.build())
@@ -123,7 +123,7 @@ public class MemoflipHandler {
     }
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Memory Flip");
-    eb.setDescription("**Difficulty** : `Medium`\n__Rewards__ : `600` :coin:");
+    eb.setDescription("**Difficulty** : `Medium`\n__Rewards__ : `600` <:flag_coin:1472232340523843767>");
     eb.setColor(Color.BLUE);
     ActionRow[] rows = getButtons(gameCards, event.getUser().getIdLong());
     event.getHook().sendMessageEmbeds(eb.build())
@@ -158,7 +158,7 @@ public class MemoflipHandler {
     }
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Memory Flip");
-    eb.setDescription("**Difficulty** : `HARD`\n__Rewards__ : `1000` :coin:");
+    eb.setDescription("**Difficulty** : `HARD`\n__Rewards__ : `1000` <:flag_coin:1472232340523843767>");
     eb.setColor(Color.BLUE);
     ActionRow[] rows = getButtons(gameCards, event.getUser().getIdLong());
     event.getHook().sendMessageEmbeds(eb.build())
@@ -191,7 +191,7 @@ public class MemoflipHandler {
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Memory Flip");
     eb.setDescription(String.format("**Difficulty** : `%s`\n**Turns** : `%d`", game.getDifficulty(), game.getTurns()));
-    eb.setDescription(String.format("**Difficulty** : `%s`\n**Turns** : `%d`\n__Reward__ : `%d` :coin:",
+    eb.setDescription(String.format("**Difficulty** : `%s`\n**Turns** : `%d`\n__Reward__ : `%d` <:flag_coin:1472232340523843767>",
         game.getDifficulty(), game.getTurns(), game.getRewards()));
     eb.setColor(Color.BLUE);
     if (game.isCardSelected()) {

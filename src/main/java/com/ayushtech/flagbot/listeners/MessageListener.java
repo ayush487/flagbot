@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.ayushtech.flagbot.atlas.AtlasGameHandler;
+import com.ayushtech.flagbot.crossword.CrosswordGameHandler;
 import com.ayushtech.flagbot.distanceGuess.GuessDistanceHandler;
 import com.ayushtech.flagbot.guessGame.GuessGameHandler;
 import com.ayushtech.flagbot.services.CaptchaService;
@@ -11,7 +12,6 @@ import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.PrivateServerService;
 import com.ayushtech.flagbot.services.VotingService;
 
-import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -21,7 +21,7 @@ public class MessageListener extends ListenerAdapter {
     private Map<String, String> alternateNamesMap;
     private String[] keywords = { "link", "games", "download game" };
     private long privateServerId = 1465232854681129065l;
-    private long webhook_channel = 1118507065439174677l;
+    // private long webhook_channel = 1118507065439174677l;
     private long newPledgeChannel = 1263027212194414644l;
     private long updatePledgeChannel = 1263027292322529301l;
 
@@ -39,12 +39,14 @@ public class MessageListener extends ListenerAdapter {
             String voter_id = event.getMessage().getContentDisplay();
             VotingService.getInstance().voteUser(event.getJDA(), voter_id);
             return;
-        } else if (channelId == webhook_channel) {
-            event.getMessage().addReaction(Emoji.fromUnicode("U+1F44D")).queue();
-            event.getMessage().addReaction(Emoji.fromUnicode("U+1F937")).queue();
-            event.getMessage().addReaction(Emoji.fromUnicode("U+1F44E")).queue();
-            return;
-        } else if (channelId == newPledgeChannel || channelId == updatePledgeChannel) {
+        }
+        //  else if (channelId == webhook_channel) {
+        //     event.getMessage().addReaction(Emoji.fromUnicode("U+1F44D")).queue();
+        //     event.getMessage().addReaction(Emoji.fromUnicode("U+1F937")).queue();
+        //     event.getMessage().addReaction(Emoji.fromUnicode("U+1F44E")).queue();
+        //     return;
+        // } 
+        else if (channelId == newPledgeChannel || channelId == updatePledgeChannel) {
             String patreonId = event.getMessage().getContentDisplay();
             PatreonService.getInstance().addNewPatron(event.getJDA(), Long.parseLong(patreonId));
         }
@@ -72,6 +74,11 @@ public class MessageListener extends ListenerAdapter {
         // return;
         // }
         // }
+
+        if (CrosswordGameHandler.getInstance().isActiveGame(event.getAuthor().getIdLong(),
+                event.getChannel().getIdLong())) {
+            CrosswordGameHandler.getInstance().inspectAnswer(event);
+        }
 
         if (messageText.startsWith("f!set correct_guess")) {
             PatreonService.getInstance().setReactionsForCorrectGuess(event);

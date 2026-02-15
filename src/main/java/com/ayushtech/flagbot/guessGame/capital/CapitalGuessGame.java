@@ -67,7 +67,7 @@ public class CapitalGuessGame implements GuessGame {
     StringBuilder sb = new StringBuilder();
     sb.append(event.getAuthor().getAsMention() + " is correct!\n");
     long userBalance = CoinDao.getInstance().addCoinsAndGetBalance(event.getAuthor().getIdLong(), 100);
-    sb.append(String.format("**Coins** : `%d(+100)` :coin:\n", userBalance));
+    sb.append(String.format("**Coins** : `%d(+100)` <:flag_coin:1472232340523843767>\n", userBalance));
     sb.append(String.format("**Country** : %s\n**Capital** : `%s`\n", capital.getCountry(), capital.getCapital()));
     sb.append(String.format("**Time Taken** : `%s`", getTimeTook()));
     eb.setDescription(sb.toString());

@@ -63,7 +63,7 @@ public class LogoGuessGame implements GuessGame {
     eb.setTitle("Correct!");
     long userBalance = CoinDao.getInstance().addCoinsAndGetBalance(event.getAuthor().getIdLong(), 100);
     StringBuilder sb = new StringBuilder(event.getAuthor().getAsMention() + " is correct!\n**Coins :** `"
-        + userBalance + "(+100)` " + ":coin:" + "  \n **Correct Answer :** " + brandName);
+        + userBalance + "(+100)` " + "<:flag_coin:1472232340523843767>" + "  \n **Correct Answer :** " + brandName);
     sb.append("\n**Time Taken :** " + getTimeTook());
     eb.setDescription(sb.toString());
     eb.setThumbnail(

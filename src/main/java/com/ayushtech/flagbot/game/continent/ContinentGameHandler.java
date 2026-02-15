@@ -95,7 +95,7 @@ public class ContinentGameHandler {
         String.format("https://raw.githubusercontent.com/ayush487/image-library/main/flags/%s.png", countryCode));
     eb.setTitle("Correct!");
     eb.setDescription(
-        String.format("<@%d> is correct\n**Coins :** `%d(+100)` :coin:\n**Country :** `%s`\n**Continent :** `%s`",
+        String.format("<@%d> is correct\n**Coins :** `%d(+100)` <:flag_coin:1472232340523843767>\n**Country :** `%s`\n**Continent :** `%s`",
             userId,
             userBalance, GuessGameUtil.getInstance().getCountryName(countryCode),
             continentMapping.get(continentCode)));

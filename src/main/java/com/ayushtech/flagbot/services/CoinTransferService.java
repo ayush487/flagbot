@@ -39,11 +39,11 @@ public class CoinTransferService {
     if (senderBalance < amount) {
       eb.setColor(Color.red);
       eb.setTitle("Not enough balance");
-      eb.setDescription("You only have `" + senderBalance + "` :coin:");
+      eb.setDescription("You only have `" + senderBalance + "` <:flag_coin:1472232340523843767>");
     } else {
       eb.setColor(Color.green);
       eb.setTitle("Sent successfully!");
-      eb.setDescription("You sent `" + amount + "` :coin: to <@" + receiverId + ">");
+      eb.setDescription("You sent `" + amount + "` <:flag_coin:1472232340523843767> to <@" + receiverId + ">");
       CoinDao.getInstance().addCoins(senderId, amount * -1);
       CoinDao.getInstance().addCoins(receiverId, amount);
     }

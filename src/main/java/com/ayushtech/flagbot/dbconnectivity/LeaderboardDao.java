@@ -37,7 +37,7 @@ public class LeaderboardDao {
 	public String getPlayers(JDA jda, int players) {
 		try {
 			Connection conn = ConnectionProvider.getConnection();
-			PreparedStatement ps = conn.prepareStatement("select * from coin_table order by coins desc limit ?;");
+			PreparedStatement ps = conn.prepareStatement("select * from user_table order by coins desc limit ?;");
 			ps.setInt(1, players);
 			ResultSet rs = ps.executeQuery();
 			StringBuffer sb = new StringBuffer();

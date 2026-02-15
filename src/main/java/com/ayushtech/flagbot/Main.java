@@ -16,8 +16,8 @@ import com.ayushtech.flagbot.services.ChannelService;
 import com.ayushtech.flagbot.services.LanguageService;
 import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.PrivateServerService;
+import com.ayushtech.flagbot.services.UtilService;
 import com.ayushtech.flagbot.services.VotingService;
-import com.ayushtech.flagbot.stocks.StocksHandler;
 
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -41,6 +41,8 @@ public class Main {
                 final String voterWebhookUrl = properties.getProperty("vote_reward_logs");
                 final String joinUpdateWebhookUrl = properties.getProperty("private_updates");
                 final String patreonWebhookUrl = properties.getProperty("patreon_logs");
+                final String wordAdderWebhook = properties.getProperty("WORD_ADDER_WEBHOOK");
+                final String wordRemoverWebhook = properties.getProperty("WORD_REMOVER_WEBHOOK");
 
                 final int adminThreshold = Integer.parseInt(properties.getProperty("adminThreshold"));
                 final int modThreshold = Integer.parseInt(properties.getProperty("modThreshold"));
@@ -55,7 +57,8 @@ public class Main {
                 GuildEventListener.setJoinUpdateWebhookUrl(joinUpdateWebhookUrl);
                 PatreonService.getInstance().setPatreonWebhookUrl(patreonWebhookUrl);
                 VotingService.setVotingWebhookUrl(voterWebhookUrl);
-                StocksHandler.loadInitialPriceMap();
+                UtilService.getInstance().setWordAdderWebhookUrl(wordAdderWebhook);
+                UtilService.getInstance().setWordRemovedWebhookUrl(wordRemoverWebhook);
                 LanguageService.getInstance();
                 GuessGameUtil.getInstance();
                 VotingService.getInstance();

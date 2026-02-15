@@ -48,11 +48,11 @@ public class VotingService {
     String dmMsg;
     boolean isWeekend = isWeekend();
     if (isWeekend) {
-      dmMsg = ":heart: **|** Thanks for voting us on [top.gg](<https://top.gg/bot/1129789320165867662/vote>)\n:money_with_wings: **|** You received 1000 :coin: as reward!\n:fireworks: **|** Since it's a weekend, you receive 1000 :coin: extra!";
-      CoinDao.getInstance().addCoins(Long.parseLong(voter_id), 2000l);
+      dmMsg = ":heart: **|** Thanks for voting us on [top.gg](<https://top.gg/bot/1129789320165867662/vote>)\n:money_with_wings: **|** You received 1000 <:flag_coin:1472232340523843767> & 100 <:word_coin:1472270316007981301> as reward!\n:fireworks: **|** Since it's a weekend, you received double rewards!";
+      CoinDao.getInstance().addCoins(Long.parseLong(voter_id), 2000l, 200);
     } else {
-      CoinDao.getInstance().addCoins(Long.parseLong(voter_id), 1000l);
-      dmMsg = ":heart: **|** Thanks for voting us on [top.gg](<https://top.gg/bot/1129789320165867662/vote>)\n:money_with_wings: **|** You received 1000 :coin: as reward!";
+      CoinDao.getInstance().addCoins(Long.parseLong(voter_id), 1000l, 100);
+      dmMsg = ":heart: **|** Thanks for voting us on [top.gg](<https://top.gg/bot/1129789320165867662/vote>)\n:money_with_wings: **|** You received 1000 <:flag_coin:1472232340523843767> & 100 <:word_coin:1472270316007981301> as reward!";
     }
     voteData.put(Long.parseLong(voter_id), System.currentTimeMillis());
     jda.retrieveUserById(voter_id).queue(voter -> {
