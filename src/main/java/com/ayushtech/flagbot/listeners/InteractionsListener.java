@@ -22,6 +22,7 @@ import com.ayushtech.flagbot.services.PrivateServerService;
 import com.ayushtech.flagbot.services.UserService;
 import com.ayushtech.flagbot.services.UtilService;
 import com.ayushtech.flagbot.services.VotingService;
+import com.ayushtech.flagbot.utils.LeaderboardHandler;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -122,7 +123,7 @@ public class InteractionsListener extends ListenerAdapter {
 		}
 
 		else if (slashCommandName.equals("leaderboards")) {
-			UtilService.getInstance().handleLeaderboardCommand(event);
+			LeaderboardHandler.getInstance().handleLeaderboardCommand(event);
 			return;
 		}
 
@@ -371,6 +372,9 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		} else if (buttonCommandId.startsWith("help")) {
 			UtilService.getInstance().handleHelpButton(event);
+			return;
+		} else if(buttonCommandId.startsWith("lb_")) {
+			LeaderboardHandler.getInstance().handleLeaderboardButton(event);
 			return;
 		}
 

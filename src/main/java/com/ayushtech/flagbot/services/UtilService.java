@@ -16,13 +16,11 @@ import com.ayushtech.flagbot.crossword.CrosswordGameHandler;
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.dbconnectivity.UserDao;
 import com.ayushtech.flagbot.distanceGuess.GuessDistanceHandler;
-import com.ayushtech.flagbot.game.LeaderboardHandler;
 import com.ayushtech.flagbot.game.continent.ContinentGameHandler;
 import com.ayushtech.flagbot.game.location.LocationGameHandler;
 import com.ayushtech.flagbot.guessGame.GuessGameHandler;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -202,20 +200,20 @@ public class UtilService {
 
   }
 
-  public void handleLeaderboardCommand(SlashCommandInteractionEvent event) {
-    JDA jda = event.getJDA();
-    int optInt = 5;
-    OptionMapping optSize = event.getOption("size");
-    if (optSize != null) {
-      optInt = optSize.getAsInt();
-    }
-    int lbSize = optInt >= 25 ? 25 : (optInt <= 5) ? 5 : optInt;
-    CompletableFuture.runAsync(() -> {
-      String temp = LeaderboardHandler.getInstance().getLeaderboard(jda, lbSize);
-      String leaderboard = temp != null ? temp : "Something went wrong!";
-      event.getHook().sendMessage(leaderboard).queue();
-    });
-  }
+  // public void handleLeaderboardCommand(SlashCommandInteractionEvent event) {
+  //   JDA jda = event.getJDA();
+  //   int optInt = 5;
+  //   OptionMapping optSize = event.getOption("size");
+  //   if (optSize != null) {
+  //     optInt = optSize.getAsInt();
+  //   }
+  //   int lbSize = optInt >= 25 ? 25 : (optInt <= 5) ? 5 : optInt;
+  //   CompletableFuture.runAsync(() -> {
+  //     String temp = LeaderboardHandler.getInstance().getLeaderboard(jda, lbSize);
+  //     String leaderboard = temp != null ? temp : "Something went wrong!";
+  //     event.getHook().sendMessage(leaderboard).queue();
+  //   });
+  // }
 
   public void handleInviteCommand(InteractionHook hook) {
     EmbedBuilder eb = new EmbedBuilder();
@@ -344,7 +342,7 @@ public class UtilService {
     description.append("**/help config :** `info about bot configuration into the server`");
     eb.setDescription(description.toString());
     StringBuilder sb = new StringBuilder();
-    sb.append("`/leaderboards` : Check the global leaderboard (upto top 25)\n");
+    sb.append("`/leaderboards` : Check the global leaderboard\n");
     sb.append("`/invite` : Invite the bot to your server\n");
     sb.append("`/balance` : You can see your coins and rank\n");
     sb.append("`/give coins` : Send coins to other users.\n");
