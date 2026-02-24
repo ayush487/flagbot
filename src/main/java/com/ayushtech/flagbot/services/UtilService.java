@@ -79,6 +79,9 @@ public class UtilService {
     eb.setColor(Color.YELLOW);
     eb.setThumbnail(user.getAvatarUrl());
     hook.sendMessageEmbeds(eb.build()).setEphemeral(false).queue();
+    CompletableFuture.runAsync(() -> {
+      UserDao.getInstance().updateUsername(user.getIdLong(), user.getName());
+    });
   }
 
   public void handleEnableCommand(SlashCommandInteractionEvent event) {
@@ -199,21 +202,6 @@ public class UtilService {
         .queue();
 
   }
-
-  // public void handleLeaderboardCommand(SlashCommandInteractionEvent event) {
-  //   JDA jda = event.getJDA();
-  //   int optInt = 5;
-  //   OptionMapping optSize = event.getOption("size");
-  //   if (optSize != null) {
-  //     optInt = optSize.getAsInt();
-  //   }
-  //   int lbSize = optInt >= 25 ? 25 : (optInt <= 5) ? 5 : optInt;
-  //   CompletableFuture.runAsync(() -> {
-  //     String temp = LeaderboardHandler.getInstance().getLeaderboard(jda, lbSize);
-  //     String leaderboard = temp != null ? temp : "Something went wrong!";
-  //     event.getHook().sendMessage(leaderboard).queue();
-  //   });
-  // }
 
   public void handleInviteCommand(InteractionHook hook) {
     EmbedBuilder eb = new EmbedBuilder();

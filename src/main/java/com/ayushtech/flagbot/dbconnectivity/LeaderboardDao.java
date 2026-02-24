@@ -11,72 +11,15 @@ import com.ayushtech.flagbot.utils.LbEntry;
 
 public class LeaderboardDao {
 
-	// private String[] spaceArray = {
-	// "",
-	// " ",
-	// " ",
-	// " ",
-	// " ",
-	// " ",
-	// " ",
-	// " ",
-	// " ",
-	// " ",
-	// " ",
-	// " ",
-	// " ",
-	// " ",
-	// " ",
-	// " ",
-	// " ",
-	// " ",
-	// " ",
-	// " ",
-	// " ",
-	// " "
-	// };
-
-	// public String getPlayers(JDA jda, int players) {
-	// try {
-	// Connection conn = ConnectionProvider.getConnection();
-	// PreparedStatement ps = conn.prepareStatement("select * from user_table order
-	// by coins desc limit ?;");
-	// ps.setInt(1, players);
-	// ResultSet rs = ps.executeQuery();
-	// StringBuffer sb = new StringBuffer();
-	// int index = 1;
-	// long start = System.currentTimeMillis();
-	// while (rs.next()) {
-	// long userId = rs.getLong("user_id");
-	// long amount = rs.getLong("coins");
-
-	// String userTagName = jda.retrieveUserById(userId)
-	// .map(user -> user.getName())
-	// .complete();
-	// int spaces = (18 - userTagName.length()) > 1 ? (18 - userTagName.length()) :
-	// 1;
-	// sb.append("\n" + index + ". " + userTagName + spaceArray[spaces] + amount + "
-	// Coins");
-	// index++;
-	// }
-	// long end = System.currentTimeMillis();
-	// System.out.println(end - start);
-	// return sb.toString();
-	// } catch (SQLException exception) {
-	// exception.printStackTrace();
-	// return null;
-	// }
-	// }
-
 	public List<LbEntry> getPlayersBasedOnCoins(int size, long offset) {
 		Connection conn = ConnectionProvider.getConnection();
 		try {
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(String.format(
-					"SELECT user_id, coins from user_table order by coins desc limit %d offset %d;", size, offset));
+					"SELECT user_id, coins, username from user_table order by coins desc limit %d offset %d;", size, offset));
 			ArrayList<LbEntry> entries = new ArrayList<>();
 			while (rs.next()) {
-				var entry = new LbEntry(++offset, rs.getLong("user_id"), rs.getLong("coins"));
+				var entry = new LbEntry(++offset, rs.getLong("user_id"), rs.getLong("coins"), rs.getString("username"));
 				entries.add(entry);
 			}
 			return entries;
@@ -91,10 +34,10 @@ public class LeaderboardDao {
 		try {
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(String.format(
-					"SELECT user_id, level from user_table order by level desc limit %d offset %d;", size, offset));
+					"SELECT user_id, level, username from user_table order by level desc limit %d offset %d;", size, offset));
 			ArrayList<LbEntry> entries = new ArrayList<>();
 			while (rs.next()) {
-				var entry = new LbEntry(++offset, rs.getLong("user_id"), rs.getInt("level"));
+				var entry = new LbEntry(++offset, rs.getLong("user_id"), rs.getInt("level"), rs.getString("username"));
 				entries.add(entry);
 			}
 			return entries;
@@ -146,6 +89,19 @@ public class LeaderboardDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return 0;
+		}
+	}
+
+	public void updateUsernames(List<LbEntry> entries) {
+		Connection conn = ConnectionProvider.getConnection();
+		try {
+			Statement stmt = conn.createStatement();
+			for (LbEntry entry : entries) {
+				stmt.addBatch(String.format("update user_table set username='%s' where user_id=%d;", entry.getName(), entry.getUserId()));
+			}
+			stmt.executeBatch();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 }

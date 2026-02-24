@@ -5,10 +5,11 @@ public class LbEntry {
     private long userId;
     private String name;
     private long score;
-    public LbEntry(long rank, long userId, long score) {
+    public LbEntry(long rank, long userId, long score, String name) {
         this.rank = rank;
         this.userId = userId;
         this.score = score;
+        this.name = name;
     }
     public long getRank() {
         return rank;

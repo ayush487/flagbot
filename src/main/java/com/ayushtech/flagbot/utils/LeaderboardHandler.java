@@ -88,13 +88,17 @@ public class LeaderboardHandler {
 
 	private void getUsernames(JDA jda, List<LbEntry> userEntries, LbData lbData, long userId) {
 		List<CompletableFuture<Void>> futures = new ArrayList<>();
+		List<LbEntry> updateList = new ArrayList<>();
 		for (LbEntry entry : userEntries) {
+			if (entry.getName() != null)
+				continue;
 			var future = CompletableFuture.runAsync(() -> {
 				User user = jda.getUserById(entry.getUserId());
 				if (user == null) {
 					user = jda.retrieveUserById(entry.getUserId()).complete();
 				}
 				entry.setName(user != null ? user.getName() : "UnknownUser");
+				updateList.add(entry);
 			});
 			futures.add(future);
 		}
@@ -116,8 +120,16 @@ public class LeaderboardHandler {
 			});
 			futures.add(cf);
 		}
-
 		CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+		updateEntries(updateList);
+	}
+
+	private void updateEntries(List<LbEntry> updateList) {
+		if (updateList.isEmpty())
+			return;
+		CompletableFuture.runAsync(() -> {
+			dao.updateUsernames(updateList);
+		});
 	}
 
 	private MessageEmbed createLeaderboardEmbed(LbData leaderboardData, String type, User user) {

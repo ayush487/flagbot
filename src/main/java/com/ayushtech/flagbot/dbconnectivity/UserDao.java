@@ -4,12 +4,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import com.ayushtech.flagbot.services.UtilService;
-import com.ayushtech.flagbot.utils.UserRecord;
 
 public class UserDao {
 	private static UserDao instance = null;
@@ -100,18 +97,6 @@ public class UserDao {
 		}
 	}
 
-	// public void addCoins(long userId, int coins) {
-	// 	Connection conn = ConnectionProvider.getConnection();
-	// 	try {
-	// 		Statement stmt = conn.createStatement();
-	// 		stmt.executeUpdate(String.format(
-	// 				"INSERT INTO users (id, coins) VALUES (%d, %d) ON DUPLICATE KEY UPDATE coins = coins + VALUES(coins);",
-	// 				userId, coins));
-	// 	} catch (SQLException e) {
-	// 		e.printStackTrace();
-	// 	}
-	// }
-
 	// public void updateUserLastDailyDate(long userId) {
 	// 	Connection conn = ConnectionProvider.getConnection();
 	// 	try {
@@ -163,15 +148,13 @@ public class UserDao {
 		return false;
 	}
 
-	public List<UserRecord> getTopUsersBasedOnLevel(int limit) throws SQLException {
+	public void updateUsername(long userId, String username) {
 		Connection conn = ConnectionProvider.getConnection();
-		Statement stmt = conn.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT user_id,level FROM user_table ORDER BY level DESC LIMIT " + limit + ";");
-		List<UserRecord> records = new ArrayList<>(limit);
-		while (rs.next()) {
-			records.add(new UserRecord(rs.getLong("user_id"), rs.getInt("level")-1));
+		try {
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(String.format("UPDATE user_table SET username='%s' WHERE user_id=%d;", username, userId));
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-		return records;
 	}
-
 }
