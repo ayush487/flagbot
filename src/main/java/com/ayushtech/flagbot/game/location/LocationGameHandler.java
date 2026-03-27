@@ -9,12 +9,12 @@ import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.VotingService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class LocationGameHandler {
   private static LocationGameHandler locationGameHandler = null;
@@ -44,7 +44,7 @@ public class LocationGameHandler {
     if (!VotingService.getInstance().isUserVoted(userId) && !PatreonService.getInstance().isUserPatron(userId)) {
       event.getHook()
           .sendMessage("This command is only for patreon supporters or users who have voted for us in last 24 hours!")
-          .addActionRow(Button.link("https://top.gg/bot/1129789320165867662/vote", "Vote")).queue();
+          .addComponents(ActionRow.of(Button.link("https://top.gg/bot/1129789320165867662/vote", "Vote"))).queue();
       return;
     }
     LocationMap locationMap = PlacesDao.getInstance().getRandomPlaceMap();
@@ -55,7 +55,7 @@ public class LocationGameHandler {
     long userId = event.getUser().getIdLong();
     if (!VotingService.getInstance().isUserVoted(userId) && !PatreonService.getInstance().isUserPatron(userId)) {
       event.reply("This command is only for patreon supporters or users who have voted for us in last 24 hours!")
-          .addActionRow(Button.link("https://top.gg/bot/1129789320165867662/vote", "Vote")).queue();
+          .addComponents(ActionRow.of(Button.link("https://top.gg/bot/1129789320165867662/vote", "Vote"))).queue();
       return;
     }
     event.deferReply().queue();
@@ -86,7 +86,7 @@ public class LocationGameHandler {
       Place place = PlacesDao.getInstance().getPlace(placeCode);
       long balance = CoinDao.getInstance().addCoinsAndGetBalance(actionUser, 100l);
       event.getHook().sendMessageEmbeds(getWinNotifyEmbed(actionUser, correct, place, balance))
-          .addActionRow(Button.primary("playAgainLocation", "Play Again")).queue();
+          .addComponents(ActionRow.of(Button.primary("playAgainLocation", "Play Again"))).queue();
 
     } else {
       event.editMessageEmbeds(getEmbed(mapCode, placeCode, userAvatar, Color.red, username + " selected wrong option"))
@@ -94,7 +94,7 @@ public class LocationGameHandler {
           .queue();
       Place place = PlacesDao.getInstance().getPlace(placeCode);
       event.getHook().sendMessageEmbeds(getLoseNotifyEmbed(actionUser, correct, place))
-          .addActionRow(Button.primary("playAgainLocation", "Play Again")).queue();
+          .addComponents(ActionRow.of(Button.primary("playAgainLocation", "Play Again"))).queue();
     }
   }
 

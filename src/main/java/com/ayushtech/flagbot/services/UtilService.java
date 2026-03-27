@@ -22,6 +22,8 @@ import com.ayushtech.flagbot.guessGame.GuessGameHandler;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
@@ -32,8 +34,6 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -198,7 +198,7 @@ public class UtilService {
     eb.setFooter("You can vote every 12 hours");
     eb.setColor(Color.GREEN);
     hook.sendMessageEmbeds(eb.build())
-        .addActionRow(Button.link("https://top.gg/bot/1129789320165867662/vote", "Top.gg"))
+        .addComponents(ActionRow.of(Button.link("https://top.gg/bot/1129789320165867662/vote", "Top.gg")))
         .queue();
 
   }
@@ -214,9 +214,9 @@ public class UtilService {
     eb.addBlankField(true);
     eb.addField("Support Server", "[here](https://discord.gg/MASMYsNCT9)", true);
     hook.sendMessageEmbeds(eb.build())
-        .addActionRow(Button.link(
+        .addComponents(ActionRow.of(Button.link(
             "https://discord.com/api/oauth2/authorize?client_id=1129789320165867662&permissions=85056&scope=bot+applications.commands",
-            "Add Flag bot to your server"), Button.link("https://top.gg/bot/1129789320165867662/vote", "❤️Vote"))
+            "Add Flag bot to your server"), Button.link("https://top.gg/bot/1129789320165867662/vote", "❤️Vote")))
         .queue();
   }
 
@@ -270,8 +270,8 @@ public class UtilService {
     int prevPage = page == 1 ? 7 : page - 1;
     int nextPage = page == 7 ? 1 : page + 1;
     event.getHook().sendMessageEmbeds(embed)
-        .addActionRow(Button.secondary("help_" + prevPage, Emoji.fromFormatted("<:left_tri:1471426605263097999>")),
-            Button.secondary("help_" + nextPage, Emoji.fromFormatted("<:right_tri:1471426673131126954>")))
+        .addComponents(ActionRow.of(Button.secondary("help_" + prevPage, Emoji.fromFormatted("<:left_tri:1471426605263097999>")),
+            Button.secondary("help_" + nextPage, Emoji.fromFormatted("<:right_tri:1471426673131126954>"))))
         .queue();
   }
 
@@ -308,10 +308,10 @@ public class UtilService {
     int prevPage = helpPage == 1 ? 7 : helpPage - 1;
     int nextPage = helpPage == 7 ? 1 : helpPage + 1;
     event.editMessageEmbeds(embed)
-        .setActionRow(Button.link("https://discord.gg/RqvTRMmVgR", "Support Server"),
-            Button.link("https://top.gg/bot/1129789320165867662/vote", "❤️Vote"))
-        .setActionRow(Button.secondary("help_" + prevPage, Emoji.fromFormatted("<:left_tri:1471426605263097999>")),
-            Button.secondary("help_" + nextPage, Emoji.fromFormatted("<:right_tri:1471426673131126954>")))
+        .setComponents(ActionRow.of(Button.link("https://discord.gg/RqvTRMmVgR", "Support Server"),
+            Button.link("https://top.gg/bot/1129789320165867662/vote", "❤️Vote")),
+            ActionRow.of(Button.secondary("help_" + prevPage, Emoji.fromFormatted("<:left_tri:1471426605263097999>")),
+            Button.secondary("help_" + nextPage, Emoji.fromFormatted("<:right_tri:1471426673131126954>"))))
         .queue();
   }
 

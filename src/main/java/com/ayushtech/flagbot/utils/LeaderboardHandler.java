@@ -10,12 +10,13 @@ import com.ayushtech.flagbot.dbconnectivity.LeaderboardDao;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class LeaderboardHandler {
 
@@ -42,11 +43,11 @@ public class LeaderboardHandler {
 			leaderboardData = getLeaderboardDataLevels(event.getJDA(), 10, 0, event.getUser().getIdLong());
 		}
 		event.getHook().sendMessageEmbeds(createLeaderboardEmbed(leaderboardData, subcommandName, event.getUser()))
-				.addActionRow(createButtonPrev5(0, leaderboardData.getTotalCount(), subcommandName),
+				.addComponents(ActionRow.of(createButtonPrev5(0, leaderboardData.getTotalCount(), subcommandName),
 						createButtonPrev1(0, leaderboardData.getTotalCount(), subcommandName),
 						createButtonMyRank(subcommandName, leaderboardData.getUserRank()),
 						createButtonNext1(0, leaderboardData.getTotalCount(), subcommandName),
-						createButtonNext5(0, leaderboardData.getTotalCount(), subcommandName))
+						createButtonNext5(0, leaderboardData.getTotalCount(), subcommandName)))
 				.queue();
 	}
 
@@ -62,11 +63,11 @@ public class LeaderboardHandler {
 			leaderboardData = getLeaderboardDataLevels(event.getJDA(), 10, offset, event.getUser().getIdLong());
 		}
 		event.getHook().editOriginalEmbeds(createLeaderboardEmbed(leaderboardData, subcommandName, event.getUser()))
-				.setActionRow(createButtonPrev5(offset, leaderboardData.getTotalCount(), subcommandName),
+				.setComponents(ActionRow.of(createButtonPrev5(offset, leaderboardData.getTotalCount(), subcommandName),
 						createButtonPrev1(offset, leaderboardData.getTotalCount(), subcommandName),
 						createButtonMyRank(subcommandName, leaderboardData.getUserRank()),
 						createButtonNext1(offset, leaderboardData.getTotalCount(), subcommandName),
-						createButtonNext5(offset, leaderboardData.getTotalCount(), subcommandName))
+						createButtonNext5(offset, leaderboardData.getTotalCount(), subcommandName)))
 				.queue();
 	}
 

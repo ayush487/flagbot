@@ -8,10 +8,11 @@ import java.util.stream.Collectors;
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public abstract class AtlasGame {
   private long hostId;
@@ -91,9 +92,11 @@ public abstract class AtlasGame {
 
   void startGame() {
     this.isGameStarted = true;
+
     this.channel.retrieveMessageById(startgameMessageId).queue(message -> {
       message.editMessage(scoreMap.keySet().stream().map(id -> "<@" + id + ">").collect(Collectors.joining(" ")))
-          .setEmbeds(getGameStartedEmbed()).setActionRow(Button.success("g", "Game Started").asDisabled()).queue();
+          .setEmbeds(getGameStartedEmbed())
+          .setComponents(ActionRow.of(Button.success("g", "Game Started").asDisabled())).queue();
     });
     startNewRound();
   }
@@ -146,8 +149,8 @@ public abstract class AtlasGame {
         false);
     eb.setFooter(reason);
     event.editMessageEmbeds(eb.build())
-        .setActionRow(Button.success("joinAtlas", "Join").asDisabled(),
-            Button.danger("cancelAtlas", "Cancel").asDisabled())
+        .setComponents(ActionRow.of(Button.success("joinAtlas", "Join").asDisabled(),
+            Button.danger("cancelAtlas", "Cancel").asDisabled()))
         .queue();
     return true;
   }

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -13,14 +14,14 @@ import java.util.concurrent.TimeUnit;
 import com.ayushtech.flagbot.dbconnectivity.PollsDao;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class PrivateServerService {
 
@@ -255,7 +256,7 @@ public class PrivateServerService {
   private String getOnlineFileContent(String fileUrl) {
     StringBuilder content = new StringBuilder();
     try {
-      URL url = new URL(fileUrl);
+      URL url = URI.create(fileUrl).toURL();
       BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
       String line;
       while ((line = reader.readLine()) != null) {

@@ -6,9 +6,9 @@ import java.util.Optional;
 import com.ayushtech.flagbot.dbconnectivity.UserDao;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class UserService {
   private static UserService instance = null;

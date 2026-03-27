@@ -8,12 +8,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class Race {
   private RaceType type;
@@ -73,7 +73,7 @@ public class Race {
         .forEach(racer -> eb.addField("__" + racer.getName() + "__",
             getGraphicalView(racer.getDistance(), racer.getCar()), false));
     event.editMessageEmbeds(eb.build())
-        .setActionRow(Button.primary("accelerate_" + type, Emoji.fromCustom("pedal", 1224246451639681054l, false)))
+        .setComponents(ActionRow.of(Button.primary("accelerate_" + type, Emoji.fromCustom("pedal", 1224246451639681054l, false))))
         .queue();
     return this;
   }
@@ -89,7 +89,7 @@ public class Race {
     eb.setDescription(String.format("__**Type**__ : **%s**", type));
     eb.setFooter("Race canclled!");
     eb.addField("__Participants__", getParticipantsAsString(), false);
-    event.editMessageEmbeds(eb.build()).setActionRow(Button.danger("cancelled", "Cancelled").asDisabled())
+    event.editMessageEmbeds(eb.build()).setComponents(ActionRow.of(Button.danger("cancelled", "Cancelled").asDisabled()))
         .queue();
     return true;
   }
@@ -123,7 +123,7 @@ public class Race {
     eb.setTitle("Race cancelled due to no response");
     eb.setDescription(String.format("__**Type**__ : **%s**", type));
     eb.addField("__Participants__", getParticipantsAsString(), false);
-    message.editMessageEmbeds(eb.build()).setActionRow(Button.danger("cancelled", "Timed Out").asDisabled()).queue();
+    message.editMessageEmbeds(eb.build()).setComponents(ActionRow.of(Button.danger("cancelled", "Timed Out").asDisabled())).queue();
   }
 
   public void endRaceAsTimeout() {
@@ -134,8 +134,8 @@ public class Race {
     racers
         .forEach(r -> eb.addField("__" + racerMap.get(r).getName() + "__", racerMap.get(r).getDistance() + "m", false));
     message.editMessageEmbeds(eb.build())
-        .setActionRow(
-            Button.danger("accelerate_" + type, Emoji.fromCustom("pedal", 1224246451639681054l, false)).asDisabled())
+        .setComponents(ActionRow.of(
+            Button.danger("accelerate_" + type, Emoji.fromCustom("pedal", 1224246451639681054l, false)).asDisabled()))
         .queue();
   }
 
@@ -151,8 +151,8 @@ public class Race {
             .forEach(racer -> eb.addField("__" + racer.getName() + "__",
                 getGraphicalView(racer.getDistance(), racer.getCar()), false));
         message.editMessageEmbeds(eb.build())
-            .setActionRow(Button.success("accelerate_" + type, Emoji.fromCustom("pedal", 1224246451639681054l, false))
-                .asDisabled())
+            .setComponents(ActionRow.of(Button.success("accelerate_" + type, Emoji.fromCustom("pedal", 1224246451639681054l, false))
+                .asDisabled()))
             .queue();
         return true;
       } else {
@@ -163,7 +163,7 @@ public class Race {
             .forEach(racer -> eb.addField("__" + racer.getName() + "__",
                 getGraphicalView(racer.getDistance(), racer.getCar()), false));
         message.editMessageEmbeds(eb.build())
-            .setActionRow(Button.primary("accelerate_" + type, Emoji.fromCustom("pedal", 1224246451639681054l, false)))
+            .setComponents(ActionRow.of(Button.primary("accelerate_" + type, Emoji.fromCustom("pedal", 1224246451639681054l, false))))
             .queue();
         return false;
       }

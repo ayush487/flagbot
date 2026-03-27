@@ -11,13 +11,14 @@ import com.ayushtech.flagbot.dbconnectivity.PatronDao;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.utils.TimeFormat;
 
 public class PatreonService {
@@ -130,13 +131,13 @@ public class PatreonService {
     if (validity >= System.currentTimeMillis()) {
       event.getHook().sendMessage("<:flagbot:1230836096548601907> **|** You are a active patreon member\n" +
           "Your Membership will expire on " + TimeFormat.DATE_TIME_SHORT.atTimestamp(validity))
-          .addActionRow(Button.primary("viewPatreonPerks", "View Active Perks"))
+          .addComponents(ActionRow.of(Button.primary("viewPatreonPerks", "View Active Perks")))
           .queue();
     } else {
       event.getHook().sendMessage("<:flagbot:1230836096548601907> **|** Become a Flag Bot Patron Today\n" +
           "<:blank:1223533175960109106> **|** Support your favourite bot financially and enjoy special perks")
-          .addActionRow(Button.link("https://www.patreon.com/FlagBot", "Patreon"),
-              Button.primary("viewPatreonPerks", "View Perks"))
+          .addComponents(ActionRow.of(Button.link("https://www.patreon.com/FlagBot", "Patreon"),
+              Button.primary("viewPatreonPerks", "View Perks")))
           .queue();
     }
   }

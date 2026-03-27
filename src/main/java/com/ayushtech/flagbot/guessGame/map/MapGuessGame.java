@@ -13,12 +13,12 @@ import com.ayushtech.flagbot.services.GameEndService;
 import com.ayushtech.flagbot.services.LanguageService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class MapGuessGame implements GuessGame {
 
@@ -54,7 +54,7 @@ public class MapGuessGame implements GuessGame {
       hook.sendMessage("Starting game now!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
     }
     if (isSkippable) {
-      channel.sendMessageEmbeds(embed).setActionRow(Button.primary("skipGuess", "Skip"))
+      channel.sendMessageEmbeds(embed).setComponents(ActionRow.of(Button.primary("skipGuess", "Skip")))
           .queue(message -> this.messageId = message.getIdLong());
 
     } else {
@@ -86,9 +86,9 @@ public class MapGuessGame implements GuessGame {
     eb.setColor(new Color(13, 240, 52));
     if (rounds <= 1) {
       event.getChannel().sendMessageEmbeds(eb.build())
-          .setActionRow(
+          .setComponents(ActionRow.of(
               Button.primary("playAgainMap_" + (isHard ? "Hard" : "Easy") + "_" + roundSize + "_" + isSkippable,
-                  roundSize <= 1 ? "Play Again" : "Start Round Again"))
+                  roundSize <= 1 ? "Play Again" : "Start Round Again")))
           .queue();
     } else {
       event.getChannel().sendMessageEmbeds(eb.build()).queue();
@@ -113,9 +113,9 @@ public class MapGuessGame implements GuessGame {
     eb.setColor(new Color(240, 13, 52));
     if (rounds <= 1) {
       this.channel.sendMessageEmbeds(eb.build())
-          .setActionRow(
+          .setComponents(ActionRow.of(
               Button.primary("playAgainMap_" + (isHard ? "Hard" : "Easy") + "_" + roundSize + "_" + isSkippable,
-                  roundSize <= 1 ? "Play Again" : "Start Round Again"))
+                  roundSize <= 1 ? "Play Again" : "Start Round Again")))
           .queue();
     } else {
       this.channel.sendMessageEmbeds(eb.build()).queue();
@@ -128,7 +128,7 @@ public class MapGuessGame implements GuessGame {
   public void disableButtons() {
     this.channel.retrieveMessageById(messageId)
         .complete().editMessageEmbeds(embed)
-        .setActionRow(Button.primary("skipButton", "Skip").asDisabled())
+        .setComponents(ActionRow.of(Button.primary("skipButton", "Skip").asDisabled()))
         .queue();
   }
 

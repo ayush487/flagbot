@@ -8,11 +8,12 @@ import com.ayushtech.flagbot.services.GameEndService;
 import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.VotingService;
 
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class GuessDistanceHandler {
 
@@ -47,7 +48,7 @@ public class GuessDistanceHandler {
     } else {
       event.getHook()
           .sendMessage("This command is only for patreon supporters or users who have voted for us in last 24 hours!")
-          .addActionRow(Button.link("https://top.gg/bot/1129789320165867662/vote", "Vote")).queue();
+          .addComponents(ActionRow.of(Button.link("https://top.gg/bot/1129789320165867662/vote", "Vote"))).queue();
       return;
     }
     OptionMapping unitOption = event.getOption("unit");
@@ -102,7 +103,7 @@ public class GuessDistanceHandler {
       event.getHook().sendMessage("Joined!").setEphemeral(true).queue();
     } else {
       event.reply("You must vote for us to join or use this command")
-          .addActionRow(Button.link("https://top.gg/bot/1129789320165867662/vote", "Vote"))
+          .addComponents(ActionRow.of(Button.link("https://top.gg/bot/1129789320165867662/vote", "Vote")))
           .setEphemeral(true).queue();
       return;
 

@@ -36,8 +36,7 @@ public class MessageListener extends ListenerAdapter {
 
         long channelId = event.getChannel().getIdLong();
         if (channelId == vote_notifs_channel) {
-            String voter_id = event.getMessage().getContentDisplay();
-            VotingService.getInstance().voteUser(event.getJDA(), voter_id);
+            VotingService.getInstance().handleVote(event);
             return;
         }
         //  else if (channelId == webhook_channel) {

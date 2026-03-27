@@ -1,5 +1,8 @@
 package com.ayushtech.flagbot.guessGame.state_flag;
 
+import java.awt.Color;
+import java.util.concurrent.TimeUnit;
+
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.guessGame.GuessGame;
 import com.ayushtech.flagbot.guessGame.GuessGameEndRunnable;
@@ -7,16 +10,13 @@ import com.ayushtech.flagbot.guessGame.GuessGameHandler;
 import com.ayushtech.flagbot.guessGame.GuessGameUtil;
 import com.ayushtech.flagbot.services.GameEndService;
 
-import java.awt.Color;
-import java.util.concurrent.TimeUnit;
-
 import net.dv8tion.jda.api.EmbedBuilder;
-
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class StateFlagGuessGame implements GuessGame {
 
@@ -53,7 +53,7 @@ public class StateFlagGuessGame implements GuessGame {
       hook.sendMessage("Starting game now!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
     }
     if (isSkippable) {
-      channel.sendMessageEmbeds(this.embed).setActionRow(Button.primary("skipGuess", "Skip"))
+      channel.sendMessageEmbeds(this.embed).setComponents(ActionRow.of(Button.primary("skipGuess", "Skip")))
           .queue(message -> this.messageId = message.getIdLong());
     } else {
       channel.sendMessageEmbeds(this.embed)
@@ -81,8 +81,8 @@ public class StateFlagGuessGame implements GuessGame {
     eb.setDescription(sb.toString());
     if (rounds <= 1) {
       channel.sendMessageEmbeds(eb.build())
-          .setActionRow(Button.primary("playAgainStateFlag_" + countryCode + "_" + roundSize + "_" + isSkippable,
-              roundSize <= 1 ? "Play Again" : "Start Round Again"))
+          .setComponents(ActionRow.of(Button.primary("playAgainStateFlag_" + countryCode + "_" + roundSize + "_" + isSkippable,
+              roundSize <= 1 ? "Play Again" : "Start Round Again")))
           .queue();
     } else {
       event.getChannel().sendMessageEmbeds(eb.build()).queue();
@@ -106,8 +106,8 @@ public class StateFlagGuessGame implements GuessGame {
     eb.setColor(Color.red);
     if (rounds <= 1) {
       channel.sendMessageEmbeds(eb.build())
-          .setActionRow(Button.primary("playAgainStateFlag_" + countryCode + "_" + roundSize + "_" + isSkippable,
-              roundSize <= 1 ? "Play Again" : "Start Round Again"))
+          .setComponents(ActionRow.of(Button.primary("playAgainStateFlag_" + countryCode + "_" + roundSize + "_" + isSkippable,
+              roundSize <= 1 ? "Play Again" : "Start Round Again")))
           .queue();
     } else {
       channel.sendMessageEmbeds(eb.build()).queue();
@@ -119,7 +119,7 @@ public class StateFlagGuessGame implements GuessGame {
   @Override
   public void disableButtons() {
     this.channel.retrieveMessageById(this.messageId).complete().editMessageEmbeds(embed)
-        .setActionRow(Button.primary("skip", "Skip").asDisabled()).queue();
+        .setComponents(ActionRow.of(Button.primary("skip", "Skip").asDisabled())).queue();
   }
 
   @Override

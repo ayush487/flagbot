@@ -8,13 +8,13 @@ import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.guessGame.GuessGameUtil;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class ContinentGameHandler {
   private static ContinentGameHandler handler = null;
@@ -68,7 +68,7 @@ public class ContinentGameHandler {
     event.editMessageEmbeds(eb.build()).setComponents(getDisabledActionRowsLose(selectedContinent, correctContinent))
         .queue();
     event.getHook().sendMessageEmbeds(getNotificationEmbedAsLose(user.getName(), country, correctContinent))
-        .addActionRow(Button.primary("playAgainContinent", "Play Again")).queue();
+        .addComponents(ActionRow.of(Button.primary("playAgainContinent", "Play Again"))).queue();
   }
 
   private void endGameAsWin(ButtonInteractionEvent event, String correctContinent, String country) {
@@ -82,7 +82,7 @@ public class ContinentGameHandler {
     event.editMessageEmbeds(eb.build()).setComponents(getDisabledActionRowsWin(correctContinent)).queue();
     event.getHook()
         .sendMessageEmbeds(getNotificationEmbedAsWin(user.getIdLong(), country, correctContinent, userBalance))
-        .addActionRow(Button.primary("playAgainContinent", "Play Again"))
+        .addComponents(ActionRow.of(Button.primary("playAgainContinent", "Play Again")))
         .queue();
 
   }

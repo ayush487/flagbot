@@ -14,11 +14,12 @@ import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.VotingService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class AtlasGameHandler {
   private static AtlasGameHandler atlasCommandHandler = null;
@@ -242,7 +243,7 @@ public class AtlasGameHandler {
       long userId = event.getUser().getIdLong();
       if (!VotingService.getInstance().isUserVoted(userId) && !PatreonService.getInstance().isUserPatron(userId)) {
         event.reply("You must vote for the bot in last 24 hours or be a Patron to join this game!")
-            .addActionRow(Button.link("https://top.gg/bot/1129789320165867662/vote", "Vote"))
+            .addComponents(ActionRow.of(Button.link("https://top.gg/bot/1129789320165867662/vote", "Vote")))
             .setEphemeral(true).queue();
         return;
       }

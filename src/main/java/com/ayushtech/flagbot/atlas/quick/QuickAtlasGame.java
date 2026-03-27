@@ -7,8 +7,9 @@ import java.util.concurrent.TimeUnit;
 import com.ayushtech.flagbot.atlas.AtlasGame;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class QuickAtlasGame extends AtlasGame {
 
@@ -16,7 +17,7 @@ public class QuickAtlasGame extends AtlasGame {
       int betAmount) {
     super(hostId, channel, "QUICK", maxRounds, maxScore, roundTime, betAmount);
     channel.sendMessageEmbeds(getStartGameEmbed())
-        .setActionRow(Button.success("joinAtlasQuick", "Join"), Button.danger("cancelAtlas", "Cancel"))
+        .addComponents(ActionRow.of(Button.success("joinAtlasQuick", "Join"), Button.danger("cancelAtlas", "Cancel")))
         .queue(message -> setStartGameMessage(message.getIdLong()));
   }
 

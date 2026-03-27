@@ -11,11 +11,12 @@ import com.ayushtech.flagbot.guessGame.GuessGameUtil;
 import com.ayushtech.flagbot.services.GameEndService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class CapitalGuessGame implements GuessGame {
 
@@ -48,7 +49,7 @@ public class CapitalGuessGame implements GuessGame {
       hook.sendMessage("Starting game now!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
     }
     if (isSkippable) {
-      channel.sendMessageEmbeds(embed).setActionRow(Button.primary("skipGuess", "Skip"))
+      channel.sendMessageEmbeds(embed).setComponents(ActionRow.of(Button.primary("skipGuess", "Skip")))
           .queue(message -> this.messageId = message.getIdLong());
     } else {
       channel.sendMessageEmbeds(embed)
@@ -73,8 +74,8 @@ public class CapitalGuessGame implements GuessGame {
     eb.setDescription(sb.toString());
     if (rounds <= 1) {
       event.getChannel().sendMessageEmbeds(eb.build())
-          .setActionRow(Button.primary("playAgainCapital_" + roundSize + "_" + isSkippable,
-              roundSize <= 1 ? "Play Again" : "Start Round Again"))
+          .setComponents(ActionRow.of(Button.primary("playAgainCapital_" + roundSize + "_" + isSkippable,
+              roundSize <= 1 ? "Play Again" : "Start Round Again")))
           .queue();
     } else {
       event.getChannel().sendMessageEmbeds(eb.build()).queue();
@@ -94,8 +95,8 @@ public class CapitalGuessGame implements GuessGame {
     eb.setColor(Color.red);
     if (rounds <= 1) {
       channel.sendMessageEmbeds(eb.build())
-          .setActionRow(Button.primary("playAgainCapital_" + roundSize + "_" + isSkippable,
-              roundSize <= 1 ? "Play Again" : "Start Round Again"))
+          .setComponents(ActionRow.of(Button.primary("playAgainCapital_" + roundSize + "_" + isSkippable,
+              roundSize <= 1 ? "Play Again" : "Start Round Again")))
           .queue();
     } else {
       channel.sendMessageEmbeds(eb.build()).queue();
@@ -107,7 +108,7 @@ public class CapitalGuessGame implements GuessGame {
   @Override
   public void disableButtons() {
     this.channel.retrieveMessageById(this.messageId).complete().editMessageEmbeds(embed)
-        .setActionRow(Button.primary("skip", "Skip").asDisabled()).queue();
+        .setComponents(ActionRow.of(Button.primary("skip", "Skip").asDisabled())).queue();
   }
 
   @Override

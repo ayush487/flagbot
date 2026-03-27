@@ -14,9 +14,10 @@ import com.ayushtech.flagbot.guessGame.logo.LogoOptions;
 import com.ayushtech.flagbot.guessGame.logo.LogoUtils;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class RaceHandler {
   private static RaceHandler raceHandler = null;
@@ -141,7 +142,7 @@ public class RaceHandler {
     eb.setColor(Color.white);
     eb.setDescription("> Solve :\n### " + option.getExpression());
     event.replyEmbeds(eb.build())
-        .addActionRow(
+        .addComponents(ActionRow.of(
             Button.primary(
                 option.isCorrectOption(0) ? "correct_" + 0 : "wrong_" + 0,
                 option.getOption(0) + ""),
@@ -153,7 +154,7 @@ public class RaceHandler {
                 option.getOption(2) + ""),
             Button.primary(
                 option.isCorrectOption(3) ? "correct_" + 3 : "wrong_" + 3,
-                option.getOption(3) + ""))
+                option.getOption(3) + "")))
         .setEphemeral(true).queue();
 
   }
@@ -165,7 +166,7 @@ public class RaceHandler {
     eb.setColor(Color.YELLOW);
     eb.setImage(GuessGameUtil.getInstance().getMapImage(options.getCorrectOption().getName()));
     event.replyEmbeds(eb.build())
-        .addActionRow(
+        .addComponents(ActionRow.of(
             Button.primary(
                 options.getOptions()[0].getIsoCode().equals(options.getCorrectOption().getIsoCode())
                     ? "correct_" + options.getOptions()[0].getIsoCode()
@@ -185,7 +186,7 @@ public class RaceHandler {
                 options.getOptions()[3].getIsoCode().equals(options.getCorrectOption().getIsoCode())
                     ? "correct_" + options.getOptions()[3].getIsoCode()
                     : "wrong_" + options.getOptions()[3].getIsoCode(),
-                options.getOptions()[3].getName()))
+                options.getOptions()[3].getName())))
         .setEphemeral(true)
         .queue();
   }
@@ -198,7 +199,7 @@ public class RaceHandler {
     eb.setImage(String.format("https://raw.githubusercontent.com/ayush487/image-library/main/logo/%s.png",
         options.getCorrectOption()));
     event.replyEmbeds(eb.build())
-        .addActionRow(
+        .addComponents(ActionRow.of(
             Button.primary(options.isCorrectOption(0) ? "correct_" + options.getCodeOptions()[0]
                 : "wrong_" + options.getCodeOptions()[0], options.getNameOptions()[0]),
             Button.primary(options.isCorrectOption(1) ? "correct_" + options.getCodeOptions()[1]
@@ -206,7 +207,7 @@ public class RaceHandler {
             Button.primary(options.isCorrectOption(2) ? "correct_" + options.getCodeOptions()[2]
                 : "wrong_" + options.getCodeOptions()[2], options.getNameOptions()[2]),
             Button.primary(options.isCorrectOption(3) ? "correct_" + options.getCodeOptions()[3]
-                : "wrong_" + options.getCodeOptions()[3], options.getNameOptions()[3]))
+                : "wrong_" + options.getCodeOptions()[3], options.getNameOptions()[3])))
         .setEphemeral(true).queue();
   }
 
@@ -217,7 +218,7 @@ public class RaceHandler {
     eb.setColor(Color.blue);
     eb.setImage("https://flagcdn.com/256x192/" + options.getCorrectOption().getIsoCode() + ".png");
     event.replyEmbeds(eb.build())
-        .addActionRow(
+        .addComponents(ActionRow.of(
             Button.primary(
                 options.getOptions()[0].getIsoCode().equals(options.getCorrectOption().getIsoCode())
                     ? "correct_" + options.getOptions()[0].getIsoCode()
@@ -237,7 +238,7 @@ public class RaceHandler {
                 options.getOptions()[3].getIsoCode().equals(options.getCorrectOption().getIsoCode())
                     ? "correct_" + options.getOptions()[3].getIsoCode()
                     : "wrong_" + options.getOptions()[3].getIsoCode(),
-                options.getOptions()[3].getName()))
+                options.getOptions()[3].getName())))
         .setEphemeral(true)
         .queue();
   }

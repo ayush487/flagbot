@@ -2,6 +2,7 @@ package com.ayushtech.flagbot;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.EnumSet;
 import java.util.Properties;
 
 import javax.security.auth.login.LoginException;
@@ -63,12 +64,13 @@ public class Main {
                 GuessGameUtil.getInstance();
                 VotingService.getInstance();
 
-                DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(bot_token,
-                                GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES,
-                                GatewayIntent.DIRECT_MESSAGES);
+                
+                DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createLight(bot_token,
+                                EnumSet.of(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES,
+                                                GatewayIntent.DIRECT_MESSAGES));
                 builder.setActivity(Activity.playing("/atlas"));
-                builder.disableCache(CacheFlag.VOICE_STATE, CacheFlag.EMOJI, CacheFlag.STICKER,
-                                CacheFlag.SCHEDULED_EVENTS);
+                builder.disableCache(EnumSet.of(CacheFlag.VOICE_STATE, CacheFlag.EMOJI, CacheFlag.STICKER,
+                                CacheFlag.SCHEDULED_EVENTS));
                 builder.addEventListeners(new MessageListener(), new InteractionsListener(),
                                 new GuildEventListener());
                 builder.build();

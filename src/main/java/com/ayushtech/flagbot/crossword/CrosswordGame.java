@@ -14,11 +14,12 @@ import com.ayushtech.flagbot.dbconnectivity.UserDao;
 import com.ayushtech.flagbot.services.UtilService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class CrosswordGame {
 
@@ -52,12 +53,13 @@ public class CrosswordGame {
 
 	protected void sendGameEmbed() {
 		this.channel.sendMessageEmbeds(getBeginningEmbed(currentLevel))
-				.addActionRow(
-						Button.primary("shuffleCrossword_" + userId,
-								Emoji.fromFormatted("<:refresh:1209076086185656340>")),
-						Button.primary("hintCrossword_" + userId, usedHint ? "💡 (100 🪙)" : "💡 (Free)"))
-				.addActionRow(Button.danger("quitCrossword_" + userId, "Quit"),
-						Button.primary("extraWords", "Extra Words"))
+				.addComponents(
+						ActionRow.of(
+								Button.primary("shuffleCrossword_" + userId,
+										Emoji.fromFormatted("<:refresh:1209076086185656340>")),
+								Button.primary("hintCrossword_" + userId, usedHint ? "💡 (100 🪙)" : "💡 (Free)")),
+						ActionRow.of(Button.danger("quitCrossword_" + userId, "Quit"),
+								Button.primary("extraWords", "Extra Words")))
 				.queue(message -> this.messageId = message.getIdLong());
 	}
 
@@ -80,7 +82,8 @@ public class CrosswordGame {
 			String messageToSend = levelNumber == 0 ? "Daily Level Completed! :tada:"
 					: "You completed Level " + levelNumber + " :tada:";
 			this.channel.sendMessage(messageToSend)
-					.addActionRow(Button.primary("newCrossword_" + userId, "Play Next Level")).queue();
+					.addComponents(ActionRow.of(Button.primary("newCrossword_" + userId, "Play Next Level")))
+					.queue();
 		} else {
 			updateEmbed();
 			checkIfWordCompleted();
@@ -89,9 +92,9 @@ public class CrosswordGame {
 
 	public void quitGame(ButtonInteractionEvent event) {
 		var embed = getEmbed((byte) 1, "Game quit!");
-		event.editMessageEmbeds(embed).setActionRow(
-				levelNumber == 0 ? Button.primary("dailyCrossword", "Start again")
-						: Button.primary("newCrossword_" + userId, "Start New Game"))
+		event.editMessageEmbeds(embed)
+				.setComponents(ActionRow.of(levelNumber == 0 ? Button.primary("dailyCrossword", "Start again")
+						: Button.primary("newCrossword_" + userId, "Start New Game")))
 				.queue();
 		CompletableFuture.runAsync(() -> {
 			UserDao.getInstance().updateExtraWordCount(userId, extraWords.size(), false);
@@ -101,7 +104,8 @@ public class CrosswordGame {
 	public void cancelGame() {
 		var embed = getEmbed((byte) 1, "Game cancelled!");
 		this.channel.editMessageEmbedsById(messageId, embed)
-				.setActionRow(Button.danger("cancelled", "Cancelled").asDisabled()).queue();
+				.setComponents(ActionRow.of(Button.danger("cancelled", "Cancelled").asDisabled()))
+				.queue();
 		CompletableFuture.runAsync(() -> {
 			UserDao.getInstance().updateExtraWordCount(userId, extraWords.size(), false);
 		});
@@ -110,7 +114,7 @@ public class CrosswordGame {
 	protected void completeThisLevel() {
 		var embed = getEmbed((byte) 0, "Level Completed!");
 		this.channel.editMessageEmbedsById(messageId, embed)
-				.setActionRow(Button.success("complete", "Level Completed").asDisabled()).queue();
+				.setComponents(ActionRow.of(Button.success("complete", "Level Completed").asDisabled())).queue();
 		try {
 			LevelsDao.getInstance().promoteUserLevel(userId, levelNumber);
 		} catch (SQLException e) {
@@ -225,7 +229,8 @@ public class CrosswordGame {
 				CrosswordGameHandler.getInstance().removeGame(userId);
 				completeThisLevel();
 				this.channel.sendMessage("You completed Level " + levelNumber + " :tada:")
-						.addActionRow(Button.primary("newCrossword_" + userId, "Play Next Level")).queue();
+						.addComponents(ActionRow.of(Button.primary("newCrossword_" + userId, "Play Next Level")))
+						.queue();
 				try {
 					LevelsDao.getInstance().promoteUserLevel(userId, levelNumber);
 				} catch (SQLException e) {
@@ -242,4 +247,3 @@ public class CrosswordGame {
 		return this.usedHint;
 	}
 }
-

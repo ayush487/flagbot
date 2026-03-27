@@ -3,6 +3,7 @@ package com.ayushtech.flagbot.services;
 import java.awt.Color;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -14,7 +15,11 @@ import com.ayushtech.flagbot.dbconnectivity.VoterDao;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.components.MessageTopLevelComponentUnion;
+import net.dv8tion.jda.api.components.tree.MessageComponentTree;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.utils.TimeFormat;
 
 public class VotingService {
@@ -42,6 +47,19 @@ public class VotingService {
       return new VotingService();
     }
     return votingService;
+  }
+
+  public void handleVote(MessageReceivedEvent event) {
+    Message msg = event.getMessage();
+    String msgContent = msg.getContentDisplay();
+    if (msgContent.isBlank()) {
+      MessageComponentTree componentTree = msg.getComponentTree();
+      List<MessageTopLevelComponentUnion> components = componentTree.getComponents();
+      for (MessageTopLevelComponentUnion c : components) {
+        String voterId = c.asContainer().getComponents().get(0).asTextDisplay().getContent();
+        voteUser(event.getJDA(), voterId);
+      }
+    } else voteUser(event.getJDA(), msgContent);
   }
 
   public void voteUser(JDA jda, String voter_id) {

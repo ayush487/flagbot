@@ -14,11 +14,12 @@ import com.ayushtech.flagbot.services.UtilService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class CrosswordGameHandler {
 
@@ -43,8 +44,8 @@ public class CrosswordGameHandler {
 		long userId = event.getUser().getIdLong();
 		if (gameMap.containsKey(userId)) {
 			event.reply("You already have a active game!\nDo you want to start a new one ?").setEphemeral(true)
-					.setActionRow(Button.primary("cancelThenNewCrossword_" + userId, "Start a new game"),
-							Button.primary("cancelCrossword_" + userId, "Cancel Older Game"))
+					.setComponents(ActionRow.of(Button.primary("cancelThenNewCrossword_" + userId, "Start a new game"),
+							Button.primary("cancelCrossword_" + userId, "Cancel Older Game")))
 					.queue();
 			return;
 		}
@@ -103,8 +104,8 @@ public class CrosswordGameHandler {
 		long userId = event.getUser().getIdLong();
 		if (gameMap.containsKey(userId)) {
 			event.getHook().sendMessage("You already have a active game!\\nDo you want to start a new one ?")
-					.setActionRow(Button.primary("cancelThenNewCrossword_" + userId, "Start a new game"),
-							Button.primary("cancelCrossword_" + userId, "Cancel Older Game"))
+					.setComponents(ActionRow.of(Button.primary("cancelThenNewCrossword_" + userId, "Start a new game"),
+							Button.primary("cancelCrossword_" + userId, "Cancel Older Game")))
 					.queue();
 			return;
 		}
@@ -290,8 +291,8 @@ public class CrosswordGameHandler {
 			eb.addField("Current Level Extra Words", wordlist.append("```").toString(), false);
 		}
 		event.getHook().sendMessageEmbeds(eb.build())
-				.addActionRow(extraWordCount >= 25 ? Button.success("claimExtraWords_" + userId, "Claim")
-						: Button.success("claimExtraWords", "Claim").asDisabled())
+				.addComponents(ActionRow.of(extraWordCount >= 25 ? Button.success("claimExtraWords_" + userId, "Claim")
+						: Button.success("claimExtraWords", "Claim").asDisabled()))
 				.queue();
 	}
 
@@ -314,8 +315,8 @@ public class CrosswordGameHandler {
 			eb.addField("Current Level Extra Words", wordlist.append("```").toString(), false);
 		}
 		event.getHook().sendMessageEmbeds(eb.build())
-				.addActionRow(extraWordCount >= 25 ? Button.success("claimExtraWords_" + userId, "Claim")
-						: Button.success("claimExtraWords", "Claim").asDisabled())
+				.addComponents(ActionRow.of(extraWordCount >= 25 ? Button.success("claimExtraWords_" + userId, "Claim")
+						: Button.success("claimExtraWords", "Claim").asDisabled()))
 				.queue();
 	}
 
