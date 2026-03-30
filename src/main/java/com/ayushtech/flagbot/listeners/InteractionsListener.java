@@ -72,8 +72,18 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
-		else if (slashCommandName.equals("staff_poll")) {
-			PrivateServerService.getInstance().handlePollCommand(event);
+		else if (slashCommandName.equals("chatping")) {
+			PrivateServerService.getInstance().handleChatPingCommand(event);
+			return;
+		}
+
+		else if (slashCommandName.equals("vcping")) {
+			PrivateServerService.getInstance().handleVcPingCommand(event);
+			return;
+		}
+
+		else if (slashCommandName.equals("vcping")) {
+			PrivateServerService.getInstance().handleVcPingCommand(event);
 			return;
 		}
 
@@ -351,18 +361,6 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		} else if (buttonCommandId.startsWith("selectLocation")) {
 			LocationGameHandler.getInstance().handleSelection(event);
-			return;
-		} else if (buttonCommandId.startsWith("pollUpvote")) {
-			PrivateServerService.getInstance().handlePollUpvote(event);
-			return;
-		} else if (buttonCommandId.startsWith("pollDownvote")) {
-			PrivateServerService.getInstance().handlePollDownvote(event);
-			return;
-		} else if (buttonCommandId.startsWith("pollViewVotes")) {
-			PrivateServerService.getInstance().handlePollViewVotes(event);
-			return;
-		} else if (buttonCommandId.startsWith("pollRemovevote")) {
-			PrivateServerService.getInstance().handleRemoveVote(event);
 			return;
 		} else if (buttonCommandId.startsWith("delete_data")) {
 			UtilService.getInstance().handleConfirmDeleteButton(event);

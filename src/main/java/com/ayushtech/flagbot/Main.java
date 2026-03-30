@@ -16,10 +16,8 @@ import com.ayushtech.flagbot.listeners.MessageListener;
 import com.ayushtech.flagbot.services.ChannelService;
 import com.ayushtech.flagbot.services.LanguageService;
 import com.ayushtech.flagbot.services.PatreonService;
-import com.ayushtech.flagbot.services.PrivateServerService;
 import com.ayushtech.flagbot.services.UtilService;
 import com.ayushtech.flagbot.services.VotingService;
-
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
@@ -45,16 +43,9 @@ public class Main {
                 final String wordAdderWebhook = properties.getProperty("WORD_ADDER_WEBHOOK");
                 final String wordRemoverWebhook = properties.getProperty("WORD_REMOVER_WEBHOOK");
 
-                final int adminThreshold = Integer.parseInt(properties.getProperty("adminThreshold"));
-                final int modThreshold = Integer.parseInt(properties.getProperty("modThreshold"));
-                final int staffThreshold = Integer.parseInt(properties.getProperty("staffThreshold"));
-                final int totalVotes = Integer.parseInt(properties.getProperty("totalVotes"));
-
                 CSVFileReader.getInstance();
 
                 DBInfo.setData(db_host, db_username, db_password);
-                PrivateServerService.getInstance().setThreshold(adminThreshold, modThreshold, staffThreshold,
-                                totalVotes);
                 GuildEventListener.setJoinUpdateWebhookUrl(joinUpdateWebhookUrl);
                 PatreonService.getInstance().setPatreonWebhookUrl(patreonWebhookUrl);
                 VotingService.setVotingWebhookUrl(voterWebhookUrl);
