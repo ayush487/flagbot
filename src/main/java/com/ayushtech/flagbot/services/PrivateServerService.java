@@ -16,6 +16,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.unions.GuildChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -61,6 +63,12 @@ public class PrivateServerService {
         return;
       }
     }
+    OptionMapping channelMapping = event.getOption("channel");
+    GuildChannelUnion channelUnion = channelMapping.getAsChannel();
+    if (!channelUnion.getType().equals(ChannelType.TEXT)) {
+      event.getHook().sendMessage("Only Text Channel is allowed for Chat Ping Command").queue();
+      return;
+    }
     if (isAllowed) {
       if (PingRecord.getInstance().isChatPingAllowed()) {
         event.getHook().sendMessage("Pinging the chat...").queue();
@@ -69,8 +77,10 @@ public class PrivateServerService {
         if (textMapping != null) {
           text = textMapping.getAsString();
         }
-        event.getChannel().sendMessage(String.format("<@&%d> %s", chatSummonId, text)).queue();
-      } else event.getHook().sendMessage("Chat pinging is in cooldown").queue();
+
+        channelUnion.asTextChannel().sendMessage(String.format("<@&%d> %s", chatSummonId, text)).queue();
+      } else
+        event.getHook().sendMessage("Chat pinging is in cooldown").queue();
     }
   }
 
@@ -92,6 +102,12 @@ public class PrivateServerService {
         return;
       }
     }
+    OptionMapping channelMapping = event.getOption("channel");
+    GuildChannelUnion channelUnion = channelMapping.getAsChannel();
+    if (!channelUnion.getType().equals(ChannelType.TEXT) && !channelUnion.getType().equals(ChannelType.VOICE)) {
+      event.getHook().sendMessage("Only Text or Voice Channel is allowed for VC Ping Command").queue();
+      return;
+    }
     if (isAllowed) {
       if (PingRecord.getInstance().isVcPingAllowed()) {
         event.getHook().sendMessage("Pinging the VC...").queue();
@@ -100,13 +116,21 @@ public class PrivateServerService {
         if (textMapping != null) {
           text = textMapping.getAsString();
         }
-        event.getChannel().sendMessage(String.format("<@&%d> %s", vcSummonId, text)).queue();
-      } else event.getHook().sendMessage("VC pinging is in cooldown").queue();
+        if (channelUnion.getType().equals(ChannelType.TEXT)) {
+          channelUnion.asTextChannel().sendMessage(String.format("<@&%d> %s", vcSummonId, text)).queue();
+        } else {
+          channelUnion.asVoiceChannel().sendMessage(String.format("<@&%d> %s", vcSummonId, text)).queue();
+        }
+      } else
+        event.getHook().sendMessage("VC pinging is in cooldown").queue();
     }
   }
 
   public void handleMessage(MessageReceivedEvent event) {
     long channelId = event.getChannel().getIdLong();
+    String messageContent = event.getMessage().getContentDisplay();
+    if (messageContent.contains("@gamesofvaibhav"))
+      return;
     if (!slowdownMap.containsKey(channelId)) {
       sendDownloadLinkMessage(event);
       slowdownMap.put(channelId, System.currentTimeMillis());
