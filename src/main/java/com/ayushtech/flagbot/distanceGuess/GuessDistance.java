@@ -79,7 +79,7 @@ public class GuessDistance {
   }
 
   private void sendNewRound() {
-    if (roundCount >= 10 || isAnyUserReachedTarget()) {
+    if (++roundCount >= 6 || isAnyUserReachedTarget()) {
       endGameNormally();
       return;
     }
