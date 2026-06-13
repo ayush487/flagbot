@@ -31,6 +31,7 @@ public class DistanceDao {
         mapData[3] = rs.getInt("zoom");
       }
     } catch (SQLException e) {
+      ConnectionProvider.resetConnection();
       e.printStackTrace();
     }
     return mapData;

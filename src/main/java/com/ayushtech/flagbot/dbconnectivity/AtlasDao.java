@@ -34,6 +34,7 @@ public class AtlasDao {
       }
       throw new RuntimeException();
     } catch (SQLException e) {
+      ConnectionProvider.resetConnection();
       e.printStackTrace();
       throw new RuntimeException();
     }

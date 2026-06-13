@@ -32,6 +32,7 @@ public class CoinDao {
             ps.setLong(3, amount);
             ps.executeUpdate();
         } catch (SQLException e) {
+            ConnectionProvider.resetConnection();
             e.printStackTrace();
         }
     }
@@ -46,6 +47,7 @@ public class CoinDao {
             ps.setInt(3, cwCoins);
             ps.executeUpdate();
         } catch (SQLException e) {
+            ConnectionProvider.resetConnection();
             e.printStackTrace();
         }
     }
@@ -63,6 +65,7 @@ public class CoinDao {
             ps.setInt(5, cwCoins);
             ps.executeUpdate();
         } catch (SQLException e) {
+            ConnectionProvider.resetConnection();
             e.printStackTrace();
         }
     }
@@ -79,6 +82,7 @@ public class CoinDao {
             }
             return coin;
         } catch (Exception e) {
+            ConnectionProvider.resetConnection();
             e.printStackTrace();
             return 0l;
         }
@@ -97,6 +101,7 @@ public class CoinDao {
             }
             return 0l;
         } catch (SQLException e) {
+            ConnectionProvider.resetConnection();
             e.printStackTrace();
             return 0l;
         }
@@ -109,6 +114,7 @@ public class CoinDao {
             ps.setLong(1, userId);
             ps.executeUpdate();
         } catch (Exception e) {
+            ConnectionProvider.resetConnection();
             e.printStackTrace();
         }
     }
@@ -127,6 +133,7 @@ public class CoinDao {
             }
             return data;
         } catch (Exception e) {
+            ConnectionProvider.resetConnection();
             e.printStackTrace();
         }
         long[] returnArr = { 0, 0, 999999l };
@@ -149,6 +156,7 @@ public class CoinDao {
             ps.executeUpdate();
             return coin;
         } catch (Exception e) {
+            ConnectionProvider.resetConnection();
             e.printStackTrace();
         }
         return 0;
@@ -163,6 +171,7 @@ public class CoinDao {
                     String.format("UPDATE user_table SET coins = coins + %d WHERE user_id=%d;", amount * userIds.length,
                             receiverId));
         } catch (SQLException e) {
+            ConnectionProvider.resetConnection();
             e.printStackTrace();
         }
     }

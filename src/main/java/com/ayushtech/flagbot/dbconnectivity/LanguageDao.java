@@ -31,6 +31,7 @@ public class LanguageDao {
       }
       return languageMap;
     } catch (SQLException e) {
+      ConnectionProvider.resetConnection();
       e.printStackTrace();
       return new HashMap<>();
     }
@@ -43,6 +44,7 @@ public class LanguageDao {
       stmt.executeUpdate(
           String.format("Insert into language_table (server_id, lang) values (%d, '%s');", serverId, language));
     } catch (Exception e) {
+      ConnectionProvider.resetConnection();
       e.printStackTrace();
     }
   }
@@ -53,6 +55,7 @@ public class LanguageDao {
       Statement stmt = conn.createStatement();
       stmt.executeUpdate(String.format("delete from language_table where server_id=%d;", serverId));
     } catch (SQLException e) {
+      ConnectionProvider.resetConnection();
       e.printStackTrace();
     }
   }

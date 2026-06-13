@@ -25,4 +25,8 @@ public class ConnectionProvider {
             return connection;
         }
     }
+    
+    public static void resetConnection() {
+        connection = null;
+    }
 }

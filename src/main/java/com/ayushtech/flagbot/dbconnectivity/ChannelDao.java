@@ -37,6 +37,7 @@ public class ChannelDao {
 				return false;
 			}
 		} catch (SQLException e) {
+			ConnectionProvider.resetConnection();
 			e.printStackTrace();
 			return false;
 		}
@@ -50,6 +51,8 @@ public class ChannelDao {
 			ps.executeUpdate();
 			return true;
 		} catch (SQLException e) {
+			ConnectionProvider.resetConnection();
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -62,6 +65,8 @@ public class ChannelDao {
 			ps.executeUpdate();
 			return true;
 		} catch (SQLException e) {
+			ConnectionProvider.resetConnection();
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -74,6 +79,8 @@ public class ChannelDao {
 			st.executeUpdate(query);
 			return true;
 		} catch (SQLException e) {
+			ConnectionProvider.resetConnection();
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -89,6 +96,7 @@ public class ChannelDao {
 			}
 			return list;
 		} catch (Exception e) {
+			ConnectionProvider.resetConnection();
 			System.out.println("Something went wrong while accesing database");
 			e.printStackTrace();
 			return new ArrayList<>();

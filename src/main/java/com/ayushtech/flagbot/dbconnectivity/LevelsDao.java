@@ -133,6 +133,7 @@ public class LevelsDao {
 			}
 			preparedStatement.executeBatch();
 		} catch (SQLException e) {
+			ConnectionProvider.resetConnection();
 			e.printStackTrace();
 		}
 	}

@@ -24,6 +24,7 @@ public class LeaderboardDao {
 			}
 			return entries;
 		} catch (SQLException e) {
+			ConnectionProvider.resetConnection();
 			e.printStackTrace();
 			return List.of();
 		}
@@ -42,6 +43,7 @@ public class LeaderboardDao {
 			}
 			return entries;
 		} catch (SQLException e) {
+			ConnectionProvider.resetConnection();
 			e.printStackTrace();
 			return List.of();
 		}
@@ -57,6 +59,7 @@ public class LeaderboardDao {
 			}
 			return 1;
 		} catch (SQLException e) {
+			ConnectionProvider.resetConnection();
 			e.printStackTrace();
 			return 1;
 		}
@@ -72,6 +75,7 @@ public class LeaderboardDao {
 			}
 			return 1;
 		} catch (SQLException e) {
+			ConnectionProvider.resetConnection();
 			e.printStackTrace();
 			return 1;
 		}
@@ -87,6 +91,7 @@ public class LeaderboardDao {
 			}
 			return 0;
 		} catch (SQLException e) {
+			ConnectionProvider.resetConnection();
 			e.printStackTrace();
 			return 0;
 		}
@@ -101,6 +106,7 @@ public class LeaderboardDao {
 			}
 			stmt.executeBatch();
 		} catch (SQLException e) {
+			ConnectionProvider.resetConnection();
 			e.printStackTrace();
 		}
 	}
