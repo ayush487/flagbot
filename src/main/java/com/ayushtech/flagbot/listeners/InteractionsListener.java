@@ -251,6 +251,10 @@ public class InteractionsListener extends ListenerAdapter {
 			LevelAppendService.getInstance().handleLevelAddCommand(event);
 			return;
 		}
+
+		else if (slashCommandName.equals("activepatrons")) {
+			PatreonService.getInstance().handleActivePatronCommand(event);
+		}
 	}
 
 	/*

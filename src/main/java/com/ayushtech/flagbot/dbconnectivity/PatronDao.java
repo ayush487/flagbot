@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class PatronDao {
   private static PatronDao patronDao = null;
@@ -25,7 +26,7 @@ public class PatronDao {
     try {
       Statement stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(
-          String.format("Select user_id from patreon_members where validtill > %d", System.currentTimeMillis()));
+          String.format("Select user_id from patreon_members where validtill > %d;", System.currentTimeMillis()));
       HashSet<Long> patrons = new HashSet<>();
       while (rs.next()) {
         patrons.add(rs.getLong("user_id"));
@@ -35,6 +36,23 @@ public class PatronDao {
       e.printStackTrace();
     }
     return new HashSet<>();
+  }
+
+  public Map<Long, Long> getPatronMembersWithValidity() {
+    Connection conn = ConnectionProvider.getConnection();
+    try {
+      Statement stmt = conn.createStatement();
+      ResultSet rs = stmt.executeQuery(
+          String.format("Select user_id, validtill from patreon_members where validtill > %d;", System.currentTimeMillis()));
+      HashMap<Long, Long> patrons = new HashMap<>();
+      while (rs.next()) {
+        patrons.put(rs.getLong("user_id"), rs.getLong("validtill"));
+      }
+      return patrons;
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return new HashMap<>();
   }
 
   public HashMap<Long, String> getWrongReactions() {

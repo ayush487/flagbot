@@ -48,21 +48,22 @@ public class PatreonService {
   }
 
   public void addNewPatron(JDA jda, long userId) {
-    patronUsers.add(userId);
     long validTill = PatronDao.getInstance().addNewPatron(userId);
     jda.retrieveUserById(userId).queue(user -> {
-      user.openPrivateChannel().flatMap(channel -> channel.sendMessage(
-          "# Thanks for joining Flag Bot Patreon Membership\nYou got the following perks :\n> Access to Voters Only Commands (Guess distance, Guess location, Atlas Quick, Atlas Rapid)\n> Custom Reactions for correct and wrong guesses\n> Can customize Atlas games\n\n__Set Custom Reaction with These commands__ :\n"
-              +
-              "`f!set correct_guess :emote:`\n" +
-              "`f!set wrong_guess :emote:`\n" +
-              "`f!remove wrong_guess`\n\nThese perks will be valid till "
-              + TimeFormat.DATE_TIME_SHORT.atTimestamp(validTill)))
-          .queue();
+      if (!patronUsers.contains(userId)) {
+        user.openPrivateChannel().flatMap(channel -> channel.sendMessage(
+            "# Thanks for joining Flag Bot Patreon Membership\nYou got the following perks :\n> Access to Voters Only Commands (Guess distance, Guess location, Atlas Quick, Atlas Rapid)\n> Custom Reactions for correct and wrong guesses\n> Can customize Atlas games\n\n__Set Custom Reaction with These commands__ :\n"
+                +
+                "`f!set correct_guess :emote:`\n" +
+                "`f!set wrong_guess :emote:`\n" +
+                "`f!remove wrong_guess`\n\nThese perks will be valid till "
+                + TimeFormat.DATE_TIME_SHORT.atTimestamp(validTill)))
+            .queue();
+      }
       UtilService.getInstance().sendMessageToWebhook(WEBHOOK_URL,
           String.format("%s (`%s`) joined patreon Membership", user.getName(), user.getId()));
     });
-
+    patronUsers.add(userId);
   }
 
   public void setReactionsForCorrectGuess(MessageReceivedEvent event) {
@@ -149,7 +150,7 @@ public class PatreonService {
     eb.setDescription(
         "Access to following commands :\n> `/guess distance`\n> `/guess location`\n> `/atlas quick`\n> `/atlas rapid`\nCustom Reactions for correct and wrong guesses\nCustomize Atlas Game");
     eb.addField("__How to set custom reactions__ ?",
-        "for correct guesses : `f!set correct_guess :emote:`\nfor wrong guesses : `f!set wrong_guess :emoji:`\nto remove wrong guess reaction : `f!remove wrong_guess`",
+        "for correct guesses : `f!set correct_guess :emoji:`\nfor wrong guesses : `f!set wrong_guess :emoji:`\nto remove wrong guess reaction : `f!remove wrong_guess`",
         false);
     event.replyEmbeds(eb.build()).setEphemeral(true).queue();
   }
@@ -178,8 +179,10 @@ public class PatreonService {
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Support Flagbot on Patreon!");
     eb.setColor(162000276);
-    eb.setDescription("Love Flagbot? Help keep it running and get new features by supporting its development on Patreon! Your support covers server costs and helps me constantly improve the bot.\n\n[*Check out the Patreon here*](https://www.patreon.com/FlagBot)");
-    eb.setFooter("Thank you for being an awesome community!", "https://cdn.discordapp.com/emojis/1230836096548601907.png");
+    eb.setDescription(
+        "Love Flagbot? Help keep it running and get new features by supporting its development on Patreon! Your support covers server costs and helps me constantly improve the bot.\n\n[*Check out the Patreon here*](https://www.patreon.com/FlagBot)");
+    eb.setFooter("Thank you for being an awesome community!",
+        "https://cdn.discordapp.com/emojis/1230836096548601907.png");
     eb.setThumbnail("https://cdn.discordapp.com/emojis/1264163057618124921.png");
     channel.sendMessageEmbeds(eb.build()).queue();
     MetricService.getInstance().incrementCommandData("patreon_request");
@@ -187,6 +190,20 @@ public class PatreonService {
 
   public void setPatreonWebhookUrl(String webhookUrl) {
     this.WEBHOOK_URL = webhookUrl;
+  }
+
+  public void handleActivePatronCommand(SlashCommandInteractionEvent event) {
+    Map<Long, Long> activePatrons = PatronDao.getInstance().getPatronMembersWithValidity();
+    EmbedBuilder eb = new EmbedBuilder();
+    eb.setTitle("Active Patrons");
+    eb.setColor(Color.pink);
+    StringBuilder sb = new StringBuilder();
+    activePatrons.forEach((userId, validTill) -> {
+      sb.append("<@").append(userId).append("> - ").append(TimeFormat.DATE_TIME_SHORT.atTimestamp(validTill))
+          .append("\n");
+    });
+    eb.setDescription(sb.toString());
+    event.getHook().sendMessageEmbeds(eb.build()).queue();
   }
 
 }
