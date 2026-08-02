@@ -251,8 +251,8 @@ public class UtilService {
         embed = atlasHelpEmbed(userPfp);
         page = 4;
         break;
-      case "memoflip":
-        embed = memoflipHelpEmbed(userPfp);
+      case "crossduel":
+        embed = crossduelHelpEmbed(userPfp);
         page = 5;
         break;
       case "race":
@@ -293,7 +293,7 @@ public class UtilService {
         embed = atlasHelpEmbed(userPfp);
         break;
       case 5:
-        embed = memoflipHelpEmbed(userPfp);
+        embed = crossduelHelpEmbed(userPfp);
         break;
       case 6:
         embed = raceHelpEmbed(userPfp);
@@ -324,6 +324,7 @@ public class UtilService {
     description.append("**/help guess :** `info about guess commands`\n");
     description.append("**/help crossword :** `info about crossword commands`\n");
     description.append("**/help atlas :** `info about atlas commands`\n");
+    description.append("**/help crossduel :** `info about crossduel command`\n");
     description.append("**/help race  :** `info about race commands`\n");
     description.append("**/help memoflip :** `info about memoflip command`\n");
     description.append("**/help language :** `info about setting up languages in the bot`\n");
@@ -430,17 +431,36 @@ public class UtilService {
     return eb.build();
   }
 
-  private MessageEmbed memoflipHelpEmbed(String userPfp) {
+  // private MessageEmbed memoflipHelpEmbed(String userPfp) {
+  //   EmbedBuilder eb = new EmbedBuilder();
+  //   eb.setTitle("Memoflip Game");
+  //   eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
+  //   eb.setColor(new Color(255, 153, 51));
+  //   StringBuilder descBuilder = new StringBuilder();
+  //   descBuilder.append("`/memoflip easy` : Start a memoflip game in easy mode (8 cards)\n");
+  //   descBuilder.append("`/memoflip medium` : Start a memoflip game in medium mode (16 cards)\n");
+  //   descBuilder.append("`/memoflip hard` : Start a memoflip game in hard mode (24 cards)\n");
+  //   descBuilder.append("`/memoflip scores` : Sends your best scores in each mode.");
+  //   eb.setDescription(descBuilder.toString());
+  //   eb.setFooter("Page 5/7", userPfp);
+  //   return eb.build();
+  // }
+
+  private MessageEmbed crossduelHelpEmbed(String userPfp) {
     EmbedBuilder eb = new EmbedBuilder();
-    eb.setTitle("Memoflip Game");
+    eb.setTitle("Crossduel");
     eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
     eb.setColor(new Color(255, 153, 51));
-    StringBuilder descBuilder = new StringBuilder();
-    descBuilder.append("`/memoflip easy` : Start a memoflip game in easy mode (8 cards)\n");
-    descBuilder.append("`/memoflip medium` : Start a memoflip game in medium mode (16 cards)\n");
-    descBuilder.append("`/memoflip hard` : Start a memoflip game in hard mode (24 cards)\n");
-    descBuilder.append("`/memoflip scores` : Sends your best scores in each mode.");
-    eb.setDescription(descBuilder.toString());
+    eb.setDescription(
+        "A 2-player showdown where both players solve a crossword puzzle at the same time. The player with the most points at the end wins the match.");
+    eb.addField("__How it works__",
+        "Challenge a friend with `/crossduel` and both of you will compete in the same crossword puzzle simultaneously.",
+        false);
+    StringBuilder scoreBuilder = new StringBuilder();
+    scoreBuilder.append("• If a word found in the crossword is solved, you earn points equal to the word length.\n");
+    scoreBuilder.append("• Extra words give you 1 point each.\n");
+    scoreBuilder.append("• The player with the higher total score at the end wins the game.");
+    eb.addField("__Scoring__", scoreBuilder.toString(), false);
     eb.setFooter("Page 5/7", userPfp);
     return eb.build();
   }

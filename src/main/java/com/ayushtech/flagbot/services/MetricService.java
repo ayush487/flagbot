@@ -52,11 +52,11 @@ public class MetricService {
             commandMetricMap.get("race_flags").get(), commandMetricMap.get("race_maps").get(),
             commandMetricMap.get("race_logo").get(), commandMetricMap.get("race_maths").get()),
         true);
-    eb.addField("__Memoflip__",
-        String.format("> Easy : %d\n> Medium : %d\n> Hard : %d\n> Scores : %d",
-            commandMetricMap.get("memoflip_easy").get(), commandMetricMap.get("memoflip_medium").get(),
-            commandMetricMap.get("memoflip_hard").get(), commandMetricMap.get("memoflip_scores").get()),
-        true);
+    // eb.addField("__Memoflip__",
+    //     String.format("> Easy : %d\n> Medium : %d\n> Hard : %d\n> Scores : %d",
+    //         commandMetricMap.get("memoflip_easy").get(), commandMetricMap.get("memoflip_medium").get(),
+    //         commandMetricMap.get("memoflip_hard").get(), commandMetricMap.get("memoflip_scores").get()),
+    //     true);
     eb.addField("__Atlas__",
         String.format("> Classic : %d\n> Quick : %d\n> Rapid : %d\n> Help : %d",
             commandMetricMap.get("atlas_classic").get(),
@@ -64,9 +64,10 @@ public class MetricService {
             commandMetricMap.get("atlas_help").get()),
         false);
     eb.addField("__Crossword__",
-        String.format("> Crossword slash : %d\n> Crossword button : %d",
+        String.format("> Crossword slash : %d\n> Crossword button : %d\n> Crossduel : %d",
             commandMetricMap.get("crossword_slash").get(),
-            commandMetricMap.get("crossword_button").get()),
+            commandMetricMap.get("crossword_button").get(),
+            commandMetricMap.get("crossduel_slash").get()),
         true);
 
     eb.addField("__Other Commands__",
@@ -134,22 +135,6 @@ public class MetricService {
             return;
         }
       }
-      case "memoflip": {
-        switch (event.getSubcommandName()) {
-          case "easy":
-            commandMetricMap.get("memoflip_easy").incrementAndGet();
-            return;
-          case "medium":
-            commandMetricMap.get("memoflip_medium").incrementAndGet();
-            return;
-          case "hard":
-            commandMetricMap.get("memoflip_hard").incrementAndGet();
-            return;
-          default:
-            commandMetricMap.get("memoflip_scores").incrementAndGet();
-            return;
-        }
-      }
       case "battle":
         commandMetricMap.get("battle").incrementAndGet();
         return;
@@ -182,22 +167,6 @@ public class MetricService {
             return;
         }
       }
-      case "stocks": {
-        switch (event.getSubcommandName()) {
-          case "list":
-            commandMetricMap.get("stocks_list").incrementAndGet();
-            return;
-          case "sell":
-            commandMetricMap.get("stocks_sell").incrementAndGet();
-            return;
-          case "buy":
-            commandMetricMap.get("stocks_buy").incrementAndGet();
-            return;
-          default:
-            commandMetricMap.get("stocks_owned").incrementAndGet();
-            return;
-        }
-      }
       case "invite":
         commandMetricMap.get("invite").incrementAndGet();
         return;
@@ -218,6 +187,10 @@ public class MetricService {
         return;
       case "crossword":
         commandMetricMap.get("crossword_slash").incrementAndGet();
+        return;
+      case "crossduel":
+        commandMetricMap.get("crossduel_slash").incrementAndGet();
+        return;
       case "atlas":
         switch (event.getSubcommandName()) {
           case "classic":
@@ -274,6 +247,7 @@ public class MetricService {
     commandMetricMap.put("guess_stateflag", new AtomicLong());
     commandMetricMap.put("crossword_slash", new AtomicLong());
     commandMetricMap.put("crossword_button", new AtomicLong());
+    commandMetricMap.put("crossduel_slash", new AtomicLong());
     commandMetricMap.put("play_flag", new AtomicLong());
     commandMetricMap.put("play_map", new AtomicLong());
     commandMetricMap.put("play_logo", new AtomicLong());
@@ -286,13 +260,6 @@ public class MetricService {
     commandMetricMap.put("race_maps", new AtomicLong());
     commandMetricMap.put("race_maths", new AtomicLong());
     commandMetricMap.put("race_logo", new AtomicLong());
-    commandMetricMap.put("memoflip_easy", new AtomicLong());
-    commandMetricMap.put("memoflip_medium", new AtomicLong());
-    commandMetricMap.put("memoflip_hard", new AtomicLong());
-    commandMetricMap.put("memoflip_scores", new AtomicLong());
-    commandMetricMap.put("stocks_list", new AtomicLong());
-    commandMetricMap.put("stocks_sell", new AtomicLong());
-    commandMetricMap.put("stocks_owned", new AtomicLong());
     commandMetricMap.put("battle", new AtomicLong());
     commandMetricMap.put("invite", new AtomicLong());
     commandMetricMap.put("leaderboards", new AtomicLong());

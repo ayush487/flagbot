@@ -137,4 +137,20 @@ public class LevelsDao {
 			e.printStackTrace();
 		}
 	}
+
+    public Level getRandomLevel() {
+        Connection conn = ConnectionProvider.getConnection();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT level, main_word, words, level_data FROM levels ORDER BY RAND() LIMIT 1;");
+            if (rs.next()) {
+                return new Level(rs.getInt("level"), rs.getString("main_word"), rs.getString("words"),
+                        rs.getString("level_data"));
+            }
+        } catch (SQLException e) {
+            ConnectionProvider.resetConnection();
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

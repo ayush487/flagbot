@@ -10,7 +10,6 @@ import com.ayushtech.flagbot.game.continent.ContinentGameHandler;
 import com.ayushtech.flagbot.game.location.LocationGameHandler;
 import com.ayushtech.flagbot.guessGame.GuessGameHandler;
 import com.ayushtech.flagbot.guessGame.flag.RegionHandler;
-import com.ayushtech.flagbot.memoflip.MemoflipHandler;
 import com.ayushtech.flagbot.race.RaceHandler;
 import com.ayushtech.flagbot.services.CaptchaService;
 import com.ayushtech.flagbot.services.ChannelService;
@@ -110,6 +109,11 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
+		else if (slashCommandName.equals("crossduel")) {
+			CrosswordGameHandler.getInstance().handleCrossduelSlashCommand(event);
+			return;
+		}
+
 		else if (slashCommandName.equals("extra_words")) {
 			CrosswordGameHandler.getInstance().handleExtraWordCommand(event);
 			return;
@@ -117,12 +121,8 @@ public class InteractionsListener extends ListenerAdapter {
 
 		event.deferReply().queue();
 
-		if (slashCommandName.equals("memoflip")) {
-			MemoflipHandler.getInstance().handleMemoflipCommand(event);
-			return;
-		}
-
-		else if (slashCommandName.equals("vote")) {
+		
+		if (slashCommandName.equals("vote")) {
 			UtilService.getInstance().handleVoteCommand(event.getHook());
 			return;
 		}
@@ -176,7 +176,6 @@ public class InteractionsListener extends ListenerAdapter {
 			UtilService.getInstance().handleGiveCommands(event);
 			return;
 		}
-
 
 		// Commenting Captcha for now
 		if (random.nextInt(BOUND) == 1) {
@@ -323,12 +322,30 @@ public class InteractionsListener extends ListenerAdapter {
 		} else if (buttonCommandId.startsWith("cancelThenNewCrossword")) {
 			CrosswordGameHandler.getInstance().handleCancelThenNewCrosswordButton(event);
 			return;
+		} else if (buttonCommandId.startsWith("denyCrossduel")) {
+			CrosswordGameHandler.getInstance().handleDenyCrossduel(event);
+			return;
+		} else if (buttonCommandId.startsWith("acceptCrossduel")) {
+			CrosswordGameHandler.getInstance().handleAcceptCrossduel(event);
+			return;
+		} else if (buttonCommandId.startsWith("quitCrossduel")) {
+			CrosswordGameHandler.getInstance().handleCrossduelQuitButton(event);
+			return;
+		} else if (buttonCommandId.startsWith("confirmQuitCrossduel")) {
+			CrosswordGameHandler.getInstance().handleConfirmQuitCrossduel(event);
+			return;
+		} else if (buttonCommandId.startsWith("cancelQuitCrossduel")) {
+			CrosswordGameHandler.getInstance().handleCancelQuitCrossduel(event);
+			return;
+		} else if (buttonCommandId.startsWith("shuffleCrossduel")) {
+			CrosswordGameHandler.getInstance().handleShuffleDuelButton(event);
+			return;
 		}
 
 		// else if (buttonCommandId.startsWith("stockTransactions")) {
-		// 	StocksHandler.getInstance().handleStockTransactionButton(event);
-		// 	return;
-		// } 
+		// StocksHandler.getInstance().handleStockTransactionButton(event);
+		// return;
+		// }
 		else if (buttonCommandId.startsWith("accelerate_")) {
 			RaceHandler.getInstance().handleAccelerate(event);
 			return;
@@ -337,9 +354,6 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		} else if (buttonCommandId.startsWith("wrong")) {
 			RaceHandler.getInstance().handleWrongSelection(event);
-			return;
-		} else if (buttonCommandId.startsWith("cardButton")) {
-			MemoflipHandler.getInstance().handleCardButton(event);
 			return;
 		} else if (buttonCommandId.startsWith("selectContinent")) {
 			ContinentGameHandler.getInstance().handleSelection(event);
@@ -371,7 +385,7 @@ public class InteractionsListener extends ListenerAdapter {
 		} else if (buttonCommandId.startsWith("help")) {
 			UtilService.getInstance().handleHelpButton(event);
 			return;
-		} else if(buttonCommandId.startsWith("lb_")) {
+		} else if (buttonCommandId.startsWith("lb_")) {
 			LeaderboardHandler.getInstance().handleLeaderboardButton(event);
 			return;
 		}

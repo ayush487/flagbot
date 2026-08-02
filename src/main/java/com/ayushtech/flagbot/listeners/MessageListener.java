@@ -35,16 +35,12 @@ public class MessageListener extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event) {
 
         long channelId = event.getChannel().getIdLong();
+        
         if (channelId == vote_notifs_channel) {
             VotingService.getInstance().handleVote(event);
             return;
         }
-        //  else if (channelId == webhook_channel) {
-        //     event.getMessage().addReaction(Emoji.fromUnicode("U+1F44D")).queue();
-        //     event.getMessage().addReaction(Emoji.fromUnicode("U+1F937")).queue();
-        //     event.getMessage().addReaction(Emoji.fromUnicode("U+1F44E")).queue();
-        //     return;
-        // } 
+        
         else if (channelId == newPledgeChannel || channelId == updatePledgeChannel) {
             String patreonId = event.getMessage().getContentDisplay();
             PatreonService.getInstance().addNewPatron(event.getJDA(), Long.parseLong(patreonId));
@@ -62,17 +58,6 @@ public class MessageListener extends ListenerAdapter {
             return;
         }
         String messageText = event.getMessage().getContentDisplay();
-
-        // if
-        // (CaptchaService.getInstance().userHasCaptched(event.getAuthor().getIdLong()))
-        // {
-        // if (event.isFromType(ChannelType.PRIVATE)) {
-        // CaptchaService.getInstance().handleCaptchaAnswer(event, messageText);
-        // return;
-        // } else {
-        // return;
-        // }
-        // }
 
         if (CrosswordGameHandler.getInstance().isActiveGame(event.getAuthor().getIdLong(),
                 event.getChannel().getIdLong())) {
@@ -147,6 +132,5 @@ public class MessageListener extends ListenerAdapter {
         alternateNamesMap.put("artsakh", "Nagorno-Karabakh");
         alternateNamesMap.put("united states virgin islands", "US Virgin Islands");
         alternateNamesMap.put("الإمارات", "الإمارات العربية المتحدة");
-
     }
 }

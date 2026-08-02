@@ -18,6 +18,7 @@ import com.ayushtech.flagbot.services.LanguageService;
 import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.UtilService;
 import com.ayushtech.flagbot.services.VotingService;
+
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
@@ -55,15 +56,15 @@ public class Main {
                 GuessGameUtil.getInstance();
                 VotingService.getInstance();
 
-                
                 DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createLight(bot_token,
                                 EnumSet.of(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES,
                                                 GatewayIntent.DIRECT_MESSAGES));
-                builder.setActivity(Activity.playing("/atlas"));
+                builder.setActivity(Activity.playing("/crossduel"));
                 builder.disableCache(EnumSet.of(CacheFlag.VOICE_STATE, CacheFlag.EMOJI, CacheFlag.STICKER,
                                 CacheFlag.SCHEDULED_EVENTS));
                 builder.addEventListeners(new MessageListener(), new InteractionsListener(),
                                 new GuildEventListener());
+
                 builder.build();
 
                 ChannelService.getInstance().loadDisabledChannels();

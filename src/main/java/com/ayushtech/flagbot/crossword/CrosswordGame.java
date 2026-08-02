@@ -139,6 +139,10 @@ public class CrosswordGame {
 		return gridFormatted.toString();
 	}
 
+	// status
+	// 0 : Level completed
+	// 1 : Quit
+	// Else : Cancelled
 	protected MessageEmbed getEmbed(byte status, String footerText) {
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setTitle(String.format("Level %d", levelNumber));
