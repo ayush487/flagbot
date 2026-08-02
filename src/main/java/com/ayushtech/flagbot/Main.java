@@ -64,7 +64,6 @@ public class Main {
                                 CacheFlag.SCHEDULED_EVENTS));
                 builder.addEventListeners(new MessageListener(), new InteractionsListener(),
                                 new GuildEventListener());
-
                 builder.build();
 
                 ChannelService.getInstance().loadDisabledChannels();

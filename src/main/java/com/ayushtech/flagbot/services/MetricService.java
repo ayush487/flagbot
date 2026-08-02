@@ -72,8 +72,8 @@ public class MetricService {
 
     eb.addField("__Other Commands__",
         String.format(
-            "Battle : %d\nInvite : %d\nLeaderboards : %d\nBalance : %d\nVote : %d\nHelp : %d\nGive Coins : %d\n__Language__\n> set : %d\n> info : %d\n> remove : %d",
-            commandMetricMap.get("battle").get(), commandMetricMap.get("invite").get(),
+            "Invite : %d\nLeaderboards : %d\nBalance : %d\nVote : %d\nHelp : %d\nGive Coins : %d\n__Language__\n> set : %d\n> info : %d\n> remove : %d",
+            commandMetricMap.get("invite").get(),
             commandMetricMap.get("leaderboards").get(),
             commandMetricMap.get("balance").get(), commandMetricMap.get("vote").get(),
             commandMetricMap.get("help").get(),
@@ -135,9 +135,6 @@ public class MetricService {
             return;
         }
       }
-      case "battle":
-        commandMetricMap.get("battle").incrementAndGet();
-        return;
       case "race": {
         switch (event.getSubcommandName()) {
           case "flags":
@@ -260,7 +257,6 @@ public class MetricService {
     commandMetricMap.put("race_maps", new AtomicLong());
     commandMetricMap.put("race_maths", new AtomicLong());
     commandMetricMap.put("race_logo", new AtomicLong());
-    commandMetricMap.put("battle", new AtomicLong());
     commandMetricMap.put("invite", new AtomicLong());
     commandMetricMap.put("leaderboards", new AtomicLong());
     commandMetricMap.put("balance", new AtomicLong());

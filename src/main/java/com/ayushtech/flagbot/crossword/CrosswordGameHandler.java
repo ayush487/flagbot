@@ -523,7 +523,7 @@ public class CrosswordGameHandler {
 		duelGameMap.put(player1Id, duel);
 		duelGameMap.put(player2Id, duel);
 		int gameHashCode = duel.hashCode();
-		CompletableFuture.delayedExecutor(CROSSWORD_DURATION, TimeUnit.SECONDS).execute(() -> {
+		CompletableFuture.delayedExecutor(CROSSWORD_DURATION, TimeUnit.MINUTES).execute(() -> {
 			if (!duelGameMap.containsKey(player1Id))
 				return;
 			int currentRunningGameHashCode = duelGameMap.get(player1Id).hashCode();

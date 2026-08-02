@@ -94,12 +94,7 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
-		if (slashCommandName.equals("battle")) {
-			event.reply("This command has been removed.").queue();
-			return;
-		}
-
-		else if (slashCommandName.equals("race")) {
+		if (slashCommandName.equals("race")) {
 			RaceHandler.getInstance().handleRaceCommand(event);
 			return;
 		}
