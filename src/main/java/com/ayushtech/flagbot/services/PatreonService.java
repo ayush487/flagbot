@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import com.ayushtech.flagbot.dbconnectivity.PatronDao;
@@ -25,19 +24,18 @@ public class PatreonService {
   private static PatreonService patreonService = null;
 
   private Set<Long> patronUsers;
-  private final ScheduledThreadPoolExecutor executor;
   private final Map<Long, String> correctGuessReactions;
   private final Map<Long, String> wrongGuessReactions;
   private String WEBHOOK_URL = "";
 
   private PatreonService() {
     this.patronUsers = PatronDao.getInstance().getValidPatronMembers();
-    executor = new ScheduledThreadPoolExecutor(1);
-    executor.scheduleAtFixedRate(() -> {
-      this.patronUsers = PatronDao.getInstance().getValidPatronMembers();
-    }, 60, 60, TimeUnit.MINUTES);
     this.wrongGuessReactions = PatronDao.getInstance().getWrongReactions();
     this.correctGuessReactions = PatronDao.getInstance().getCorrectReactions();
+  }
+
+  public void updatePatronUsers() {
+    this.patronUsers = PatronDao.getInstance().getValidPatronMembers();
   }
 
   public static PatreonService getInstance() {

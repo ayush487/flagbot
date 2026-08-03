@@ -179,8 +179,6 @@ public class UtilService {
       event.replyEmbeds(eb.build()).queue();
     } else {
       CoinDao.getInstance().deleteData(event.getUser().getIdLong());
-      // StocksDao.getInstance().deleteStocksData(event.getUser().getIdLong());
-      // StocksTransactionsDao.getInstance().deleteTransactionData(event.getUser().getIdLong());
       EmbedBuilder eb = new EmbedBuilder();
       eb.setTitle("Delete Confirmed");
       eb.setDescription("Data deleted");
@@ -326,7 +324,7 @@ public class UtilService {
     description.append("**/help atlas :** `info about atlas commands`\n");
     description.append("**/help crossduel :** `info about crossduel command`\n");
     description.append("**/help race  :** `info about race commands`\n");
-    description.append("**/help memoflip :** `info about memoflip command`\n");
+    description.append("**/help crossduel :** `info about crossduel command`\n");
     description.append("**/help language :** `info about setting up languages in the bot`\n");
     description.append("**/help config :** `info about bot configuration into the server`");
     eb.setDescription(description.toString());
@@ -430,21 +428,6 @@ public class UtilService {
     eb.setFooter("Page 4/7", userPfp);
     return eb.build();
   }
-
-  // private MessageEmbed memoflipHelpEmbed(String userPfp) {
-  //   EmbedBuilder eb = new EmbedBuilder();
-  //   eb.setTitle("Memoflip Game");
-  //   eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
-  //   eb.setColor(new Color(255, 153, 51));
-  //   StringBuilder descBuilder = new StringBuilder();
-  //   descBuilder.append("`/memoflip easy` : Start a memoflip game in easy mode (8 cards)\n");
-  //   descBuilder.append("`/memoflip medium` : Start a memoflip game in medium mode (16 cards)\n");
-  //   descBuilder.append("`/memoflip hard` : Start a memoflip game in hard mode (24 cards)\n");
-  //   descBuilder.append("`/memoflip scores` : Sends your best scores in each mode.");
-  //   eb.setDescription(descBuilder.toString());
-  //   eb.setFooter("Page 5/7", userPfp);
-  //   return eb.build();
-  // }
 
   private MessageEmbed crossduelHelpEmbed(String userPfp) {
     EmbedBuilder eb = new EmbedBuilder();

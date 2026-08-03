@@ -1,5 +1,7 @@
 package com.ayushtech.flagbot.listeners;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import com.ayushtech.flagbot.atlas.AtlasGameHandler;
@@ -11,7 +13,6 @@ import com.ayushtech.flagbot.game.location.LocationGameHandler;
 import com.ayushtech.flagbot.guessGame.GuessGameHandler;
 import com.ayushtech.flagbot.guessGame.flag.RegionHandler;
 import com.ayushtech.flagbot.race.RaceHandler;
-import com.ayushtech.flagbot.services.CaptchaService;
 import com.ayushtech.flagbot.services.ChannelService;
 import com.ayushtech.flagbot.services.LanguageService;
 import com.ayushtech.flagbot.services.LevelAppendService;
@@ -23,8 +24,12 @@ import com.ayushtech.flagbot.services.UtilService;
 import com.ayushtech.flagbot.services.VotingService;
 import com.ayushtech.flagbot.utils.LeaderboardHandler;
 
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
+import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class InteractionsListener extends ListenerAdapter {
@@ -32,27 +37,93 @@ public class InteractionsListener extends ListenerAdapter {
 	private ChannelService channelService;
 	private Random random;
 	private final int BOUND = 250;
+	private static String WEBHOOK_URL = "";
+	private final long vote_notifs_channel = 1190982948804100108l;
+    private Map<String, String> alternateNamesMap;
+    private String[] keywords = { "link", "games", "download game" };
+    private long privateServerId = 1465232854681129065l;
+    private long newPledgeChannel = 1263027212194414644l;
+    private long updatePledgeChannel = 1263027292322529301l;
 
 	public InteractionsListener() {
 		super();
 		channelService = ChannelService.getInstance();
 		random = new Random();
+		alternateNamesMap = new HashMap<>();
+        loadAlternateNames();
 	}
+
+	public static void setJoinUpdateWebhookUrl(String url) {
+		WEBHOOK_URL = url;
+	}
+
+	@Override
+    public void onMessageReceived(MessageReceivedEvent event) {
+
+        long channelId = event.getChannel().getIdLong();
+        
+        if (channelId == vote_notifs_channel) {
+            VotingService.getInstance().handleVote(event);
+            return;
+        }
+        
+        else if (channelId == newPledgeChannel || channelId == updatePledgeChannel) {
+            String patreonId = event.getMessage().getContentDisplay();
+            PatreonService.getInstance().addNewPatron(event.getJDA(), Long.parseLong(patreonId));
+        }
+
+        if (event.getAuthor().isBot())
+            return;
+
+        if (event.isFromGuild() && event.getGuild().getIdLong() == privateServerId
+                && isContainKeyword(event.getMessage().getContentDisplay().toLowerCase())) {
+            PrivateServerService.getInstance().handleMessage(event);
+        }
+
+        String messageText = event.getMessage().getContentDisplay();
+
+        if (CrosswordGameHandler.getInstance().isActiveGame(event.getAuthor().getIdLong(),
+                event.getChannel().getIdLong())) {
+            CrosswordGameHandler.getInstance().inspectAnswer(event);
+        }
+
+        if (messageText.startsWith("f!set correct_guess")) {
+            PatreonService.getInstance().setReactionsForCorrectGuess(event);
+            return;
+        } else if (messageText.startsWith("f!set wrong_guess")) {
+            PatreonService.getInstance().setReactionsForWrongGuess(event);
+            return;
+        } else if (messageText.startsWith("f!remove wrong_guess")) {
+            PatreonService.getInstance().removeReactionsForWrongGuess(event);
+            return;
+        } else if (messageText.startsWith("f!exitatlas")) {
+            AtlasGameHandler.getInstance().requestCancelGame(event);
+            return;
+        }
+
+        if (GuessDistanceHandler.getInstance().isActiveGameInChannel(channelId)) {
+            GuessDistanceHandler.getInstance().handleGuess(messageText, event);
+        }
+
+        if (AtlasGameHandler.getInstance().isGameExist(channelId)) {
+            AtlasGameHandler.getInstance().handleAnswer(messageText, event);
+        }
+
+        if (alternateNamesMap.containsKey(messageText.toLowerCase())) {
+            messageText = alternateNamesMap.get(messageText.toLowerCase());
+        }
+        if (GuessGameHandler.getInstance().isActiveGame(channelId)) {
+            GuessGameHandler.getInstance().handleGuess(messageText, event);
+            return;
+        }
+        return;
+    }
+
 
 	@Override
 	public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
 
 		MetricService.getInstance().registerCommandData(event);
-
-		if (CaptchaService.getInstance().isUserBanned(event.getUser().getIdLong())) {
-			event.reply("You are banned from using bot").setEphemeral(true).queue();
-			return;
-		}
-
-		if (CaptchaService.getInstance().userHasCaptched(event.getUser().getIdLong())) {
-			event.reply("Solve the captcha first").setEphemeral(true).queue();
-			return;
-		}
 
 		String slashCommandName = event.getName();
 
@@ -116,7 +187,6 @@ public class InteractionsListener extends ListenerAdapter {
 
 		event.deferReply().queue();
 
-		
 		if (slashCommandName.equals("vote")) {
 			UtilService.getInstance().handleVoteCommand(event.getHook());
 			return;
@@ -175,8 +245,6 @@ public class InteractionsListener extends ListenerAdapter {
 		// Commenting Captcha for now
 		if (random.nextInt(BOUND) == 1) {
 			PatreonService.getInstance().sendPatreonRequestMessage(event.getChannel());
-			// CaptchaService.getInstance().sendCaptcha(event);
-			// return;
 		}
 
 		if (slashCommandName.equals("guess")) {
@@ -210,12 +278,12 @@ public class InteractionsListener extends ListenerAdapter {
 			event.getHook().sendMessage("Message Sent").queue();
 		}
 
-		else if (slashCommandName.equals("unblock")) {
-			String user_id = event.getOption("user_id").getAsString();
-			CaptchaService.getInstance().removeBlock(Long.parseLong(user_id));
-			event.getHook().sendMessage("Unblocked User").queue();
-			return;
-		}
+		// else if (slashCommandName.equals("unblock")) {
+		// String user_id = event.getOption("user_id").getAsString();
+		// CaptchaService.getInstance().removeBlock(Long.parseLong(user_id));
+		// event.getHook().sendMessage("Unblocked User").queue();
+		// return;
+		// }
 
 		else if (slashCommandName.equals("metrics")) {
 			MetricService.getInstance().handleMetricCommand(event);
@@ -268,15 +336,16 @@ public class InteractionsListener extends ListenerAdapter {
 
 		MetricService.getInstance().registerCommandData(event);
 
-		if (CaptchaService.getInstance().isUserBanned(event.getUser().getIdLong())) {
-			event.reply("You are banned from using bot").setEphemeral(true).queue();
-			return;
-		}
+		// if (CaptchaService.getInstance().isUserBanned(event.getUser().getIdLong())) {
+		// event.reply("You are banned from using bot").setEphemeral(true).queue();
+		// return;
+		// }
 
-		if (CaptchaService.getInstance().userHasCaptched(event.getUser().getIdLong())) {
-			event.reply("Solve the captcha first").setEphemeral(true).queue();
-			return;
-		}
+		// if
+		// (CaptchaService.getInstance().userHasCaptched(event.getUser().getIdLong())) {
+		// event.reply("Solve the captcha first").setEphemeral(true).queue();
+		// return;
+		// }
 
 		if (buttonCommandId.equals("raceCancel")) {
 			RaceHandler.getInstance().handleCancelRace(event);
@@ -452,4 +521,84 @@ public class InteractionsListener extends ListenerAdapter {
 		}
 
 	}
+
+	@Override
+	public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent event) {
+		if (event.getSubcommandName().equals("flag")) {
+			if (event.getFocusedOption().getName().equals("mode")) {
+				event.replyChoiceStrings("Sovereign Countries Only", "Non-Sovereign Countries Only", "All Countries")
+						.queue();
+			} else {
+				event.replyChoiceStrings("Asia", "Africa", "Europe", "North America", "South America", "Oceania",
+						"Antarctica")
+						.queue();
+			}
+		} else if (event.getSubcommandName().equals("buy") || event.getSubcommandName().equals("sell")) {
+			event.replyChoiceStrings("DOOGLE", "MAPPLE", "RAMSUNG", "MICROLOFT", "LOCKSTAR", "SEPSICO", "LETFLIX",
+					"STARMUCKS", "TWEETER", "DISKORD").queue();
+		} else if (event.getSubcommandName().equals("state_flag")) {
+			event
+					.replyChoiceStrings("United States", "Brazil", "Germany", "Spain", "Switzerland", "Canada", "Italy",
+							"Russia",
+							"Netherlands", "England", "Australia", "Japan", "Poland", "Argentina")
+					.queue();
+		} else if (event.getSubcommandName().equals("distance")) {
+			event.replyChoiceStrings("Kilometers", "Miles").queue();
+		} else if (event.getSubcommandName().equals("set")) {
+			event.replyChoiceStrings("Arabic", "Dutch", "French", "German", "Japanese", "Korean", "Portuguese",
+					"Russian",
+					"Spanish", "Swedish", "Turkish", "Croatian", "Thai").queue();
+
+		}
+	}
+
+	@Override
+	public void onGuildJoin(GuildJoinEvent event) {
+		UtilService.getInstance().sendMessageToWebhook(WEBHOOK_URL,
+				"Flagbot joined server : **" + event.getGuild().getName() + "**");
+	}
+
+	@Override
+	public void onGuildLeave(GuildLeaveEvent event) {
+		UtilService.getInstance().sendMessageToWebhook(WEBHOOK_URL,
+				"Flagbot Leaved server : **" + event.getGuild().getName() + "**");
+	}
+
+	private boolean isContainKeyword(String message) {
+        for (String keyword : keywords) {
+            if (message.contains(keyword))
+                return true;
+        }
+        return false;
+    }
+
+	private void loadAlternateNames() {
+        alternateNamesMap.put("uae", "United Arab Emirates");
+        alternateNamesMap.put("dr congo", "Democratic Republic of the Congo");
+        alternateNamesMap.put("drc", "Democratic Republic of the Congo");
+        alternateNamesMap.put("côte d'ivoire", "Ivory Coast");
+        alternateNamesMap.put("cabo verde", "Cape Verde");
+        alternateNamesMap.put("czech republic", "Czechia");
+        alternateNamesMap.put("turkey", "Turkiye");
+        alternateNamesMap.put("usa", "United States of America");
+        alternateNamesMap.put("united states", "United States of America");
+        alternateNamesMap.put("uk", "United Kingdom");
+        alternateNamesMap.put("east timor", "Timor-Leste");
+        alternateNamesMap.put("bharat", "India");
+        alternateNamesMap.put("bosnia", "Bosnia and Herzegovina");
+        alternateNamesMap.put("burma", "Myanmar");
+        alternateNamesMap.put("c sharp", "C#");
+        alternateNamesMap.put("cpp", "C++");
+        alternateNamesMap.put("ea", "Electronic Arts");
+        alternateNamesMap.put("eu", "European Union");
+        alternateNamesMap.put("car", "Central African Republic");
+        alternateNamesMap.put("south georgia", "South Georgia and the South Sandwich Islands");
+        alternateNamesMap.put("sealand", "Principality of Sealand");
+        alternateNamesMap.put("Åland islands", "Aland Islands");
+        alternateNamesMap.put("northern cyprus", "Turkish Republic of Northern Cyprus");
+        alternateNamesMap.put("usvi", "US Virgin Islands");
+        alternateNamesMap.put("artsakh", "Nagorno-Karabakh");
+        alternateNamesMap.put("united states virgin islands", "US Virgin Islands");
+        alternateNamesMap.put("الإمارات", "الإمارات العربية المتحدة");
+    }
 }

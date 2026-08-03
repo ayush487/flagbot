@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
@@ -26,20 +24,19 @@ public class VotingService {
 
   private static VotingService votingService = null;
   private Map<Long, Long> voteData;
-  private ScheduledThreadPoolExecutor executor;
 
   private static String VOTER_WEBHOOK_URL;
 
   private VotingService() {
     voteData = VoterDao.getInstance().getRecentVoterData();
-    executor = new ScheduledThreadPoolExecutor(1);
-    executor.scheduleAtFixedRate(() -> {
-      Set<Long> racentVotersSet = voteData.keySet().stream().filter(
-          voterId -> voteData.get(voterId) + 86400000 > System.currentTimeMillis()).collect(Collectors.toSet());
-      Map<Long, Long> newVoteData = new HashMap<>();
-      racentVotersSet.stream().forEach(v -> newVoteData.put(v, voteData.get(v)));
-      voteData = newVoteData;
-    }, 30, 30, TimeUnit.MINUTES);
+  }
+
+  public void renewVoterData() {
+    Set<Long> racentVotersSet = voteData.keySet().stream().filter(
+        voterId -> voteData.get(voterId) + 86400000 > System.currentTimeMillis()).collect(Collectors.toSet());
+    Map<Long, Long> newVoteData = new HashMap<>();
+    racentVotersSet.stream().forEach(v -> newVoteData.put(v, voteData.get(v)));
+    voteData = newVoteData;
   }
 
   public static synchronized VotingService getInstance() {
@@ -59,7 +56,8 @@ public class VotingService {
         String voterId = c.asContainer().getComponents().get(0).asTextDisplay().getContent();
         voteUser(event.getJDA(), voterId);
       }
-    } else voteUser(event.getJDA(), msgContent);
+    } else
+      voteUser(event.getJDA(), msgContent);
   }
 
   public void voteUser(JDA jda, String voter_id) {
