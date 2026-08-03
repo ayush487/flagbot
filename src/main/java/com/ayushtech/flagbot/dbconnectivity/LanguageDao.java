@@ -21,8 +21,7 @@ public class LanguageDao {
   }
 
   public Map<Long, String> getLanguageMap() {
-    Connection conn = ConnectionProvider.getConnection();
-    try {
+    try (Connection conn = ConnectionProvider.getConnection()) {
       Statement stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery("SELECT server_id, lang from language_table;");
       Map<Long, String> languageMap = new HashMap<>();
@@ -31,31 +30,26 @@ public class LanguageDao {
       }
       return languageMap;
     } catch (SQLException e) {
-      ConnectionProvider.resetConnection();
       e.printStackTrace();
       return new HashMap<>();
     }
   }
 
   public void setGuildLanguage(long serverId, String language) {
-    Connection conn = ConnectionProvider.getConnection();
-    try {
+    try (Connection conn = ConnectionProvider.getConnection()) {
       Statement stmt = conn.createStatement();
       stmt.executeUpdate(
           String.format("Insert into language_table (server_id, lang) values (%d, '%s');", serverId, language));
     } catch (Exception e) {
-      ConnectionProvider.resetConnection();
       e.printStackTrace();
     }
   }
 
   public void removeGuildLanguage(long serverId) {
-    Connection conn = ConnectionProvider.getConnection();
-    try {
+    try (Connection conn = ConnectionProvider.getConnection()) {
       Statement stmt = conn.createStatement();
       stmt.executeUpdate(String.format("delete from language_table where server_id=%d;", serverId));
     } catch (SQLException e) {
-      ConnectionProvider.resetConnection();
       e.printStackTrace();
     }
   }

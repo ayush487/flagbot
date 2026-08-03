@@ -30,8 +30,7 @@ public class RegionDao {
 	}
 
 	public String getRegion(String code) {
-		try {
-			Connection conn = ConnectionProvider.getConnection();
+		try (Connection conn = ConnectionProvider.getConnection()) {
 			PreparedStatement ps = conn.prepareStatement("select region from country where code2=?;");
 			ps.setString(1, code);
 			ResultSet rs = ps.executeQuery();
@@ -48,8 +47,7 @@ public class RegionDao {
 
 	public String[] getCountryData(String countryCode) {
 		String[] data = new String[3];
-		Connection conn = ConnectionProvider.getConnection();
-		try {
+		try (Connection conn = ConnectionProvider.getConnection()) {
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(String.format(
 					"SELECT country_code, country_name, continent_code FROM country_continents WHERE country_code='%s';",
@@ -67,8 +65,7 @@ public class RegionDao {
 
 	public List<String> getCountryCodeList() {
 		List<String> countryCodeList = new ArrayList<>();
-		Connection conn = ConnectionProvider.getConnection();
-		try {
+		try (Connection conn = ConnectionProvider.getConnection()) {
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT country_code FROM country_continents;");
 			while (rs.next()) {
@@ -81,8 +78,7 @@ public class RegionDao {
 	}
 
 	public String getRandomCountryByContinent(String continentCode) {
-		Connection conn = ConnectionProvider.getConnection();
-		try {
+		try (Connection conn = ConnectionProvider.getConnection()) {
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(String.format(
 					"SELECT country_code FROM country_continents WHERE continent_code ='%s' ORDER by RAND() limit 1;",
@@ -98,8 +94,7 @@ public class RegionDao {
 	}
 
 	public List<Capital> getCapitalList() {
-		Connection conn = ConnectionProvider.getConnection();
-		try {
+		try (Connection conn = ConnectionProvider.getConnection()) {
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT country,country_code,capital FROM capital;");
 			List<Capital> capitalList = new ArrayList<>(194);
@@ -117,8 +112,7 @@ public class RegionDao {
 	}
 
 	public Map<String, String> getCountryCodeMap() {
-		Connection conn = ConnectionProvider.getConnection();
-		try {
+		try (Connection conn = ConnectionProvider.getConnection()) {
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT country_code,country_name FROM country_continents;");
 			Map<String, String> countryCodeMap = new HashMap<>(285);
@@ -133,8 +127,7 @@ public class RegionDao {
 	}
 
 	public List<Country> getCountryList() {
-		Connection conn = ConnectionProvider.getConnection();
-		try {
+		try (Connection conn = ConnectionProvider.getConnection()) {
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt
 					.executeQuery("SELECT country_code,country_name,continent_code,Sovereign FROM country_continents;");
@@ -155,9 +148,9 @@ public class RegionDao {
 	}
 
 	public Map<String, String> getLogoMap() {
-		Connection conn = ConnectionProvider.getConnection();
+		
 		Map<String, String> logoMap = new HashMap<>(409);
-		try {
+		try (Connection conn = ConnectionProvider.getConnection()) {
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT code,name from brands;");
 			while (rs.next()) {

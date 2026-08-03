@@ -12,8 +12,8 @@ import com.ayushtech.flagbot.utils.LbEntry;
 public class LeaderboardDao {
 
 	public List<LbEntry> getPlayersBasedOnCoins(int size, long offset) {
-		Connection conn = ConnectionProvider.getConnection();
-		try {
+		
+		try (Connection conn = ConnectionProvider.getConnection()) {
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(String.format(
 					"SELECT user_id, coins, username from user_table order by coins desc limit %d offset %d;", size, offset));
@@ -24,15 +24,14 @@ public class LeaderboardDao {
 			}
 			return entries;
 		} catch (SQLException e) {
-			ConnectionProvider.resetConnection();
 			e.printStackTrace();
 			return List.of();
 		}
 	}
 
 	public List<LbEntry> getPlayersBasedOnLevels(int size, long offset) {
-		Connection conn = ConnectionProvider.getConnection();
-		try {
+		
+		try (Connection conn = ConnectionProvider.getConnection()) {
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(String.format(
 					"SELECT user_id, level, username from user_table order by level desc limit %d offset %d;", size, offset));
@@ -43,47 +42,44 @@ public class LeaderboardDao {
 			}
 			return entries;
 		} catch (SQLException e) {
-			ConnectionProvider.resetConnection();
 			e.printStackTrace();
 			return List.of();
 		}
 	}
 
 	public long getPlayerCoinRank(long userId) {
-		Connection conn = ConnectionProvider.getConnection();
-		try {
+		
+		try (Connection conn = ConnectionProvider.getConnection()) {
 			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(String.format("select * from coin_ranking where user_id=%d;", userId));
+			ResultSet rs = stmt.executeQuery(String.format("select rank from coin_ranking where user_id=%d;", userId));
 			if (rs.next()) {
 				return rs.getLong("rank");
 			}
 			return 1;
 		} catch (SQLException e) {
-			ConnectionProvider.resetConnection();
 			e.printStackTrace();
 			return 1;
 		}
 	}
 
 	public long getPlayerLevelRank(long userId) {
-		Connection conn = ConnectionProvider.getConnection();
-		try {
+		
+		try (Connection conn = ConnectionProvider.getConnection()) {
 			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(String.format("select * from level_ranking where user_id=%d;", userId));
+			ResultSet rs = stmt.executeQuery(String.format("select rank from level_ranking where user_id=%d;", userId));
 			if (rs.next()) {
 				return rs.getLong("rank");
 			}
 			return 1;
 		} catch (SQLException e) {
-			ConnectionProvider.resetConnection();
 			e.printStackTrace();
 			return 1;
 		}
 	}
 
 	public long getTotalPlayerCount() {
-		Connection conn = ConnectionProvider.getConnection();
-		try {
+		
+		try (Connection conn = ConnectionProvider.getConnection()) {
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT count(*) as total from user_table;");
 			if (rs.next()) {
@@ -91,22 +87,20 @@ public class LeaderboardDao {
 			}
 			return 0;
 		} catch (SQLException e) {
-			ConnectionProvider.resetConnection();
 			e.printStackTrace();
 			return 0;
 		}
 	}
 
 	public void updateUsernames(List<LbEntry> entries) {
-		Connection conn = ConnectionProvider.getConnection();
-		try {
+		
+		try (Connection conn = ConnectionProvider.getConnection()) {
 			Statement stmt = conn.createStatement();
 			for (LbEntry entry : entries) {
 				stmt.addBatch(String.format("update user_table set username='%s' where user_id=%d;", entry.getName(), entry.getUserId()));
 			}
 			stmt.executeBatch();
 		} catch (SQLException e) {
-			ConnectionProvider.resetConnection();
 			e.printStackTrace();
 		}
 	}

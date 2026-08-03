@@ -24,8 +24,7 @@ public class PlacesDao {
   }
 
   public List<String> getPlacesCodeList() {
-    Connection conn = ConnectionProvider.getConnection();
-    try {
+    try (Connection conn = ConnectionProvider.getConnection()) {
       Statement stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery("SELECT code FROM places;");
       List<String> list = new ArrayList<>();
@@ -40,8 +39,7 @@ public class PlacesDao {
   }
 
   public List<Place> getPlacesList() {
-    Connection conn = ConnectionProvider.getConnection();
-    try {
+    try (Connection conn = ConnectionProvider.getConnection()) {
       Statement stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery("SELECT code,name,location FROM places;");
       List<Place> places = new ArrayList<>();
@@ -57,8 +55,7 @@ public class PlacesDao {
   }
 
   public Place getPlace(String code) {
-    Connection conn = ConnectionProvider.getConnection();
-    try {
+    try (Connection conn = ConnectionProvider.getConnection()) {
       Statement stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(String.format("SELECT code,name,location FROM places where code='%s';", code));
       rs.next();
@@ -70,8 +67,7 @@ public class PlacesDao {
   }
 
   public LocationMap getRandomPlaceMap() {
-    Connection conn = ConnectionProvider.getConnection();
-    try {
+    try (Connection conn = ConnectionProvider.getConnection()) {
       Statement stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery("SELECT name, correct FROM places_map_data ORDER BY RAND() LIMIT 1;");
       rs.next();

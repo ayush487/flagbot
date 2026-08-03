@@ -23,8 +23,7 @@ public class CoinDao {
     }
 
     public void addCoins(Long userId, Long amount) {
-        Connection conn = ConnectionProvider.getConnection();
-        try {
+        try (Connection conn = ConnectionProvider.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(
                     "insert into user_table (user_id, coins) values (? , ?) on duplicate key update coins = coins + ?;");
             ps.setLong(1, userId);
@@ -32,14 +31,13 @@ public class CoinDao {
             ps.setLong(3, amount);
             ps.executeUpdate();
         } catch (SQLException e) {
-            ConnectionProvider.resetConnection();
             e.printStackTrace();
         }
     }
 
     public void addCwCoins(long userId, int cwCoins) {
-        Connection conn = ConnectionProvider.getConnection();
-        try {
+
+        try (Connection conn = ConnectionProvider.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(
                     "insert into user_table (user_id, cw_coins) values (? , ?) on duplicate key update cw_coins = cw_coins + ?;");
             ps.setLong(1, userId);
@@ -47,14 +45,13 @@ public class CoinDao {
             ps.setInt(3, cwCoins);
             ps.executeUpdate();
         } catch (SQLException e) {
-            ConnectionProvider.resetConnection();
             e.printStackTrace();
         }
     }
 
     public void addCoins(long userId, long coins, int cwCoins) {
-        Connection conn = ConnectionProvider.getConnection();
-        try {
+
+        try (Connection conn = ConnectionProvider.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(
                     "INSERT INTO user_table (user_id, coins, cw_coins) values (?, ?, ?) on duplicate key update coins = coins + ?, cw_coins = cw_coins + ?;");
 
@@ -65,14 +62,12 @@ public class CoinDao {
             ps.setInt(5, cwCoins);
             ps.executeUpdate();
         } catch (SQLException e) {
-            ConnectionProvider.resetConnection();
             e.printStackTrace();
         }
     }
 
     public long getBalance(Long userId) {
-        try {
-            Connection conn = ConnectionProvider.getConnection();
+        try (Connection conn = ConnectionProvider.getConnection()) {
             PreparedStatement ps = conn.prepareStatement("Select coins from user_table where user_id=?");
             ps.setLong(1, userId);
             ResultSet rs = ps.executeQuery();
@@ -82,15 +77,13 @@ public class CoinDao {
             }
             return coin;
         } catch (Exception e) {
-            ConnectionProvider.resetConnection();
             e.printStackTrace();
             return 0l;
         }
     }
 
     public long addCoinsAndGetBalance(long userId, long amount) {
-        Connection conn = ConnectionProvider.getConnection();
-        try {
+        try (Connection conn = ConnectionProvider.getConnection()) {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(String.format(
                     "INSERT INTO user_table (user_id, coins) values (%d , %d) on duplicate key update coins = coins + %d;",
@@ -101,28 +94,25 @@ public class CoinDao {
             }
             return 0l;
         } catch (SQLException e) {
-            ConnectionProvider.resetConnection();
             e.printStackTrace();
             return 0l;
         }
     }
 
     public void deleteData(Long userId) {
-        try {
-            Connection conn = ConnectionProvider.getConnection();
+        try (Connection conn = ConnectionProvider.getConnection()) {
             PreparedStatement ps = conn.prepareStatement("delete from user_table where user_id=?;");
             ps.setLong(1, userId);
             ps.executeUpdate();
         } catch (Exception e) {
-            ConnectionProvider.resetConnection();
             e.printStackTrace();
         }
     }
 
     public long[] getBalanceAndRankWordCoin(long userId) {
-        try {
-            Connection conn = ConnectionProvider.getConnection();
-            PreparedStatement ps = conn.prepareStatement("SELECT u.coins, u.cw_coins, r.rank FROM user_table u JOIN coin_ranking r ON u.user_id=r.user_id WHERE u.user_id=?;");
+        try (Connection conn = ConnectionProvider.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(
+                    "SELECT u.coins, u.cw_coins, r.rank FROM user_table u JOIN coin_ranking r ON u.user_id=r.user_id WHERE u.user_id=?;");
             ps.setLong(1, userId);
             ResultSet result = ps.executeQuery();
             long[] data = new long[3];
@@ -133,7 +123,6 @@ public class CoinDao {
             }
             return data;
         } catch (Exception e) {
-            ConnectionProvider.resetConnection();
             e.printStackTrace();
         }
         long[] returnArr = { 0, 0, 999999l };
@@ -142,8 +131,7 @@ public class CoinDao {
     }
 
     public long resetUserCoins(long userId) {
-        try {
-            Connection conn = ConnectionProvider.getConnection();
+        try (Connection conn = ConnectionProvider.getConnection()) {
             PreparedStatement ps1 = conn.prepareStatement("Select coins from user_table where user_id=?");
             ps1.setLong(1, userId);
             ResultSet rs = ps1.executeQuery();
@@ -156,22 +144,19 @@ public class CoinDao {
             ps.executeUpdate();
             return coin;
         } catch (Exception e) {
-            ConnectionProvider.resetConnection();
             e.printStackTrace();
         }
         return 0;
     }
 
     public void transferCoinsFromMultipleUsers(long[] userIds, long receiverId, long amount) {
-        Connection conn = ConnectionProvider.getConnection();
-        try {
+        try (Connection conn = ConnectionProvider.getConnection()) {
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(createCommandToDeductMultipleUsers(userIds, amount));
             stmt.executeUpdate(
                     String.format("UPDATE user_table SET coins = coins + %d WHERE user_id=%d;", amount * userIds.length,
                             receiverId));
         } catch (SQLException e) {
-            ConnectionProvider.resetConnection();
             e.printStackTrace();
         }
     }

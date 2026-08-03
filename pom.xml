@@ -21,6 +21,12 @@
 
 	<dependencies>
 		<dependency>
+    		<groupId>com.zaxxer</groupId>
+    		<artifactId>HikariCP</artifactId>
+    		<version>7.1.0</version>
+    		<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>net.dv8tion</groupId>
 			<artifactId>JDA</artifactId>
 			<version>6.3.2</version>

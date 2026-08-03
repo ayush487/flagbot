@@ -25,8 +25,8 @@ public class AtlasDao {
 
   public AtlasQuestion getQuestion() {
     int qId = random.nextInt(375) + 1;
-    Connection conn = ConnectionProvider.getConnection();
-    try {
+    ;
+    try (Connection conn = ConnectionProvider.getConnection()){
       Statement stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery("SELECT question, answers FROM atlas_quiz WHERE qId=" + qId + ";");
       if (rs.next()) {
@@ -34,7 +34,6 @@ public class AtlasDao {
       }
       throw new RuntimeException();
     } catch (SQLException e) {
-      ConnectionProvider.resetConnection();
       e.printStackTrace();
       throw new RuntimeException();
     }

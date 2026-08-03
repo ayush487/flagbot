@@ -22,8 +22,7 @@ public class PatronDao {
   }
 
   public HashSet<Long> getValidPatronMembers() {
-    Connection conn = ConnectionProvider.getConnection();
-    try {
+    try (Connection conn = ConnectionProvider.getConnection()) {
       Statement stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(
           String.format("Select user_id from patreon_members where validtill > %d;", System.currentTimeMillis()));
@@ -39,8 +38,7 @@ public class PatronDao {
   }
 
   public Map<Long, Long> getPatronMembersWithValidity() {
-    Connection conn = ConnectionProvider.getConnection();
-    try {
+    try (Connection conn = ConnectionProvider.getConnection()) {
       Statement stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(
           String.format("Select user_id, validtill from patreon_members where validtill > %d;", System.currentTimeMillis()));
@@ -56,8 +54,7 @@ public class PatronDao {
   }
 
   public HashMap<Long, String> getWrongReactions() {
-    Connection conn = ConnectionProvider.getConnection();
-    try {
+    try (Connection conn = ConnectionProvider.getConnection()) {
       Statement stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(
           "SELECT user_id, wrong_reaction,wrong_reaction_name FROM patreon_members WHERE wrong_reaction!=0;");
@@ -76,8 +73,7 @@ public class PatronDao {
   }
 
   public HashMap<Long, String> getCorrectReactions() {
-    Connection conn = ConnectionProvider.getConnection();
-    try {
+    try (Connection conn = ConnectionProvider.getConnection()) {
       Statement stmt = conn.createStatement();
       ResultSet rs = stmt
           .executeQuery(
@@ -98,8 +94,7 @@ public class PatronDao {
 
   public long addNewPatron(long userId) {
     long duration = 2678400000l;
-    Connection connection = ConnectionProvider.getConnection();
-    try {
+    try (Connection connection = ConnectionProvider.getConnection()) {
       Statement stmt = connection.createStatement();
       ResultSet rs = stmt.executeQuery("Select validtill from patreon_members where user_id=" + userId);
       if (rs.next()) {
@@ -127,8 +122,7 @@ public class PatronDao {
   }
 
   public void setCorrectReaction(long authorId, long emoteId, String emoteName) {
-    Connection conn = ConnectionProvider.getConnection();
-    try {
+    try (Connection conn = ConnectionProvider.getConnection()) {
       Statement stmt = conn.createStatement();
       stmt.executeUpdate(
           String.format("UPDATE patreon_members SET correct_reaction=%d,correct_reaction_name='%s' WHERE user_id=%d;",
@@ -139,8 +133,7 @@ public class PatronDao {
   }
 
   public void setWrongReaction(long authorId, long emoteId, String emoteName) {
-    Connection conn = ConnectionProvider.getConnection();
-    try {
+    try (Connection conn = ConnectionProvider.getConnection()) {
       Statement stmt = conn.createStatement();
       stmt.executeUpdate(
           String.format("UPDATE patreon_members SET wrong_reaction=%d,wrong_reaction_name='%s' WHERE user_id=%d;",
@@ -151,8 +144,7 @@ public class PatronDao {
   }
 
   public void removeWrongReaction(long authorId) {
-    Connection conn = ConnectionProvider.getConnection();
-    try {
+    try (Connection conn = ConnectionProvider.getConnection()) {
       Statement stmt = conn.createStatement();
       stmt.executeUpdate(String
           .format("UPDATE patreon_members SET wrong_reaction=0,wrong_reaction_name=null WHERE user_id=%d;", authorId));
@@ -162,8 +154,7 @@ public class PatronDao {
   }
 
   public long getUserPatreonValidity(long userId) {
-    Connection conn = ConnectionProvider.getConnection();
-    try {
+    try (Connection conn = ConnectionProvider.getConnection()) {
       Statement stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery("SELECT validtill from patreon_members where user_id=" + userId + ";");
       if (rs.next()) {

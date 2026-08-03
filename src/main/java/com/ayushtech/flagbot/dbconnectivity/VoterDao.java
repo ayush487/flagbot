@@ -22,8 +22,7 @@ public class VoterDao {
   }
 
   public void addVoter(long voterId) {
-    Connection conn = ConnectionProvider.getConnection();
-    try {
+    try (Connection conn = ConnectionProvider.getConnection()){
       Statement stmt = conn.createStatement();
       stmt.executeUpdate(String.format("INSERT INTO vote_data (voter_id, time) values (%d, %d);", voterId,
           System.currentTimeMillis()));
@@ -33,9 +32,8 @@ public class VoterDao {
   }
 
   public Map<Long, Long> getRecentVoterData() {
-    Connection conn = ConnectionProvider.getConnection();
     Map<Long, Long> voterData = new HashMap<>();
-    try {
+    try (Connection conn = ConnectionProvider.getConnection()) {
       Statement stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(String.format("SELECT voter_id, time FROM vote_data WHERE time > %d;",
           System.currentTimeMillis() - 86400000));

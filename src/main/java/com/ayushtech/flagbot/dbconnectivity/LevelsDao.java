@@ -33,7 +33,8 @@ public class LevelsDao {
 				"INSERT INTO user_table (user_id, level) SELECT %d, 1 WHERE NOT EXISTS (SELECT 1 FROM user_table WHERE user_id = %d);",
 				userId, userId));
 		ResultSet rs = stmt.executeQuery(
-				"SELECT * FROM levels JOIN user_table ON levels.level=user_table.level WHERE user_table.user_id=" + userId + ";");
+				"SELECT * FROM levels JOIN user_table ON levels.level=user_table.level WHERE user_table.user_id="
+						+ userId + ";");
 		if (rs.next()) {
 			return new Level(rs.getInt("level"), rs.getString("main_word"), rs.getString("words"),
 					rs.getString("level_data"));
@@ -48,8 +49,7 @@ public class LevelsDao {
 	}
 
 	public Set<String> getAllWords() {
-		Connection connection = ConnectionProvider.getConnection();
-		try {
+		try (Connection connection = ConnectionProvider.getConnection()) {
 			PreparedStatement preparedStatement = connection.prepareStatement("SELECT words FROM wordlist;");
 			Set<String> words = new HashSet<>();
 			ResultSet rs = preparedStatement.executeQuery();
@@ -64,66 +64,77 @@ public class LevelsDao {
 		return null;
 	}
 
-	// public Optional<Level> getDailyLevel(long userId, String todayDate) throws SQLException {
-	// 	Connection conn = ConnectionProvider.getConnection();
-	// 	Statement stmt = conn.createStatement();
-	// 	ResultSet temprs = stmt.executeQuery("SELECT last_daily_crossword FROM users WHERE id=" + userId + ";");
-	// 	boolean hasUserPlayedToday = false;
-	// 	if (temprs.next()) {
-	// 		hasUserPlayedToday = todayDate.equals(temprs.getString("last_daily_crossword"));
-	// 	}
-	// 	if (hasUserPlayedToday) {
-	// 		return Optional.empty();
-	// 	}
-	// 	ResultSet rs = stmt
-	// 			.executeQuery("SELECT main_word, words, level_data FROM dailylevels WHERE leveldate='" + todayDate + "';");
-	// 	if (rs.next()) {
-	// 		var level = new Level(0, rs.getString("main_word"), rs.getString("words"), rs.getString("level_data"));
-	// 		return Optional.of(level);
-	// 	}
-	// 	return Optional.empty();
+	// public Optional<Level> getDailyLevel(long userId, String todayDate) throws
+	// SQLException {
+	// Connection conn = ConnectionProvider.getConnection();
+	// Statement stmt = conn.createStatement();
+	// ResultSet temprs = stmt.executeQuery("SELECT last_daily_crossword FROM users
+	// WHERE id=" + userId + ";");
+	// boolean hasUserPlayedToday = false;
+	// if (temprs.next()) {
+	// hasUserPlayedToday =
+	// todayDate.equals(temprs.getString("last_daily_crossword"));
+	// }
+	// if (hasUserPlayedToday) {
+	// return Optional.empty();
+	// }
+	// ResultSet rs = stmt
+	// .executeQuery("SELECT main_word, words, level_data FROM dailylevels WHERE
+	// leveldate='" + todayDate + "';");
+	// if (rs.next()) {
+	// var level = new Level(0, rs.getString("main_word"), rs.getString("words"),
+	// rs.getString("level_data"));
+	// return Optional.of(level);
+	// }
+	// return Optional.empty();
 	// }
 
 	// public Optional<DailyCrosswordData> getDailyData(long userId, String date) {
-	// 	String query = String.format(
-	// 			"SELECT used_hint,enterred_words,extra_words,level_solved,sun FROM daily_cw_cont_data where id=%d and leveldate='%s';",
-	// 			userId, date);
-	// 	Connection conn = ConnectionProvider.getConnection();
-	// 	try {
-	// 		Statement stmt = conn.createStatement();
-	// 		ResultSet rs = stmt.executeQuery(query);
-	// 		if (rs.next()) {
-	// 			DailyCrosswordData data = new DailyCrosswordData(userId, date, rs.getString("level_solved"),
-	// 					rs.getString("enterred_words"), rs.getString("extra_words"), rs.getBoolean("used_hint"), rs.getInt("sun"));
-	// 			return Optional.of(data);
-	// 		} else {
-	// 			return Optional.empty();
-	// 		}
-	// 	} catch (SQLException e) {
-	// 		e.printStackTrace();
-	// 		return Optional.empty();
-	// 	}
+	// String query = String.format(
+	// "SELECT used_hint,enterred_words,extra_words,level_solved,sun FROM
+	// daily_cw_cont_data where id=%d and leveldate='%s';",
+	// userId, date);
+	// Connection conn = ConnectionProvider.getConnection();
+	// try {
+	// Statement stmt = conn.createStatement();
+	// ResultSet rs = stmt.executeQuery(query);
+	// if (rs.next()) {
+	// DailyCrosswordData data = new DailyCrosswordData(userId, date,
+	// rs.getString("level_solved"),
+	// rs.getString("enterred_words"), rs.getString("extra_words"),
+	// rs.getBoolean("used_hint"), rs.getInt("sun"));
+	// return Optional.of(data);
+	// } else {
+	// return Optional.empty();
+	// }
+	// } catch (SQLException e) {
+	// e.printStackTrace();
+	// return Optional.empty();
+	// }
 	// }
 
 	// public void saveDailyLevelData(DailyCrosswordData data) {
-	// 	String query = String.format(
-	// 			"INSERT INTO daily_cw_cont_data (id, used_hint, enterred_words, extra_words, level_solved, leveldate, sun) VALUES (%d, %b, '%s', '%s', '%s', '%s', %d);",
-	// 			data.userId(), data.usedHint(), data.enterredWords(), data.extraWords(), data.unsolvedGrid(), data.date(),
-	// 			data.sun());
-	// 	Connection conn = ConnectionProvider.getConnection();
-	// 	try {
-	// 		var stmt = conn.createStatement();
-	// 		stmt.executeUpdate("DELETE FROM daily_cw_cont_data WHERE id=" + data.userId() + ";");
-	// 		stmt.executeUpdate(query);
-	// 	} catch (SQLException e) {
-	// 		e.printStackTrace();
-	// 	}
+	// String query = String.format(
+	// "INSERT INTO daily_cw_cont_data (id, used_hint, enterred_words, extra_words,
+	// level_solved, leveldate, sun) VALUES (%d, %b, '%s', '%s', '%s', '%s', %d);",
+	// data.userId(), data.usedHint(), data.enterredWords(), data.extraWords(),
+	// data.unsolvedGrid(), data.date(),
+	// data.sun());
+	// Connection conn = ConnectionProvider.getConnection();
+	// try {
+	// var stmt = conn.createStatement();
+	// stmt.executeUpdate("DELETE FROM daily_cw_cont_data WHERE id=" + data.userId()
+	// + ";");
+	// stmt.executeUpdate(query);
+	// } catch (SQLException e) {
+	// e.printStackTrace();
+	// }
 	// }
 
 	public void addLevels(List<LevelData> levels) {
-		Connection conn = ConnectionProvider.getConnection();
 		String query = "INSERT INTO levels (level, main_word, words, level_data) VALUES (?, ?, ?, ?)";
-		try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+		try (Connection conn = ConnectionProvider.getConnection()) {
+			PreparedStatement preparedStatement = conn.prepareStatement(query);
 			for (LevelData level : levels) {
 				preparedStatement.setInt(1, level.levelNumber());
 				preparedStatement.setString(2, level.mainWord());
@@ -132,25 +143,24 @@ public class LevelsDao {
 				preparedStatement.addBatch();
 			}
 			preparedStatement.executeBatch();
+			preparedStatement.close();
 		} catch (SQLException e) {
-			ConnectionProvider.resetConnection();
 			e.printStackTrace();
 		}
 	}
 
-    public Level getRandomLevel() {
-        Connection conn = ConnectionProvider.getConnection();
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT level, main_word, words, level_data FROM levels ORDER BY RAND() LIMIT 1;");
-            if (rs.next()) {
-                return new Level(rs.getInt("level"), rs.getString("main_word"), rs.getString("words"),
-                        rs.getString("level_data"));
-            }
-        } catch (SQLException e) {
-            ConnectionProvider.resetConnection();
-            e.printStackTrace();
-        }
-        return null;
-    }
+	public Level getRandomLevel() {
+		try (Connection conn = ConnectionProvider.getConnection()) {
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt
+					.executeQuery("SELECT level, main_word, words, level_data FROM levels ORDER BY RAND() LIMIT 1;");
+			if (rs.next()) {
+				return new Level(rs.getInt("level"), rs.getString("main_word"), rs.getString("words"),
+						rs.getString("level_data"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

@@ -20,8 +20,7 @@ public class DistanceDao {
 
   public int[] getMapData(int randomMap) {
     int[] mapData = new int[4];
-    Connection conn = ConnectionProvider.getConnection();
-    try {
+    try (Connection conn = ConnectionProvider.getConnection()) {
       Statement stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(String.format("SELECT name,kms,miles,zoom FROM map_data WHERE name=%d;", randomMap));
       if (rs.next()) {
@@ -31,7 +30,6 @@ public class DistanceDao {
         mapData[3] = rs.getInt("zoom");
       }
     } catch (SQLException e) {
-      ConnectionProvider.resetConnection();
       e.printStackTrace();
     }
     return mapData;

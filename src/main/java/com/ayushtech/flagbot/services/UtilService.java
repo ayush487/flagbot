@@ -2,7 +2,6 @@ package com.ayushtech.flagbot.services;
 
 import java.awt.Color;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -44,24 +43,24 @@ public class UtilService {
 
   private ChannelService channelService;
   private Map<Character, String> emojiMap;
-	private final String bar1empty = Emoji.fromCustom("bar1empty", 1195296826132287541l, false).getAsMention();
-	private final String bar1half = Emoji.fromCustom("bar1half", 1195297050993115246l, true).getAsMention();
-	private final String bar1full = Emoji.fromCustom("bar1full", 1195297246464442368l, true).getAsMention();
-	private final String bar1max = Emoji.fromCustom("bar1max", 1195297353591173201l, true).getAsMention();
-	private final String bar2empty = Emoji.fromCustom("bar2empty", 1195297658567413790l, false).getAsMention();
-	private final String bar2half = Emoji.fromCustom("bar2half", 1195297926734426162l, true).getAsMention();
-	private final String bar2full = Emoji.fromCustom("bar2full", 1195298061522587659l, true).getAsMention();
-	private final String bar2max = Emoji.fromCustom("bar2max", 1195298660800528434l, true).getAsMention();
-	private final String bar3empty = Emoji.fromCustom("bar3empty", 1195298974429618207l, false).getAsMention();
-	private final String bar3half = Emoji.fromCustom("bar3half", 1195299147499192362l, true).getAsMention();
-	private final String bar3full = Emoji.fromCustom("bar3full", 1195299364759941131l, true).getAsMention();
-	private String wordAdderWebhookUrl = "";
-	private String wordRemovedWebhookUrl = "";
+  private final String bar1empty = Emoji.fromCustom("bar1empty", 1195296826132287541l, false).getAsMention();
+  private final String bar1half = Emoji.fromCustom("bar1half", 1195297050993115246l, true).getAsMention();
+  private final String bar1full = Emoji.fromCustom("bar1full", 1195297246464442368l, true).getAsMention();
+  private final String bar1max = Emoji.fromCustom("bar1max", 1195297353591173201l, true).getAsMention();
+  private final String bar2empty = Emoji.fromCustom("bar2empty", 1195297658567413790l, false).getAsMention();
+  private final String bar2half = Emoji.fromCustom("bar2half", 1195297926734426162l, true).getAsMention();
+  private final String bar2full = Emoji.fromCustom("bar2full", 1195298061522587659l, true).getAsMention();
+  private final String bar2max = Emoji.fromCustom("bar2max", 1195298660800528434l, true).getAsMention();
+  private final String bar3empty = Emoji.fromCustom("bar3empty", 1195298974429618207l, false).getAsMention();
+  private final String bar3half = Emoji.fromCustom("bar3half", 1195299147499192362l, true).getAsMention();
+  private final String bar3full = Emoji.fromCustom("bar3full", 1195299364759941131l, true).getAsMention();
+  private String wordAdderWebhookUrl = "";
+  private String wordRemovedWebhookUrl = "";
 
   private UtilService() {
     channelService = ChannelService.getInstance();
     this.emojiMap = new HashMap<Character, String>();
-		setEmojis();
+    setEmojis();
   }
 
   public static synchronized UtilService getInstance() {
@@ -75,7 +74,8 @@ public class UtilService {
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle(user.getName());
     long[] data = CoinDao.getInstance().getBalanceAndRankWordCoin(user.getIdLong());
-    eb.setDescription("**Balance** : " + data[0] + " <:flag_coin:1472232340523843767>\n**Rank** : " + data[2] + "\n\n**Word Coins** : " + data[1] + "<:word_coin:1472270316007981301>");
+    eb.setDescription("**Balance** : " + data[0] + " <:flag_coin:1472232340523843767>\n**Rank** : " + data[2]
+        + "\n\n**Word Coins** : " + data[1] + "<:word_coin:1472270316007981301>");
     eb.setColor(Color.YELLOW);
     eb.setThumbnail(user.getAvatarUrl());
     hook.sendMessageEmbeds(eb.build()).setEphemeral(false).queue();
@@ -192,7 +192,9 @@ public class UtilService {
     eb.setTitle("Vote for Flag Bot");
     eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
     eb.setDescription("Vote for Flag bot on top.gg\n[here](https://top.gg/bot/1129789320165867662/vote)");
-    eb.addField("Rewards", "> Each vote gets you 1000 <:flag_coin:1472232340523843767> & 100 <:word_coin:1472270316007981301>\n> You will get double rewards during weekends", false);
+    eb.addField("Rewards",
+        "> Each vote gets you 1000 <:flag_coin:1472232340523843767> & 100 <:word_coin:1472270316007981301>\n> You will get double rewards during weekends",
+        false);
     eb.setFooter("You can vote every 12 hours");
     eb.setColor(Color.GREEN);
     hook.sendMessageEmbeds(eb.build())
@@ -268,8 +270,9 @@ public class UtilService {
     int prevPage = page == 1 ? 7 : page - 1;
     int nextPage = page == 7 ? 1 : page + 1;
     event.getHook().sendMessageEmbeds(embed)
-        .addComponents(ActionRow.of(Button.secondary("help_" + prevPage, Emoji.fromFormatted("<:left_tri:1471426605263097999>")),
-            Button.secondary("help_" + nextPage, Emoji.fromFormatted("<:right_tri:1471426673131126954>"))))
+        .addComponents(
+            ActionRow.of(Button.secondary("help_" + prevPage, Emoji.fromFormatted("<:left_tri:1471426605263097999>")),
+                Button.secondary("help_" + nextPage, Emoji.fromFormatted("<:right_tri:1471426673131126954>"))))
         .queue();
   }
 
@@ -309,7 +312,7 @@ public class UtilService {
         .setComponents(ActionRow.of(Button.link("https://discord.gg/RqvTRMmVgR", "Support Server"),
             Button.link("https://top.gg/bot/1129789320165867662/vote", "❤️Vote")),
             ActionRow.of(Button.secondary("help_" + prevPage, Emoji.fromFormatted("<:left_tri:1471426605263097999>")),
-            Button.secondary("help_" + nextPage, Emoji.fromFormatted("<:right_tri:1471426673131126954>"))))
+                Button.secondary("help_" + nextPage, Emoji.fromFormatted("<:right_tri:1471426673131126954>"))))
         .queue();
   }
 
@@ -378,7 +381,7 @@ public class UtilService {
     return eb.build();
   }
 
-  private MessageEmbed crosswordHelpEmbed(String userPfp){
+  private MessageEmbed crosswordHelpEmbed(String userPfp) {
     EmbedBuilder eb = new EmbedBuilder();
     eb.setTitle("Crossword");
     eb.setColor(new Color(255, 153, 51));
@@ -576,44 +579,33 @@ public class UtilService {
   }
 
   public void handleAddWordCommand(SlashCommandInteractionEvent event) {
-		String word = event.getOption("word").getAsString();
-		try {
-			boolean isAdded = UserDao.getInstance().addWord(word);
-			if (isAdded) {
-				CrosswordGameHandler.getInstance().addWordIntoWordSet(word);
-				event.getHook().sendMessage(String.format("**%s** added into database", word)).queue();
-				String webhookMessage = String.format("Word Added : **%s**     By : <@%s>", word,
-						event.getUser().getId());
-				sendMessageToWebhook(wordAdderWebhookUrl, webhookMessage);
-			} else {
-				event.getHook().sendMessage(String.format("**%s** already exist in database!", word)).queue();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			event.getHook().sendMessage("Something went wrong!").queue();
-			return;
-		}
-	}
+    String word = event.getOption("word").getAsString();
+    boolean isAdded = UserDao.getInstance().addWord(word);
+    if (isAdded) {
+      CrosswordGameHandler.getInstance().addWordIntoWordSet(word);
+      event.getHook().sendMessage(String.format("**%s** added into database", word)).queue();
+      String webhookMessage = String.format("Word Added : **%s**     By : <@%s>", word,
+          event.getUser().getId());
+      sendMessageToWebhook(wordAdderWebhookUrl, webhookMessage);
+    } else {
+      event.getHook().sendMessage(String.format("**%s** already exist in database!", word)).queue();
+    }
 
-	public void handleRemoveWordCommand(SlashCommandInteractionEvent event) {
-		String word = event.getOption("word").getAsString();
-		try {
-			boolean isRemoved = UserDao.getInstance().removeWord(word);
-			if (isRemoved) {
-				CrosswordGameHandler.getInstance().removeWordFromWordSet(word);
-				event.getHook().sendMessage(String.format("**%s** removed from database", word)).queue();
-				String webhookMessage = String.format("Word Removed : **%s**    By : <@%s>", word,
-						event.getUser().getId());
-				sendMessageToWebhook(wordRemovedWebhookUrl, webhookMessage);
-			} else {
-				event.getHook().sendMessage(String.format("**%s** is not in database", word)).queue();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			event.getHook().sendMessage("Something went wrong!").queue();
-			return;
-		}
-	}
+  }
+
+  public void handleRemoveWordCommand(SlashCommandInteractionEvent event) {
+    String word = event.getOption("word").getAsString();
+    boolean isRemoved = UserDao.getInstance().removeWord(word);
+    if (isRemoved) {
+      CrosswordGameHandler.getInstance().removeWordFromWordSet(word);
+      event.getHook().sendMessage(String.format("**%s** removed from database", word)).queue();
+      String webhookMessage = String.format("Word Removed : **%s**    By : <@%s>", word,
+          event.getUser().getId());
+      sendMessageToWebhook(wordRemovedWebhookUrl, webhookMessage);
+    } else {
+      event.getHook().sendMessage(String.format("**%s** is not in database", word)).queue();
+    }
+  }
 
   public void sendMessageToWebhook(String url, String message) {
     OkHttpClient client = new OkHttpClient();
@@ -628,120 +620,120 @@ public class UtilService {
   }
 
   public String getEmoji(char c) {
-		return this.emojiMap.get(c);
-	}
+    return this.emojiMap.get(c);
+  }
 
-	public String getDate() {
-		return String.format("%d-%d-%d", Calendar.getInstance().get(Calendar.DATE),
-				Calendar.getInstance().get(Calendar.MONTH) + 1, Calendar.getInstance().get(Calendar.YEAR));
-	}
+  public String getDate() {
+    return String.format("%d-%d-%d", Calendar.getInstance().get(Calendar.DATE),
+        Calendar.getInstance().get(Calendar.MONTH) + 1, Calendar.getInstance().get(Calendar.YEAR));
+  }
 
   public String getProgressBar(int fill) {
-		int progressBarFillAmount = Math.round(fill / 10.0f) * 10;
-		String progressBar;
-		switch (progressBarFillAmount) {
-			case 0:
-				progressBar = bar1empty + bar2empty + bar2empty + bar2empty + bar3empty;
-				break;
-			case 10:
-				progressBar = bar1half + bar2empty + bar2empty + bar2empty + bar3empty;
-				break;
-			case 20:
-				progressBar = bar1full + bar2empty + bar2empty + bar2empty + bar3empty;
-				break;
-			case 30:
-				progressBar = bar1max + bar2half + bar2empty + bar2empty + bar3empty;
-				break;
-			case 40:
-				progressBar = bar1max + bar2full + bar2empty + bar2empty + bar3empty;
-				break;
-			case 50:
-				progressBar = bar1max + bar2max + bar2half + bar2empty + bar3empty;
-				break;
-			case 60:
-				progressBar = bar1max + bar2max + bar2full + bar2empty + bar3empty;
-				break;
-			case 70:
-				progressBar = bar1max + bar2max + bar2max + bar2half + bar3empty;
-				break;
-			case 80:
-				progressBar = bar1max + bar2max + bar2max + bar2full + bar3empty;
-				break;
-			case 90:
-				progressBar = bar1max + bar2max + bar2max + bar2max + bar3half;
-				break;
-			case 100:
-				progressBar = bar1max + bar2max + bar2max + bar2max + bar3full;
-				break;
-			default:
-				progressBar = bar1empty + bar2empty + bar2empty + bar2empty + bar3empty;
-				break;
-		}
-		return progressBar;
-	}
+    int progressBarFillAmount = Math.round(fill / 10.0f) * 10;
+    String progressBar;
+    switch (progressBarFillAmount) {
+      case 0:
+        progressBar = bar1empty + bar2empty + bar2empty + bar2empty + bar3empty;
+        break;
+      case 10:
+        progressBar = bar1half + bar2empty + bar2empty + bar2empty + bar3empty;
+        break;
+      case 20:
+        progressBar = bar1full + bar2empty + bar2empty + bar2empty + bar3empty;
+        break;
+      case 30:
+        progressBar = bar1max + bar2half + bar2empty + bar2empty + bar3empty;
+        break;
+      case 40:
+        progressBar = bar1max + bar2full + bar2empty + bar2empty + bar3empty;
+        break;
+      case 50:
+        progressBar = bar1max + bar2max + bar2half + bar2empty + bar3empty;
+        break;
+      case 60:
+        progressBar = bar1max + bar2max + bar2full + bar2empty + bar3empty;
+        break;
+      case 70:
+        progressBar = bar1max + bar2max + bar2max + bar2half + bar3empty;
+        break;
+      case 80:
+        progressBar = bar1max + bar2max + bar2max + bar2full + bar3empty;
+        break;
+      case 90:
+        progressBar = bar1max + bar2max + bar2max + bar2max + bar3half;
+        break;
+      case 100:
+        progressBar = bar1max + bar2max + bar2max + bar2max + bar3full;
+        break;
+      default:
+        progressBar = bar1empty + bar2empty + bar2empty + bar2empty + bar3empty;
+        break;
+    }
+    return progressBar;
+  }
 
   private void setEmojis() {
-		this.emojiMap.put('a', ":regional_indicator_a:");
-		this.emojiMap.put('b', ":regional_indicator_b:");
-		this.emojiMap.put('c', ":regional_indicator_c:");
-		this.emojiMap.put('d', ":regional_indicator_d:");
-		this.emojiMap.put('e', ":regional_indicator_e:");
-		this.emojiMap.put('f', ":regional_indicator_f:");
-		this.emojiMap.put('g', ":regional_indicator_g:");
-		this.emojiMap.put('h', ":regional_indicator_h:");
-		this.emojiMap.put('i', ":regional_indicator_i:");
-		this.emojiMap.put('j', ":regional_indicator_j:");
-		this.emojiMap.put('k', ":regional_indicator_k:");
-		this.emojiMap.put('l', ":regional_indicator_l:");
-		this.emojiMap.put('m', ":regional_indicator_m:");
-		this.emojiMap.put('n', ":regional_indicator_n:");
-		this.emojiMap.put('o', ":regional_indicator_o:");
-		this.emojiMap.put('p', ":regional_indicator_p:");
-		this.emojiMap.put('q', ":regional_indicator_q:");
-		this.emojiMap.put('r', ":regional_indicator_r:");
-		this.emojiMap.put('s', ":regional_indicator_s:");
-		this.emojiMap.put('t', ":regional_indicator_t:");
-		this.emojiMap.put('u', ":regional_indicator_u:");
-		this.emojiMap.put('v', ":regional_indicator_v:");
-		this.emojiMap.put('w', ":regional_indicator_w:");
-		this.emojiMap.put('x', ":regional_indicator_x:");
-		this.emojiMap.put('y', ":regional_indicator_y:");
-		this.emojiMap.put('z', ":regional_indicator_z:");
-		this.emojiMap.put('-', "‎:black_large_square:");
-		this.emojiMap.put('+', ":white_medium_square:");
-		this.emojiMap.put('A', "<:a_:1471520693014364272>");
-		this.emojiMap.put('B', "<:b_:1471520696088788992>");
-		this.emojiMap.put('C', "<:c_:1471520698420822148>");
-		this.emojiMap.put('D', "<:d_:1471520700681420882>");
-		this.emojiMap.put('E', "<:e_:1471520703374299310>");
-		this.emojiMap.put('F', "<:f_:1471520705660321823>");
-		this.emojiMap.put('G', "<:g_:1471520707795091577>");
-		this.emojiMap.put('H', "<:h_:1471520709715951626>");
-		this.emojiMap.put('I', "<:i_:1471520712136069202>");
-		this.emojiMap.put('J', "<:j_:1471520714136883364>");
-		this.emojiMap.put('K', "<:k_:1471520716993069159>");
-		this.emojiMap.put('L', "<:l_:1471520719127969874>");
-		this.emojiMap.put('M', "<:m_:1471520721800007792>");
-		this.emojiMap.put('N', "<:n_:1471520724257869895>");
-		this.emojiMap.put('O', "<:o_:1471520726510211153>");
-		this.emojiMap.put('P', "<:p_:1471520728506568807>");
-		this.emojiMap.put('Q', "<:q_:1471520730834407610>");
-		this.emojiMap.put('R', "<:r_:1471520733350985739>");
-		this.emojiMap.put('S', "<:s_:1471520735842275600>");
-		this.emojiMap.put('T', "<:t_:1471520737994084536>");
-		this.emojiMap.put('U', "<:u_:1471520740418523167>");
-		this.emojiMap.put('V', "<:v_:1471520744310571178>");
-		this.emojiMap.put('W', "<:w_:1471520746776822020>");
-		this.emojiMap.put('X', "<:x_:1471520750942031932>");
-		this.emojiMap.put('Y', "<:y_:1471520756751011902>");
-		this.emojiMap.put('Z', "<:z_:1471520759061942333>");
-	}
+    this.emojiMap.put('a', ":regional_indicator_a:");
+    this.emojiMap.put('b', ":regional_indicator_b:");
+    this.emojiMap.put('c', ":regional_indicator_c:");
+    this.emojiMap.put('d', ":regional_indicator_d:");
+    this.emojiMap.put('e', ":regional_indicator_e:");
+    this.emojiMap.put('f', ":regional_indicator_f:");
+    this.emojiMap.put('g', ":regional_indicator_g:");
+    this.emojiMap.put('h', ":regional_indicator_h:");
+    this.emojiMap.put('i', ":regional_indicator_i:");
+    this.emojiMap.put('j', ":regional_indicator_j:");
+    this.emojiMap.put('k', ":regional_indicator_k:");
+    this.emojiMap.put('l', ":regional_indicator_l:");
+    this.emojiMap.put('m', ":regional_indicator_m:");
+    this.emojiMap.put('n', ":regional_indicator_n:");
+    this.emojiMap.put('o', ":regional_indicator_o:");
+    this.emojiMap.put('p', ":regional_indicator_p:");
+    this.emojiMap.put('q', ":regional_indicator_q:");
+    this.emojiMap.put('r', ":regional_indicator_r:");
+    this.emojiMap.put('s', ":regional_indicator_s:");
+    this.emojiMap.put('t', ":regional_indicator_t:");
+    this.emojiMap.put('u', ":regional_indicator_u:");
+    this.emojiMap.put('v', ":regional_indicator_v:");
+    this.emojiMap.put('w', ":regional_indicator_w:");
+    this.emojiMap.put('x', ":regional_indicator_x:");
+    this.emojiMap.put('y', ":regional_indicator_y:");
+    this.emojiMap.put('z', ":regional_indicator_z:");
+    this.emojiMap.put('-', "‎:black_large_square:");
+    this.emojiMap.put('+', ":white_medium_square:");
+    this.emojiMap.put('A', "<:a_:1471520693014364272>");
+    this.emojiMap.put('B', "<:b_:1471520696088788992>");
+    this.emojiMap.put('C', "<:c_:1471520698420822148>");
+    this.emojiMap.put('D', "<:d_:1471520700681420882>");
+    this.emojiMap.put('E', "<:e_:1471520703374299310>");
+    this.emojiMap.put('F', "<:f_:1471520705660321823>");
+    this.emojiMap.put('G', "<:g_:1471520707795091577>");
+    this.emojiMap.put('H', "<:h_:1471520709715951626>");
+    this.emojiMap.put('I', "<:i_:1471520712136069202>");
+    this.emojiMap.put('J', "<:j_:1471520714136883364>");
+    this.emojiMap.put('K', "<:k_:1471520716993069159>");
+    this.emojiMap.put('L', "<:l_:1471520719127969874>");
+    this.emojiMap.put('M', "<:m_:1471520721800007792>");
+    this.emojiMap.put('N', "<:n_:1471520724257869895>");
+    this.emojiMap.put('O', "<:o_:1471520726510211153>");
+    this.emojiMap.put('P', "<:p_:1471520728506568807>");
+    this.emojiMap.put('Q', "<:q_:1471520730834407610>");
+    this.emojiMap.put('R', "<:r_:1471520733350985739>");
+    this.emojiMap.put('S', "<:s_:1471520735842275600>");
+    this.emojiMap.put('T', "<:t_:1471520737994084536>");
+    this.emojiMap.put('U', "<:u_:1471520740418523167>");
+    this.emojiMap.put('V', "<:v_:1471520744310571178>");
+    this.emojiMap.put('W', "<:w_:1471520746776822020>");
+    this.emojiMap.put('X', "<:x_:1471520750942031932>");
+    this.emojiMap.put('Y', "<:y_:1471520756751011902>");
+    this.emojiMap.put('Z', "<:z_:1471520759061942333>");
+  }
 
-	public void setWordAdderWebhookUrl(String url) {
-		this.wordAdderWebhookUrl = url;
-	}
+  public void setWordAdderWebhookUrl(String url) {
+    this.wordAdderWebhookUrl = url;
+  }
 
-	public void setWordRemovedWebhookUrl(String url) {
-		this.wordRemovedWebhookUrl = url;
-	}
+  public void setWordRemovedWebhookUrl(String url) {
+    this.wordRemovedWebhookUrl = url;
+  }
 }

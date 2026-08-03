@@ -26,8 +26,7 @@ public class ChannelDao {
 	}
 
 	public boolean isChannelDisabled(Long channelId) {
-		try {
-			Connection conn = ConnectionProvider.getConnection();
+		try (Connection conn = ConnectionProvider.getConnection()) {
 			PreparedStatement ps = conn.prepareStatement("select channel from disabled_channels where channel=?;");
 			ps.setLong(1, channelId);
 			ResultSet rs = ps.executeQuery();
@@ -37,57 +36,49 @@ public class ChannelDao {
 				return false;
 			}
 		} catch (SQLException e) {
-			ConnectionProvider.resetConnection();
 			e.printStackTrace();
 			return false;
 		}
 	}
 
 	public boolean addDisableChannel(Long channelId) {
-		try {
-			Connection conn = ConnectionProvider.getConnection();
+		try (Connection conn = ConnectionProvider.getConnection()) {
 			PreparedStatement ps = conn.prepareStatement("Insert into disabled_channels (channel) values (?);");
 			ps.setLong(1, channelId);
 			ps.executeUpdate();
 			return true;
 		} catch (SQLException e) {
-			ConnectionProvider.resetConnection();
 			e.printStackTrace();
 			return false;
 		}
 	}
 
 	public boolean enableChannel(Long channelId) {
-		try {
-			Connection conn = ConnectionProvider.getConnection();
+		try (Connection conn = ConnectionProvider.getConnection()) {
 			PreparedStatement ps = conn.prepareStatement("Delete from disabled_channels where channel=?;");
 			ps.setLong(1, channelId);
 			ps.executeUpdate();
 			return true;
 		} catch (SQLException e) {
-			ConnectionProvider.resetConnection();
 			e.printStackTrace();
 			return false;
 		}
 	}
 
 	public boolean addDisableChannel(List<Long> channelIdList) {
-		try {
-			Connection conn = ConnectionProvider.getConnection();
+		try (Connection conn = ConnectionProvider.getConnection()) {
 			Statement st = conn.createStatement();
 			String query = getQueryToAddMultipleChannels(channelIdList);
 			st.executeUpdate(query);
 			return true;
 		} catch (SQLException e) {
-			ConnectionProvider.resetConnection();
 			e.printStackTrace();
 			return false;
 		}
 	}
 
 	public List<Long> getAllDisabledChannels() {
-		try {
-			Connection conn = ConnectionProvider.getConnection();
+		try (Connection conn = ConnectionProvider.getConnection()) {
 			Statement st = conn.createStatement();
 			ResultSet channelResultSet = st.executeQuery("select channel from disabled_channels;");
 			List<Long> list = new ArrayList<>();
@@ -96,7 +87,6 @@ public class ChannelDao {
 			}
 			return list;
 		} catch (Exception e) {
-			ConnectionProvider.resetConnection();
 			System.out.println("Something went wrong while accesing database");
 			e.printStackTrace();
 			return new ArrayList<>();
