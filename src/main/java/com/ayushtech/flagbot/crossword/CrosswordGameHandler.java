@@ -1,7 +1,6 @@
 package com.ayushtech.flagbot.crossword;
 
 import java.awt.Color;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,24 +57,19 @@ public class CrosswordGameHandler {
 			return;
 		}
 		event.reply("Starting game!").queue();
-		try {
-			Level level = LevelsDao.getInstance().getUserCurrentLevel(userId);
-			var game = new CrosswordGame(userId, level, event.getChannel(), true);
-			gameMap.put(userId, game);
-			final int gameHashCode = game.hashCode();
-			CompletableFuture.delayedExecutor(CROSSWORD_DURATION, TimeUnit.MINUTES).execute(() -> {
-				if (!gameMap.containsKey(userId))
-					return;
-				int currentRunningGameHashCode = gameMap.get(userId).hashCode();
-				if (gameHashCode == currentRunningGameHashCode) {
-					game.cancelGame();
-					gameMap.remove(userId);
-				}
-			});
-		} catch (SQLException e) {
-			event.getChannel().sendMessage("Something went wrong!\nPlease try again").queue();
-			e.printStackTrace();
-		}
+		Level level = LevelsDao.getInstance().getUserCurrentLevel(userId);
+		var game = new CrosswordGame(userId, level, event.getChannel(), true);
+		gameMap.put(userId, game);
+		final int gameHashCode = game.hashCode();
+		CompletableFuture.delayedExecutor(CROSSWORD_DURATION, TimeUnit.MINUTES).execute(() -> {
+			if (!gameMap.containsKey(userId))
+				return;
+			int currentRunningGameHashCode = gameMap.get(userId).hashCode();
+			if (gameHashCode == currentRunningGameHashCode) {
+				game.cancelGame();
+				gameMap.remove(userId);
+			}
+		});
 
 	}
 
@@ -127,24 +121,20 @@ public class CrosswordGameHandler {
 			return;
 		}
 		event.getHook().sendMessage("Starting game!").queue();
-		try {
-			Level userLevel = LevelsDao.getInstance().getUserCurrentLevel(userId);
-			var game = new CrosswordGame(userId, userLevel, event.getChannel(), true);
-			gameMap.put(userId, game);
-			final int gameHashCode = game.hashCode();
-			CompletableFuture.delayedExecutor(CROSSWORD_DURATION, TimeUnit.MINUTES).execute(() -> {
-				if (!gameMap.containsKey(userId))
-					return;
-				int currentRunningGameHashCode = gameMap.get(userId).hashCode();
-				if (gameHashCode == currentRunningGameHashCode) {
-					game.cancelGame();
-					gameMap.remove(userId);
-				}
-			});
-		} catch (SQLException e) {
-			event.getChannel().sendMessage("Something went wrong!\nPlease try again").queue();
-			e.printStackTrace();
-		}
+		Level userLevel = LevelsDao.getInstance().getUserCurrentLevel(userId);
+		var game = new CrosswordGame(userId, userLevel, event.getChannel(), true);
+		gameMap.put(userId, game);
+		final int gameHashCode = game.hashCode();
+		CompletableFuture.delayedExecutor(CROSSWORD_DURATION, TimeUnit.MINUTES).execute(() -> {
+			if (!gameMap.containsKey(userId))
+				return;
+			int currentRunningGameHashCode = gameMap.get(userId).hashCode();
+			if (gameHashCode == currentRunningGameHashCode) {
+				game.cancelGame();
+				gameMap.remove(userId);
+			}
+		});
+
 	}
 
 	// public void handleDailyCrosswordButton(ButtonInteractionEvent event) {
@@ -215,24 +205,20 @@ public class CrosswordGameHandler {
 			gameMap.remove(userId);
 		}
 		event.getHook().sendMessage("Starting game!").queue();
-		try {
-			Level userLevel = LevelsDao.getInstance().getUserCurrentLevel(userId);
-			var game = new CrosswordGame(userId, userLevel, event.getChannel(), true);
-			gameMap.put(userId, game);
-			CompletableFuture.delayedExecutor(CROSSWORD_DURATION, TimeUnit.MINUTES).execute(() -> {
-				if (!gameMap.containsKey(userId))
-					return;
-				int gameHashCode = game != null ? game.hashCode() : 0;
-				int currentRunningGameHashCode = gameMap.get(userId).hashCode();
-				if (gameHashCode == currentRunningGameHashCode) {
-					game.cancelGame();
-					gameMap.remove(userId);
-				}
-			});
-		} catch (SQLException e) {
-			event.getChannel().sendMessage("Something went wrong!\nPlease try again").queue();
-			e.printStackTrace();
-		}
+		Level userLevel = LevelsDao.getInstance().getUserCurrentLevel(userId);
+		var game = new CrosswordGame(userId, userLevel, event.getChannel(), true);
+		gameMap.put(userId, game);
+		CompletableFuture.delayedExecutor(CROSSWORD_DURATION, TimeUnit.MINUTES).execute(() -> {
+			if (!gameMap.containsKey(userId))
+				return;
+			int gameHashCode = game != null ? game.hashCode() : 0;
+			int currentRunningGameHashCode = gameMap.get(userId).hashCode();
+			if (gameHashCode == currentRunningGameHashCode) {
+				game.cancelGame();
+				gameMap.remove(userId);
+			}
+		});
+
 	}
 
 	public void handleCrosswordCancelButton(ButtonInteractionEvent event) {

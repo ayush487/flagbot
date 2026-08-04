@@ -1,7 +1,6 @@
 package com.ayushtech.flagbot.crossword;
 
 import java.awt.Color;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -115,11 +114,7 @@ public class CrosswordGame {
 		var embed = getEmbed((byte) 0, "Level Completed!");
 		this.channel.editMessageEmbedsById(messageId, embed)
 				.setComponents(ActionRow.of(Button.success("complete", "Level Completed").asDisabled())).queue();
-		try {
-			LevelsDao.getInstance().promoteUserLevel(userId, levelNumber);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		LevelsDao.getInstance().promoteUserLevel(userId, levelNumber);
 	}
 
 	protected void updateEmbed() {
@@ -235,10 +230,7 @@ public class CrosswordGame {
 				this.channel.sendMessage("You completed Level " + levelNumber + " :tada:")
 						.addComponents(ActionRow.of(Button.primary("newCrossword_" + userId, "Play Next Level")))
 						.queue();
-				try {
-					LevelsDao.getInstance().promoteUserLevel(userId, levelNumber);
-				} catch (SQLException e) {
-				}
+				LevelsDao.getInstance().promoteUserLevel(userId, levelNumber);
 			}
 		});
 	}

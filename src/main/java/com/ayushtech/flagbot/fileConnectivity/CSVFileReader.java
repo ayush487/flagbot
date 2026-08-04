@@ -39,12 +39,10 @@ public class CSVFileReader {
     Map<String, String> arabicMap = new HashMap<>(290);
     Map<String, String> croatianMap = new HashMap<>(290);
     Map<String, String> thaiMap = new HashMap<>(290);
-    try {
-      BufferedReader reader = new BufferedReader(
-          new InputStreamReader(
-              new FileInputStream("countries-names.csv"), StandardCharsets.UTF_8));
-
-      CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
+    try (BufferedReader reader = new BufferedReader(
+        new InputStreamReader(
+            new FileInputStream("countries-names.csv"), StandardCharsets.UTF_8));
+        CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build()) {
       String[] records;
       while ((records = csvReader.readNext()) != null) {
         dutchMap.put(records[0], records[2]);
@@ -61,8 +59,6 @@ public class CSVFileReader {
         croatianMap.put(records[0], records[13]);
         thaiMap.put(records[0], records[14]);
       }
-      csvReader.close();
-      reader.close();
     } catch (IOException e) {
       System.out.print("\n\n--------------------\nFailed to ready country-names.csv\nTerminating the Application\n----------------------\n");
       System.exit(0);
@@ -100,21 +96,18 @@ public class CSVFileReader {
     stateMap.put("jp", new HashMap<>());
     stateMap.put("pl", new HashMap<>());
     stateMap.put("ar", new HashMap<>());
-    try {
-      BufferedReader reader = new BufferedReader(
-          new InputStreamReader(
-              new FileInputStream("states.csv"), StandardCharsets.UTF_8));
-      CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
+    try (BufferedReader reader = new BufferedReader(
+        new InputStreamReader(
+            new FileInputStream("states.csv"), StandardCharsets.UTF_8));
+        CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build()) {
       String[] records;
       while ((records = csvReader.readNext()) != null) {
         State newState = new State(records[0], records[1], records[3]);
         if (!records[2].isBlank()) {
-					newState.setAlternativeName(records[2]);
-				}
+          newState.setAlternativeName(records[2]);
+        }
         stateMap.get(records[3]).put(newState.getStateCode(), newState);
       }
-      csvReader.close();
-      reader.close();
     } catch (IOException e) {
       System.out.print("\n\n--------------------\nFailed to ready states.csv\nTerminating the Application\n----------------------\n");
       System.exit(0);

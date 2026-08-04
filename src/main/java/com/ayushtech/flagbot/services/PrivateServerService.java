@@ -164,12 +164,12 @@ public class PrivateServerService {
     StringBuilder content = new StringBuilder();
     try {
       URL url = URI.create(fileUrl).toURL();
-      BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
-      String line;
-      while ((line = reader.readLine()) != null) {
-        content.append(line).append("\n");
+      try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+          content.append(line).append("\n");
+        }
       }
-      reader.close();
     } catch (IOException e) {
       e.printStackTrace();
     }

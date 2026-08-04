@@ -26,26 +26,32 @@ public class LevelsDao {
 		return instance;
 	}
 
-	public Level getUserCurrentLevel(long userId) throws SQLException {
-		Connection conn = ConnectionProvider.getConnection();
-		Statement stmt = conn.createStatement();
-		stmt.executeUpdate(String.format(
-				"INSERT INTO user_table (user_id, level) SELECT %d, 1 WHERE NOT EXISTS (SELECT 1 FROM user_table WHERE user_id = %d);",
-				userId, userId));
-		ResultSet rs = stmt.executeQuery(
-				"SELECT * FROM levels JOIN user_table ON levels.level=user_table.level WHERE user_table.user_id="
-						+ userId + ";");
-		if (rs.next()) {
-			return new Level(rs.getInt("level"), rs.getString("main_word"), rs.getString("words"),
-					rs.getString("level_data"));
+	public Level getUserCurrentLevel(long userId) {
+		try (Connection conn = ConnectionProvider.getConnection()) {
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(String.format(
+					"INSERT INTO user_table (user_id, level) SELECT %d, 1 WHERE NOT EXISTS (SELECT 1 FROM user_table WHERE user_id = %d);",
+					userId, userId));
+			ResultSet rs = stmt.executeQuery(
+					"SELECT * FROM levels JOIN user_table ON levels.level=user_table.level WHERE user_table.user_id="
+							+ userId + ";");
+			if (rs.next()) {
+				return new Level(rs.getInt("level"), rs.getString("main_word"), rs.getString("words"),
+						rs.getString("level_data"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
 
-	public void promoteUserLevel(long userId, int level) throws SQLException {
-		Connection conn = ConnectionProvider.getConnection();
-		Statement stmt = conn.createStatement();
-		stmt.executeUpdate(String.format("UPDATE user_table SET level=%d WHERE user_id=%d;", level + 1, userId));
+	public void promoteUserLevel(long userId, int level) {
+		try (Connection conn = ConnectionProvider.getConnection()) {
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(String.format("UPDATE user_table SET level=%d WHERE user_id=%d;", level + 1, userId));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public Set<String> getAllWords() {

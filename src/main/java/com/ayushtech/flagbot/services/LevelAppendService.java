@@ -30,10 +30,9 @@ public class LevelAppendService {
     event.deferReply().queue();
     OptionMapping optionMapping = event.getOption("levelfile");
     optionMapping.getAsAttachment().getProxy().download().thenAccept(inputStream -> {
-      BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-      CSVReader csvReader = new CSVReader(reader);
       List<LevelData> levels = new ArrayList<>();
-      try {
+      try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+           CSVReader csvReader = new CSVReader(reader)) {
         String records[];
         while ((records = csvReader.readNext()) != null) {
           int levelNumber = Integer.parseInt(records[0]);
@@ -42,13 +41,11 @@ public class LevelAppendService {
           String levelData = records[3];
           levels.add(new LevelData(levelNumber, mainWord, words, levelData));
         }
-        csvReader.close();
         LevelsDao.getInstance().addLevels(levels);
         event.getHook().sendMessage("Levels added successfully!").queue();
       } catch (IOException e) {
         e.printStackTrace();
         event.getHook().sendMessage("Something went wrong while adding levels.\nTry Again!").queue();
-        return;
       }
     });
 
