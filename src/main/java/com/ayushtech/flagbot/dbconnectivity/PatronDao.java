@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import com.ayushtech.flagbot.crossword.CrosswordBgTile;
+import com.ayushtech.flagbot.crossword.CrosswordFgTile;
+
 public class PatronDao {
   private static PatronDao patronDao = null;
 
@@ -41,7 +44,8 @@ public class PatronDao {
     try (Connection conn = ConnectionProvider.getConnection()) {
       Statement stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(
-          String.format("Select user_id, validtill from patreon_members where validtill > %d;", System.currentTimeMillis()));
+          String.format("Select user_id, validtill from patreon_members where validtill > %d;",
+              System.currentTimeMillis()));
       HashMap<Long, Long> patrons = new HashMap<>();
       while (rs.next()) {
         patrons.put(rs.getLong("user_id"), rs.getLong("validtill"));
@@ -164,6 +168,48 @@ public class PatronDao {
     } catch (SQLException e) {
       e.printStackTrace();
       return 0;
+    }
+  }
+
+
+  public void setUserBgTile(long userId, String tile) {
+    setUserTile(userId, "crossword_bgtile", tile);
+  }
+
+  public void setUserEmptyTile(long userId, String tile) {
+    setUserTile(userId, "crossword_emptytile", tile);
+  }
+
+  private void setUserTile(long userId,String table, String tile) {
+    try (Connection conn = ConnectionProvider.getConnection()) {
+      Statement stmt = conn.createStatement();
+      stmt.executeUpdate(String.format("UPDATE patreon_members SET %s='%s' where user_id=%d;", table, tile, userId));
+    } catch (SQLException e) {}
+  }
+
+  public Map<Long, CrosswordBgTile> getUsersBgTile() {
+    Map<Long, CrosswordBgTile> map = new HashMap<>();
+    try (Connection conn = ConnectionProvider.getConnection()) {
+      Statement stmt = conn.createStatement();
+      ResultSet rs = stmt.executeQuery("SELECT user_id, crossword_bgtile FROM patreon_members;");
+      while (rs.next())
+        map.put(rs.getLong("user_id"), CrosswordBgTile.valueOf(rs.getString("crossword_bgtile")));
+      return map;
+    } catch (SQLException e) {
+      return map;
+    }
+  }
+
+  public Map<Long, CrosswordFgTile> getUsersEmptyTile() {
+    Map<Long, CrosswordFgTile> map = new HashMap<>();
+    try (Connection conn = ConnectionProvider.getConnection()) {
+      Statement stmt = conn.createStatement();
+      ResultSet rs = stmt.executeQuery("SELECT user_id, crossword_emptytile FROM patreon_members;");
+      while (rs.next())
+        map.put(rs.getLong("user_id"), CrosswordFgTile.valueOf(rs.getString("crossword_emptytile")));
+      return map;
+    } catch (SQLException e) {
+      return map;
     }
   }
 }

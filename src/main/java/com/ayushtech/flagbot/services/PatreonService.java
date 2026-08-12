@@ -6,12 +6,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import com.ayushtech.flagbot.crossword.CrosswordBgTile;
+import com.ayushtech.flagbot.crossword.CrosswordFgTile;
 import com.ayushtech.flagbot.dbconnectivity.PatronDao;
+import com.ayushtech.flagbot.utils.Constants;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
+import net.dv8tion.jda.api.components.container.Container;
+import net.dv8tion.jda.api.components.separator.Separator;
+import net.dv8tion.jda.api.components.separator.Separator.Spacing;
+import net.dv8tion.jda.api.components.textdisplay.TextDisplay;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -26,12 +33,16 @@ public class PatreonService {
   private Set<Long> patronUsers;
   private final Map<Long, String> correctGuessReactions;
   private final Map<Long, String> wrongGuessReactions;
+  private final Map<Long, CrosswordBgTile> userCrosswordBgTilesMap;
+  private final Map<Long, CrosswordFgTile> userCrosswordEmptyTilesMap;
   private String WEBHOOK_URL = "";
 
   private PatreonService() {
     this.patronUsers = PatronDao.getInstance().getValidPatronMembers();
     this.wrongGuessReactions = PatronDao.getInstance().getWrongReactions();
     this.correctGuessReactions = PatronDao.getInstance().getCorrectReactions();
+    this.userCrosswordBgTilesMap = PatronDao.getInstance().getUsersBgTile();
+    this.userCrosswordEmptyTilesMap = PatronDao.getInstance().getUsersEmptyTile();
   }
 
   public void updatePatronUsers() {
@@ -142,15 +153,68 @@ public class PatreonService {
   }
 
   public void showPatreonPerks(ButtonInteractionEvent event) {
+
+    Container c = Container.of(
+        TextDisplay.of("## 💎 Patreon Perks"),
+
+        TextDisplay.of("**UNLOCKED COMMANDS**\n" +
+            "`/guess distance`\n" +
+            "`/guess location`\n" +
+            "`/atlas quick`\n" +
+            "`/atlas rapid`\n" +
+            "`/crossword_appearance`"),
+
+        TextDisplay.of("**CUSTOMIZATION PERKS**\n" +
+            "• Modify crossword appearance\n" +
+            "• Custom reactions for correct & wrong guesses\n" +
+            "• Customize Atlas game"),
+
+        Separator.create(true, Spacing.SMALL),
+
+        TextDisplay.of("**SETUP GUIDE — CUSTOM REACTIONS**\n" +
+            "Correct guess: `f!set correct_guess :emoji:`\n" +
+            "Wrong guess: `f!set wrong_guess :emoji:`\n" +
+            "Remove wrong-guess reaction: `f!remove wrong_guess`"))
+        .withAccentColor(0xF38BA8);
+
+    event.replyComponents(c).useComponentsV2().setEphemeral(false).queue();
+  }
+
+  public void sendPatreonRequestMessage(MessageChannel channel) {
     EmbedBuilder eb = new EmbedBuilder();
-    eb.setTitle("Patreon Perks");
-    eb.setColor(Color.pink);
+    eb.setTitle("Support Flagbot on Patreon!");
+    eb.setColor(162000276);
     eb.setDescription(
-        "Access to following commands :\n> `/guess distance`\n> `/guess location`\n> `/atlas quick`\n> `/atlas rapid`\nCustom Reactions for correct and wrong guesses\nCustomize Atlas Game");
-    eb.addField("__How to set custom reactions__ ?",
-        "for correct guesses : `f!set correct_guess :emoji:`\nfor wrong guesses : `f!set wrong_guess :emoji:`\nto remove wrong guess reaction : `f!remove wrong_guess`",
-        false);
-    event.replyEmbeds(eb.build()).setEphemeral(true).queue();
+        "Love Flagbot? Help keep it running and get new features by supporting its development on Patreon! Your support covers server costs and helps me constantly improve the bot.\n\n[*Check out the Patreon here*](https://www.patreon.com/FlagBot)");
+    eb.setFooter("Thank you for being an awesome community!",
+        "https://cdn.discordapp.com/emojis/1230836096548601907.png");
+    eb.setThumbnail("https://cdn.discordapp.com/emojis/1264163057618124921.png");
+    channel.sendMessageEmbeds(eb.build()).queue();
+    MetricService.getInstance().incrementCommandData("patreon_request");
+  }
+
+  public void handleActivePatronCommand(SlashCommandInteractionEvent event) {
+    Map<Long, Long> activePatrons = PatronDao.getInstance().getPatronMembersWithValidity();
+    EmbedBuilder eb = new EmbedBuilder();
+    eb.setTitle("Active Patrons");
+    eb.setColor(Color.pink);
+    StringBuilder sb = new StringBuilder();
+    activePatrons.forEach((userId, validTill) -> {
+      sb.append("<@").append(userId).append("> - ").append(TimeFormat.DATE_TIME_SHORT.atTimestamp(validTill))
+          .append("\n");
+    });
+    eb.setDescription(sb.toString());
+    event.getHook().sendMessageEmbeds(eb.build()).queue();
+  }
+
+  public void setUserBgTile(long userId, CrosswordBgTile tile) {
+    userCrosswordBgTilesMap.put(userId, tile);
+    PatronDao.getInstance().setUserBgTile(userId, tile.toString());
+  }
+
+  public void setUserEmptyTile(long userId, CrosswordFgTile tile) {
+    userCrosswordEmptyTilesMap.put(userId, tile);
+    PatronDao.getInstance().setUserEmptyTile(userId, tile.toString());
   }
 
   public boolean isUserPatron(long userId) {
@@ -173,35 +237,16 @@ public class PatreonService {
     return Emoji.fromFormatted("<:" + this.wrongGuessReactions.get(userId) + ">");
   }
 
-  public void sendPatreonRequestMessage(MessageChannel channel) {
-    EmbedBuilder eb = new EmbedBuilder();
-    eb.setTitle("Support Flagbot on Patreon!");
-    eb.setColor(162000276);
-    eb.setDescription(
-        "Love Flagbot? Help keep it running and get new features by supporting its development on Patreon! Your support covers server costs and helps me constantly improve the bot.\n\n[*Check out the Patreon here*](https://www.patreon.com/FlagBot)");
-    eb.setFooter("Thank you for being an awesome community!",
-        "https://cdn.discordapp.com/emojis/1230836096548601907.png");
-    eb.setThumbnail("https://cdn.discordapp.com/emojis/1264163057618124921.png");
-    channel.sendMessageEmbeds(eb.build()).queue();
-    MetricService.getInstance().incrementCommandData("patreon_request");
-  }
-
   public void setPatreonWebhookUrl(String webhookUrl) {
     this.WEBHOOK_URL = webhookUrl;
   }
 
-  public void handleActivePatronCommand(SlashCommandInteractionEvent event) {
-    Map<Long, Long> activePatrons = PatronDao.getInstance().getPatronMembersWithValidity();
-    EmbedBuilder eb = new EmbedBuilder();
-    eb.setTitle("Active Patrons");
-    eb.setColor(Color.pink);
-    StringBuilder sb = new StringBuilder();
-    activePatrons.forEach((userId, validTill) -> {
-      sb.append("<@").append(userId).append("> - ").append(TimeFormat.DATE_TIME_SHORT.atTimestamp(validTill))
-          .append("\n");
-    });
-    eb.setDescription(sb.toString());
-    event.getHook().sendMessageEmbeds(eb.build()).queue();
+  public CrosswordBgTile getUserBgTile(long userId) {
+    return userCrosswordBgTilesMap.getOrDefault(userId, Constants.DEFAULT_BGTILE);
+  }
+
+  public CrosswordFgTile getUserEmptyTile(long userId) {
+    return userCrosswordEmptyTilesMap.getOrDefault(userId, Constants.DEFAULT_EMPTYTILE);
   }
 
 }

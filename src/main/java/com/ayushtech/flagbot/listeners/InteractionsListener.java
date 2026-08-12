@@ -3,6 +3,7 @@ package com.ayushtech.flagbot.listeners;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 import com.ayushtech.flagbot.atlas.AtlasGameHandler;
 import com.ayushtech.flagbot.crossword.CrosswordGameHandler;
@@ -19,6 +20,7 @@ import com.ayushtech.flagbot.services.LevelAppendService;
 import com.ayushtech.flagbot.services.MetricService;
 import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.PrivateServerService;
+import com.ayushtech.flagbot.services.UpdateReminder;
 import com.ayushtech.flagbot.services.UserService;
 import com.ayushtech.flagbot.services.UtilService;
 import com.ayushtech.flagbot.services.VotingService;
@@ -29,6 +31,7 @@ import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -39,18 +42,18 @@ public class InteractionsListener extends ListenerAdapter {
 	private final int BOUND = 250;
 	private static String WEBHOOK_URL = "";
 	private final long vote_notifs_channel = 1190982948804100108l;
-    private Map<String, String> alternateNamesMap;
-    private String[] keywords = { "link", "games", "download game" };
-    private long privateServerId = 1465232854681129065l;
-    private long newPledgeChannel = 1263027212194414644l;
-    private long updatePledgeChannel = 1263027292322529301l;
+	private Map<String, String> alternateNamesMap;
+	private String[] keywords = { "link", "games", "download game" };
+	private long privateServerId = 1465232854681129065l;
+	private long newPledgeChannel = 1263027212194414644l;
+	private long updatePledgeChannel = 1263027292322529301l;
 
 	public InteractionsListener() {
 		super();
 		channelService = ChannelService.getInstance();
 		random = new Random();
 		alternateNamesMap = new HashMap<>();
-        loadAlternateNames();
+		loadAlternateNames();
 	}
 
 	public static void setJoinUpdateWebhookUrl(String url) {
@@ -58,67 +61,66 @@ public class InteractionsListener extends ListenerAdapter {
 	}
 
 	@Override
-    public void onMessageReceived(MessageReceivedEvent event) {
+	public void onMessageReceived(MessageReceivedEvent event) {
 
-        long channelId = event.getChannel().getIdLong();
-        
-        if (channelId == vote_notifs_channel) {
-            VotingService.getInstance().handleVote(event);
-            return;
-        }
-        
-        else if (channelId == newPledgeChannel || channelId == updatePledgeChannel) {
-            String patreonId = event.getMessage().getContentDisplay();
-            PatreonService.getInstance().addNewPatron(event.getJDA(), Long.parseLong(patreonId));
-        }
+		long channelId = event.getChannel().getIdLong();
 
-        if (event.getAuthor().isBot())
-            return;
+		if (channelId == vote_notifs_channel) {
+			VotingService.getInstance().handleVote(event);
+			return;
+		}
 
-        if (event.isFromGuild() && event.getGuild().getIdLong() == privateServerId
-                && isContainKeyword(event.getMessage().getContentDisplay().toLowerCase())) {
-            PrivateServerService.getInstance().handleMessage(event);
-        }
+		else if (channelId == newPledgeChannel || channelId == updatePledgeChannel) {
+			String patreonId = event.getMessage().getContentDisplay();
+			PatreonService.getInstance().addNewPatron(event.getJDA(), Long.parseLong(patreonId));
+		}
 
-        String messageText = event.getMessage().getContentDisplay();
+		if (event.getAuthor().isBot())
+			return;
 
-        if (CrosswordGameHandler.getInstance().isActiveGame(event.getAuthor().getIdLong(),
-                event.getChannel().getIdLong())) {
-            CrosswordGameHandler.getInstance().inspectAnswer(event);
-        }
+		if (event.isFromGuild() && event.getGuild().getIdLong() == privateServerId
+				&& isContainKeyword(event.getMessage().getContentDisplay().toLowerCase())) {
+			PrivateServerService.getInstance().handleMessage(event);
+		}
 
-        if (messageText.startsWith("f!set correct_guess")) {
-            PatreonService.getInstance().setReactionsForCorrectGuess(event);
-            return;
-        } else if (messageText.startsWith("f!set wrong_guess")) {
-            PatreonService.getInstance().setReactionsForWrongGuess(event);
-            return;
-        } else if (messageText.startsWith("f!remove wrong_guess")) {
-            PatreonService.getInstance().removeReactionsForWrongGuess(event);
-            return;
-        } else if (messageText.startsWith("f!exitatlas")) {
-            AtlasGameHandler.getInstance().requestCancelGame(event);
-            return;
-        }
+		String messageText = event.getMessage().getContentDisplay();
 
-        if (GuessDistanceHandler.getInstance().isActiveGameInChannel(channelId)) {
-            GuessDistanceHandler.getInstance().handleGuess(messageText, event);
-        }
+		if (CrosswordGameHandler.getInstance().isActiveGame(event.getAuthor().getIdLong(),
+				event.getChannel().getIdLong())) {
+			CrosswordGameHandler.getInstance().inspectAnswer(event);
+		}
 
-        if (AtlasGameHandler.getInstance().isGameExist(channelId)) {
-            AtlasGameHandler.getInstance().handleAnswer(messageText, event);
-        }
+		if (messageText.startsWith("f!set correct_guess")) {
+			PatreonService.getInstance().setReactionsForCorrectGuess(event);
+			return;
+		} else if (messageText.startsWith("f!set wrong_guess")) {
+			PatreonService.getInstance().setReactionsForWrongGuess(event);
+			return;
+		} else if (messageText.startsWith("f!remove wrong_guess")) {
+			PatreonService.getInstance().removeReactionsForWrongGuess(event);
+			return;
+		} else if (messageText.startsWith("f!exitatlas")) {
+			AtlasGameHandler.getInstance().requestCancelGame(event);
+			return;
+		}
 
-        if (alternateNamesMap.containsKey(messageText.toLowerCase())) {
-            messageText = alternateNamesMap.get(messageText.toLowerCase());
-        }
-        if (GuessGameHandler.getInstance().isActiveGame(channelId)) {
-            GuessGameHandler.getInstance().handleGuess(messageText, event);
-            return;
-        }
-        return;
-    }
+		if (GuessDistanceHandler.getInstance().isActiveGameInChannel(channelId)) {
+			GuessDistanceHandler.getInstance().handleGuess(messageText, event);
+		}
 
+		if (AtlasGameHandler.getInstance().isGameExist(channelId)) {
+			AtlasGameHandler.getInstance().handleAnswer(messageText, event);
+		}
+
+		if (alternateNamesMap.containsKey(messageText.toLowerCase())) {
+			messageText = alternateNamesMap.get(messageText.toLowerCase());
+		}
+		if (GuessGameHandler.getInstance().isActiveGame(channelId)) {
+			GuessGameHandler.getInstance().handleGuess(messageText, event);
+			return;
+		}
+		return;
+	}
 
 	@Override
 	public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -165,6 +167,8 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
+		CompletableFuture.runAsync(() -> UpdateReminder.getInstance().handleUser(event.getUser(), event.getChannel()));
+
 		if (slashCommandName.equals("race")) {
 			RaceHandler.getInstance().handleRaceCommand(event);
 			return;
@@ -189,6 +193,11 @@ public class InteractionsListener extends ListenerAdapter {
 
 		if (slashCommandName.equals("vote")) {
 			UtilService.getInstance().handleVoteCommand(event.getHook());
+			return;
+		}
+
+		else if (slashCommandName.equals("crossword_appearance")) {
+			CrosswordGameHandler.getInstance().handleCrosswordAppearenceCommand(event);
 			return;
 		}
 
@@ -322,6 +331,19 @@ public class InteractionsListener extends ListenerAdapter {
 
 		else if (slashCommandName.equals("activepatrons")) {
 			PatreonService.getInstance().handleActivePatronCommand(event);
+			return;
+		}
+	}
+
+	@Override
+	public void onStringSelectInteraction(StringSelectInteractionEvent event) {
+		String componentId = event.getComponentId();
+		if (componentId.startsWith("bgSelectMenu")) {
+			CrosswordGameHandler.getInstance().handleBgSelection(event);
+			return;
+		} else if (componentId.startsWith("emptySelectMenu")) {
+			CrosswordGameHandler.getInstance().handleEmptySelection(event);
+			return;
 		}
 	}
 
@@ -346,6 +368,8 @@ public class InteractionsListener extends ListenerAdapter {
 		// event.reply("Solve the captcha first").setEphemeral(true).queue();
 		// return;
 		// }
+
+		CompletableFuture.runAsync(() -> UpdateReminder.getInstance().handleUser(event.getUser(), event.getChannel()));
 
 		if (buttonCommandId.equals("raceCancel")) {
 			RaceHandler.getInstance().handleCancelRace(event);
@@ -565,40 +589,40 @@ public class InteractionsListener extends ListenerAdapter {
 	}
 
 	private boolean isContainKeyword(String message) {
-        for (String keyword : keywords) {
-            if (message.contains(keyword))
-                return true;
-        }
-        return false;
-    }
+		for (String keyword : keywords) {
+			if (message.contains(keyword))
+				return true;
+		}
+		return false;
+	}
 
 	private void loadAlternateNames() {
-        alternateNamesMap.put("uae", "United Arab Emirates");
-        alternateNamesMap.put("dr congo", "Democratic Republic of the Congo");
-        alternateNamesMap.put("drc", "Democratic Republic of the Congo");
-        alternateNamesMap.put("côte d'ivoire", "Ivory Coast");
-        alternateNamesMap.put("cabo verde", "Cape Verde");
-        alternateNamesMap.put("czech republic", "Czechia");
-        alternateNamesMap.put("turkey", "Turkiye");
-        alternateNamesMap.put("usa", "United States of America");
-        alternateNamesMap.put("united states", "United States of America");
-        alternateNamesMap.put("uk", "United Kingdom");
-        alternateNamesMap.put("east timor", "Timor-Leste");
-        alternateNamesMap.put("bharat", "India");
-        alternateNamesMap.put("bosnia", "Bosnia and Herzegovina");
-        alternateNamesMap.put("burma", "Myanmar");
-        alternateNamesMap.put("c sharp", "C#");
-        alternateNamesMap.put("cpp", "C++");
-        alternateNamesMap.put("ea", "Electronic Arts");
-        alternateNamesMap.put("eu", "European Union");
-        alternateNamesMap.put("car", "Central African Republic");
-        alternateNamesMap.put("south georgia", "South Georgia and the South Sandwich Islands");
-        alternateNamesMap.put("sealand", "Principality of Sealand");
-        alternateNamesMap.put("Åland islands", "Aland Islands");
-        alternateNamesMap.put("northern cyprus", "Turkish Republic of Northern Cyprus");
-        alternateNamesMap.put("usvi", "US Virgin Islands");
-        alternateNamesMap.put("artsakh", "Nagorno-Karabakh");
-        alternateNamesMap.put("united states virgin islands", "US Virgin Islands");
-        alternateNamesMap.put("الإمارات", "الإمارات العربية المتحدة");
-    }
+		alternateNamesMap.put("uae", "United Arab Emirates");
+		alternateNamesMap.put("dr congo", "Democratic Republic of the Congo");
+		alternateNamesMap.put("drc", "Democratic Republic of the Congo");
+		alternateNamesMap.put("côte d'ivoire", "Ivory Coast");
+		alternateNamesMap.put("cabo verde", "Cape Verde");
+		alternateNamesMap.put("czech republic", "Czechia");
+		alternateNamesMap.put("turkey", "Turkiye");
+		alternateNamesMap.put("usa", "United States of America");
+		alternateNamesMap.put("united states", "United States of America");
+		alternateNamesMap.put("uk", "United Kingdom");
+		alternateNamesMap.put("east timor", "Timor-Leste");
+		alternateNamesMap.put("bharat", "India");
+		alternateNamesMap.put("bosnia", "Bosnia and Herzegovina");
+		alternateNamesMap.put("burma", "Myanmar");
+		alternateNamesMap.put("c sharp", "C#");
+		alternateNamesMap.put("cpp", "C++");
+		alternateNamesMap.put("ea", "Electronic Arts");
+		alternateNamesMap.put("eu", "European Union");
+		alternateNamesMap.put("car", "Central African Republic");
+		alternateNamesMap.put("south georgia", "South Georgia and the South Sandwich Islands");
+		alternateNamesMap.put("sealand", "Principality of Sealand");
+		alternateNamesMap.put("Åland islands", "Aland Islands");
+		alternateNamesMap.put("northern cyprus", "Turkish Republic of Northern Cyprus");
+		alternateNamesMap.put("usvi", "US Virgin Islands");
+		alternateNamesMap.put("artsakh", "Nagorno-Karabakh");
+		alternateNamesMap.put("united states virgin islands", "US Virgin Islands");
+		alternateNamesMap.put("الإمارات", "الإمارات العربية المتحدة");
+	}
 }

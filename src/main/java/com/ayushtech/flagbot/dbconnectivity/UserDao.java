@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.Optional;
 
 import com.ayushtech.flagbot.services.UtilService;
+import com.ayushtech.flagbot.utils.Constants;
 
 public class UserDao {
 	private static UserDao instance = null;
@@ -82,13 +83,13 @@ public class UserDao {
 		}
 	}
 
-	public void addDailyRewards(long userId) {
+	public void addDailyRewards(long userId, int flagCoin, int wordCoin) {
 		try (Connection conn = ConnectionProvider.getConnection()) {
 			Statement stmt = conn.createStatement();
 			String todayDate = UtilService.getInstance().getDate();
 			stmt.executeUpdate(String.format(
 					"INSERT INTO user_table (user_id,coins, cw_coins, last_daily) VALUES (%d, %d, %d, '%s') ON DUPLICATE KEY UPDATE coins = coins + VALUES(coins), cw_coins = cw_coins + VALUES(cw_coins), last_daily = VALUES(last_daily);",
-					userId, 1000, 100, todayDate));
+					userId, flagCoin, wordCoin, todayDate));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -145,7 +146,8 @@ public class UserDao {
 			if (rs.next()) {
 				stmt.executeUpdate(String.format("Delete from wordlist where words='%s';", word));
 				return true;
-			} else return false;
+			} else
+				return false;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -162,4 +164,28 @@ public class UserDao {
 			e.printStackTrace();
 		}
 	}
+
+	public void setUserUpdateVersion(long userId) {
+		try (Connection conn = ConnectionProvider.getConnection()) {
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(String.format(
+					"INSERT INTO user_table (user_id, latest_update) VALUES (%d, %d) ON DUPLICATE KEY UPDATE latest_update=%d;",
+					userId, Constants.UPDATE_VERSION, Constants.UPDATE_VERSION));
+		} catch (SQLException e) {
+		}
+	}
+
+	public int getUserLatestUpdate(long userId) {
+		try (Connection conn = ConnectionProvider.getConnection()) {
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT latest_update FROM user_table where user_id=" + userId + ";");
+			if (rs.next())
+				return rs.getInt("latest_update");
+			return Constants.UPDATE_VERSION;
+		} catch (SQLException e) {
+			return Constants.UPDATE_VERSION;
+		}
+	}
+
+	
 }

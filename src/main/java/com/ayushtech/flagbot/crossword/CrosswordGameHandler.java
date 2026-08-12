@@ -10,17 +10,26 @@ import java.util.concurrent.TimeUnit;
 
 import com.ayushtech.flagbot.dbconnectivity.LevelsDao;
 import com.ayushtech.flagbot.dbconnectivity.UserDao;
+import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.UtilService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
+import net.dv8tion.jda.api.components.container.Container;
+import net.dv8tion.jda.api.components.selections.SelectOption;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu.Builder;
+import net.dv8tion.jda.api.components.separator.Separator;
+import net.dv8tion.jda.api.components.separator.Separator.Spacing;
+import net.dv8tion.jda.api.components.textdisplay.TextDisplay;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class CrosswordGameHandler {
@@ -58,7 +67,8 @@ public class CrosswordGameHandler {
 		}
 		event.reply("Starting game!").queue();
 		Level level = LevelsDao.getInstance().getUserCurrentLevel(userId);
-		var game = new CrosswordGame(userId, level, event.getChannel(), true);
+		boolean isUserPatron = PatreonService.getInstance().isUserPatron(userId);
+		var game = new CrosswordGame(userId, level, event.getChannel(), !isUserPatron, true);
 		gameMap.put(userId, game);
 		final int gameHashCode = game.hashCode();
 		CompletableFuture.delayedExecutor(CROSSWORD_DURATION, TimeUnit.MINUTES).execute(() -> {
@@ -122,7 +132,8 @@ public class CrosswordGameHandler {
 		}
 		event.getHook().sendMessage("Starting game!").queue();
 		Level userLevel = LevelsDao.getInstance().getUserCurrentLevel(userId);
-		var game = new CrosswordGame(userId, userLevel, event.getChannel(), true);
+		boolean isUserPatron = PatreonService.getInstance().isUserPatron(userId);
+		var game = new CrosswordGame(userId, userLevel, event.getChannel(), !isUserPatron, true);
 		gameMap.put(userId, game);
 		final int gameHashCode = game.hashCode();
 		CompletableFuture.delayedExecutor(CROSSWORD_DURATION, TimeUnit.MINUTES).execute(() -> {
@@ -206,7 +217,8 @@ public class CrosswordGameHandler {
 		}
 		event.getHook().sendMessage("Starting game!").queue();
 		Level userLevel = LevelsDao.getInstance().getUserCurrentLevel(userId);
-		var game = new CrosswordGame(userId, userLevel, event.getChannel(), true);
+		boolean isUserPatron = PatreonService.getInstance().isUserPatron(userId);
+		var game = new CrosswordGame(userId, userLevel, event.getChannel(), !isUserPatron, true);
 		gameMap.put(userId, game);
 		CompletableFuture.delayedExecutor(CROSSWORD_DURATION, TimeUnit.MINUTES).execute(() -> {
 			if (!gameMap.containsKey(userId))
@@ -248,26 +260,40 @@ public class CrosswordGameHandler {
 		}
 		event.deferEdit().queue();
 		var game = gameMap.get(event.getUser().getIdLong());
-		if (game.hasUsedHint()) {
+		if (game.isPatreonHintAvailable()) {
+			if (game.activateHint(true)) {
+				event.editButton(
+						Button.primary(event.getComponentId(), "(Free)").withEmoji(Emoji.fromUnicode("U+1F4A1")))
+						.queue();
+			} else {
+				event.getHook().sendMessage("No empty space left for hint").setEphemeral(true).queue();
+			}
+		} else if (game.isFreeHintAvailable()) {
+			if (game.activateHint(false)) {
+				event.editButton(Button.primary(event.getComponentId(), "💡 (100 🪙)")).queue();
+			} else {
+				event.getHook().sendMessage("No empty space left for hint").setEphemeral(true).queue();
+			}
+		} else {
 			int userBalance = UserDao.getInstance().getUserBalance(event.getUser().getIdLong());
 			if (userBalance < 100) {
 				event.getHook().sendMessage("You dont have enough balance to use hint!").setEphemeral(true).queue();
 				return;
 			}
-			if (game.activateHint()) {
+			if (game.activateHint(false)) {
 				CompletableFuture.runAsync(() -> {
 					UserDao.getInstance().deductUserBalance(event.getUser().getIdLong(), 100);
 				});
 			} else {
 				event.getHook().sendMessage("No empty space left for hint").setEphemeral(true).queue();
 			}
-		} else {
-			if (game.activateHint()) {
-				event.editButton(Button.primary(event.getComponentId(), "💡 (100 🪙)")).queue();
-			} else {
-				event.getHook().sendMessage("No empty space left for hint").setEphemeral(true).queue();
-			}
 		}
+
+		// if (game.hasUsedHint()) {
+
+		// } else {
+
+		// }
 
 	}
 
@@ -648,6 +674,109 @@ public class CrosswordGameHandler {
 			duel.shuffleAllowedLetters(event);
 		} else
 			event.reply("You cannot use this button").setEphemeral(true).queue();
+	}
+
+	public void handleCrosswordAppearenceCommand(SlashCommandInteractionEvent event) {
+		long userId = event.getUser().getIdLong();
+		if (PatreonService.getInstance().isUserPatron(userId)) {
+			CrosswordBgTile userSelectedBgTile = PatreonService.getInstance().getUserBgTile(userId);
+			CrosswordFgTile userSelectedEmptyTile = PatreonService.getInstance().getUserEmptyTile(userId);
+			Container c = getCWAppearanceContainer(userId, userSelectedBgTile, userSelectedEmptyTile);
+			event.getHook().sendMessageComponents(c).useComponentsV2().queue();
+		} else {
+			event.getHook().sendMessage("This command is only for patreon users.")
+					.queue(m -> m.delete().queueAfter(10, TimeUnit.SECONDS));
+		}
+	}
+
+	public void handleBgSelection(StringSelectInteractionEvent event) {
+		String userId = event.getComponentId().split("_")[1];
+		String interactionUser = event.getUser().getId();
+		if (userId.equals(interactionUser)) {
+			event.deferEdit().queue();
+			long userIdLong = event.getUser().getIdLong();
+			SelectOption selectedOption = event.getSelectedOptions().get(0);
+			CrosswordBgTile bgTile = CrosswordBgTile.valueOf(selectedOption.getValue().toUpperCase());
+			PatreonService.getInstance().setUserBgTile(userIdLong, bgTile);
+			CrosswordFgTile emptyTile = PatreonService.getInstance().getUserEmptyTile(userIdLong);
+			Container c = getCWAppearanceContainer(userIdLong, bgTile, emptyTile);
+			event.getHook().editMessageComponentsById(event.getMessageId(), c).useComponentsV2().queue();
+		} else {
+			event.reply("This is not for you!").setEphemeral(true).queue();
+		}
+
+	}
+
+	public void handleEmptySelection(StringSelectInteractionEvent event) {
+		String userId = event.getComponentId().split("_")[1];
+		String interactionUser = event.getUser().getId();
+		if (userId.equals(interactionUser)) {
+			event.deferEdit().queue();
+			long userIdLong = event.getUser().getIdLong();
+			SelectOption selectedOption = event.getSelectedOptions().get(0);
+			CrosswordFgTile emptyTile = CrosswordFgTile.valueOf(selectedOption.getValue().toUpperCase());
+			PatreonService.getInstance().setUserEmptyTile(userIdLong, emptyTile);
+			CrosswordBgTile bgTile = PatreonService.getInstance().getUserBgTile(userIdLong);
+			Container c = getCWAppearanceContainer(userIdLong, bgTile, emptyTile);
+			event.getHook().editMessageComponentsById(event.getMessageId(), c).useComponentsV2().queue();
+		} else {
+			event.reply("This is not for you!").setEphemeral(true).queue();
+		}
+	}
+
+	private Container getCWAppearanceContainer(long userId, CrosswordBgTile userSelectedBgTile,
+			CrosswordFgTile userSelectedEmptyTile) {
+		Builder bgSelectMenuBuilder = StringSelectMenu.create("bgSelectMenu_" + userId);
+		Builder emptySelectMenuBuilder = StringSelectMenu.create("emptySelectMenu_" + userId);
+		for (CrosswordBgTile tile : CrosswordBgTile.values())
+			bgSelectMenuBuilder.addOption(tile.getName(), tile.getName(), tile.getEmoji());
+
+		for (CrosswordFgTile tile : CrosswordFgTile.values()) {
+			emptySelectMenuBuilder.addOption(tile.getName(), tile.getName(), tile.getEmoji());
+		}
+		bgSelectMenuBuilder
+				.setDefaultOptions(SelectOption.of(userSelectedBgTile.getName(), userSelectedBgTile.getName()));
+		emptySelectMenuBuilder
+				.setDefaultOptions(SelectOption.of(userSelectedEmptyTile.getName(), userSelectedEmptyTile.getName()));
+		Separator separatorSmall = Separator.create(true, Spacing.SMALL);
+		Separator separatorLarge = Separator.create(true, Spacing.LARGE);
+
+		StringBuilder sb = new StringBuilder("__Current Appearance__\n");
+		sb.append(
+				getSampleCrosswordDisplay("--++++:--+--+:club-+:+---+-:++++++:----P-", userSelectedBgTile,
+						userSelectedEmptyTile));
+		TextDisplay crosswordDisplay = TextDisplay.of(sb.toString());
+		Container c = Container.of(
+				TextDisplay.of("### Customize your crossword appearance"),
+				separatorSmall,
+				crosswordDisplay,
+				separatorLarge,
+				TextDisplay.of("**Background Tile**"),
+				ActionRow.of(bgSelectMenuBuilder.build()),
+				separatorSmall,
+				TextDisplay.of("**Blank Tile**"),
+				ActionRow.of(emptySelectMenuBuilder.build()))
+				.withAccentColor(Color.PINK);
+		return c;
+
+	}
+
+	private String getSampleCrosswordDisplay(String cwSample, CrosswordBgTile userSelectedBgTile,
+			CrosswordFgTile userSelectedEmptyTile) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < cwSample.length(); i++) {
+			char c = cwSample.charAt(i);
+			if (c == ':') {
+				sb.append("\n");
+			} else if (c == '-') {
+				sb.append(userSelectedBgTile.getEmoji().getFormatted());
+			} else if (c == '+') {
+				sb.append(userSelectedEmptyTile.getEmoji().getFormatted());
+			} else {
+				sb.append(UtilService.getInstance().getEmoji(c));
+			}
+		}
+		return sb.toString();
 	}
 
 }

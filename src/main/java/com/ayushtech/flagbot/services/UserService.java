@@ -7,11 +7,13 @@ import com.ayushtech.flagbot.dbconnectivity.UserDao;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.components.buttons.Button;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 
 public class UserService {
-  private static UserService instance = null;
+	private static UserService instance = null;
 
 	private UserService() {
 	}
@@ -32,35 +34,52 @@ public class UserService {
 		event.editButton(Button.success("claimed", "Claimed").asDisabled()).queue();
 		long userId = event.getUser().getIdLong();
 		UserDao.getInstance().claimCoinsWithExtraWords(userId);
-		event.getHook().sendMessage("100 <:word_coin:1472270316007981301> added to your balance").setEphemeral(true).queue();
+		event.getHook().sendMessage("100 <:word_coin:1472270316007981301> added to your balance").setEphemeral(true)
+				.queue();
 	}
 
 	public void handleDailyCommand(SlashCommandInteractionEvent event) {
 		var user = event.getUser();
 		Optional<String> optLastDailyDate = UserDao.getInstance().getUserLastDailyDate(user.getIdLong());
 		if (optLastDailyDate.isEmpty() || isThisNotToday(optLastDailyDate.get())) {
-			EmbedBuilder eb = new EmbedBuilder();
-			eb.setColor(Color.green);
-			eb.setTitle("Daily Rewards");
-			// eb.setDescription("100 :coin: is added to your account.");
-			eb.setDescription("You received :\n> 1000 <:flag_coin:1472232340523843767>\n> 100 <:word_coin:1472270316007981301>");
-			eb.setFooter(user.getName(), user.getAvatarUrl());
-			eb.setThumbnail(user.getAvatarUrl());
-			event.getHook().sendMessageEmbeds(eb.build())
-					// .addActionRow(Button.primary("dailyCrossword", "Play Daily Crossword"))
-					.queue();
-			UserDao.getInstance().addDailyRewards(user.getIdLong());
+			boolean isUserPatron = PatreonService.getInstance().isUserPatron(user.getIdLong());
+			if (isUserPatron) {
+				event.getHook().sendMessageEmbeds(getDailyRewardsEmbedPatron(user)).queue();
+				UserDao.getInstance().addDailyRewards(user.getIdLong(), 2000, 200);
+			} else {
+				event.getHook().sendMessageEmbeds(getDailyRewardsEmbed(user)).queue();
+				UserDao.getInstance().addDailyRewards(user.getIdLong(), 1000, 100);
+			}
 		} else {
 			EmbedBuilder eb = new EmbedBuilder();
 			eb.setColor(Color.gray);
 			eb.setTitle("Daily Rewards");
 			eb.setDescription("You already have claimed daily rewards");
 			eb.setFooter(user.getName(), user.getAvatarUrl());
-			event.getHook().sendMessageEmbeds(eb.build())
-					// disabled this button for now
-					// .addActionRow(Button.primary("dailyCrossword", "Play Daily Crossword").asDisabled())
-					.queue();
+			event.getHook().sendMessageEmbeds(eb.build()).queue();
 		}
+	}
+
+	private MessageEmbed getDailyRewardsEmbedPatron(User user) {
+		EmbedBuilder eb = new EmbedBuilder();
+		eb.setTitle("Daily Rewards ⭐");
+		eb.setColor(Color.getHSBColor(0.7175f, 0.6260f, 0.9647f));
+		eb.setDescription(
+				"You received **2×** rewards:\n> 2000 <:flag_coin:1472232340523843767>\n> 200 <:word_coin:1472270316007981301>");
+		eb.setThumbnail(user.getAvatarUrl());
+		eb.setFooter(String.format("Patreon • %s", user.getName()), user.getAvatarUrl());
+		return eb.build();
+	}
+
+	private MessageEmbed getDailyRewardsEmbed(User user) {
+		EmbedBuilder eb = new EmbedBuilder();
+		eb.setColor(Color.green);
+		eb.setTitle("Daily Rewards ⭐");
+		eb.setDescription(
+				"You received :\n> 1000 <:flag_coin:1472232340523843767>\n> 100 <:word_coin:1472270316007981301>");
+		eb.setFooter(user.getName(), user.getAvatarUrl());
+		eb.setThumbnail(user.getAvatarUrl());
+		return eb.build();
 	}
 
 	private boolean isThisNotToday(String lastDailyDate) {

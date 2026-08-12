@@ -10,6 +10,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.ayushtech.flagbot.dbconnectivity.LevelsDao;
 import com.ayushtech.flagbot.dbconnectivity.UserDao;
+import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.UtilService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -28,21 +29,28 @@ public class CrosswordGame {
 	private final int asciA = 97;
 	protected final int levelNumber;
 	protected boolean usedHint;
+	protected boolean usedPatreonHint;
 	protected final Level currentLevel;
 	protected long messageId;
 	protected final MessageChannel channel;
 	protected Set<String> enterredWords;
 	private final int[] letterCounts = new int[26];
 	protected List<String> extraWords;
+	private CrosswordBgTile bgTile;
+	private CrosswordFgTile emptyTile;
 
-	public CrosswordGame(long userId, Level level, MessageChannel channel, boolean startInstantly) {
+	public CrosswordGame(long userId, Level level, MessageChannel channel, boolean patreonHint,
+			boolean startInstantly) {
 		this.userId = userId;
 		this.levelNumber = level.getLevel();
 		this.channel = channel;
 		this.currentLevel = level;
 		this.usedHint = false;
+		this.usedPatreonHint = patreonHint;
 		this.enterredWords = new HashSet<String>();
 		this.extraWords = new ArrayList<String>();
+		this.bgTile = PatreonService.getInstance().getUserBgTile(userId);
+		this.emptyTile = PatreonService.getInstance().getUserEmptyTile(userId);
 		for (char c : level.getAllowedLetterList()) {
 			letterCounts[(int) c - asciA]++;
 		}
@@ -51,12 +59,15 @@ public class CrosswordGame {
 	}
 
 	protected void sendGameEmbed() {
+
 		this.channel.sendMessageEmbeds(getBeginningEmbed(currentLevel))
 				.addComponents(
 						ActionRow.of(
 								Button.primary("shuffleCrossword_" + userId,
 										Emoji.fromFormatted("<:refresh:1209076086185656340>")),
-								Button.primary("hintCrossword_" + userId, usedHint ? "💡 (100 🪙)" : "💡 (Free)")),
+								Button.primary("hintCrossword_" + userId, usedHint ? "(100 🪙)" : "(Free)")
+										.withEmoji(usedPatreonHint ? Emoji.fromUnicode("U+1F4A1")
+												: Emoji.fromFormatted("<:lightbulbred:1535888595393577030>"))),
 						ActionRow.of(Button.danger("quitCrossword_" + userId, "Quit"),
 								Button.primary("extraWords", "Extra Words")))
 				.queue(message -> this.messageId = message.getIdLong());
@@ -127,7 +138,12 @@ public class CrosswordGame {
 		StringBuilder gridFormatted = new StringBuilder();
 		for (char[] column : gridUnsolved) {
 			for (char cell : column) {
-				gridFormatted.append(UtilService.getInstance().getEmoji(cell));
+				if (cell == '-')
+					gridFormatted.append(bgTile.getEmoji().getFormatted());
+				else if (cell == '+')
+					gridFormatted.append(emptyTile.getEmoji().getFormatted());
+				else
+					gridFormatted.append(UtilService.getInstance().getEmoji(cell));
 			}
 			gridFormatted.append("\n");
 		}
@@ -153,7 +169,7 @@ public class CrosswordGame {
 		return eb.build();
 	}
 
-	public boolean activateHint() {
+	public boolean activateHint(boolean isPatreon) {
 		List<CrosswordPointer> emptyPositionList = new ArrayList<CrosswordPointer>();
 		for (int i = 0; i < currentLevel.getColumns(); i++) {
 			for (int j = 0; j < currentLevel.getRows(); j++) {
@@ -168,7 +184,11 @@ public class CrosswordGame {
 			var pointer = emptyPositionList.get(random.nextInt(emptyPositionList.size()));
 			currentLevel.unlockLetter(pointer.i(), pointer.j());
 			updateEmbed();
-			usedHint = true;
+			if (isPatreon) {
+				usedPatreonHint = true;
+			} else {
+				usedHint = true;
+			}
 			checkIfWordCompleted();
 			return true;
 		}
@@ -237,6 +257,14 @@ public class CrosswordGame {
 
 	public List<String> getExtraWords() {
 		return this.extraWords;
+	}
+
+	public boolean isFreeHintAvailable() {
+		return !this.usedHint;
+	}
+
+	public boolean isPatreonHintAvailable() {
+		return !this.usedPatreonHint;
 	}
 
 	public boolean hasUsedHint() {
