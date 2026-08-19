@@ -269,6 +269,7 @@ public class AtlasGameHandler {
 
   public void requestCancelGame(MessageReceivedEvent event) {
     long authorId = event.getAuthor().getIdLong();
+    if (!atlasGameMap.containsKey(event.getChannel().getIdLong())) return;
     boolean isCancelled = atlasGameMap.get(event.getChannel().getIdLong()).cancelGame(authorId);
     if (isCancelled) {
       atlasGameMap.remove(event.getChannel().getIdLong());

@@ -9,6 +9,9 @@ import com.ayushtech.flagbot.atlas.AtlasGameHandler;
 import com.ayushtech.flagbot.crossword.CrosswordGameHandler;
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.distanceGuess.GuessDistanceHandler;
+import com.ayushtech.flagbot.gambling.CoinflipHandler;
+import com.ayushtech.flagbot.gambling.MinesHandler;
+import com.ayushtech.flagbot.gambling.SlotsHandler;
 import com.ayushtech.flagbot.game.continent.ContinentGameHandler;
 import com.ayushtech.flagbot.game.location.LocationGameHandler;
 import com.ayushtech.flagbot.guessGame.GuessGameHandler;
@@ -24,7 +27,9 @@ import com.ayushtech.flagbot.services.UpdateReminder;
 import com.ayushtech.flagbot.services.UserService;
 import com.ayushtech.flagbot.services.UtilService;
 import com.ayushtech.flagbot.services.VotingService;
+import com.ayushtech.flagbot.utils.Constants;
 import com.ayushtech.flagbot.utils.LeaderboardHandler;
+import com.ayushtech.flagbot.utils.PrefixCommandHandler;
 
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -39,7 +44,6 @@ public class InteractionsListener extends ListenerAdapter {
 
 	private ChannelService channelService;
 	private Random random;
-	private final int BOUND = 250;
 	private static String WEBHOOK_URL = "";
 	private final long vote_notifs_channel = 1190982948804100108l;
 	private Map<String, String> alternateNamesMap;
@@ -90,18 +94,8 @@ public class InteractionsListener extends ListenerAdapter {
 			CrosswordGameHandler.getInstance().inspectAnswer(event);
 		}
 
-		if (messageText.startsWith("f!set correct_guess")) {
-			PatreonService.getInstance().setReactionsForCorrectGuess(event);
-			return;
-		} else if (messageText.startsWith("f!set wrong_guess")) {
-			PatreonService.getInstance().setReactionsForWrongGuess(event);
-			return;
-		} else if (messageText.startsWith("f!remove wrong_guess")) {
-			PatreonService.getInstance().removeReactionsForWrongGuess(event);
-			return;
-		} else if (messageText.startsWith("f!exitatlas")) {
-			AtlasGameHandler.getInstance().requestCancelGame(event);
-			return;
+		if (messageText.startsWith("f!")) {
+			PrefixCommandHandler.getInstance().handlePrefixCommand(event);
 		}
 
 		if (GuessDistanceHandler.getInstance().isActiveGameInChannel(channelId)) {
@@ -252,12 +246,27 @@ public class InteractionsListener extends ListenerAdapter {
 		}
 
 		// Commenting Captcha for now
-		if (random.nextInt(BOUND) == 1) {
+		if (random.nextInt(Constants.BOUND) == 1) {
 			PatreonService.getInstance().sendPatreonRequestMessage(event.getChannel());
 		}
 
 		if (slashCommandName.equals("guess")) {
 			UtilService.getInstance().handleGuessComnmands(event);
+			return;
+		}
+
+		else if (slashCommandName.equals("slots")) {
+			SlotsHandler.getInstance().handleSlotsSlashCommand(event);
+			return;
+		}
+
+		else if (slashCommandName.equals("coinflip")) {
+			CoinflipHandler.getInstance().handleCoinflipSlashCommand(event);
+			return;
+		}
+
+		else if (slashCommandName.equals("mines")) {
+			MinesHandler.getInstance().handleMinesSlashCommand(event);
 			return;
 		}
 
@@ -333,6 +342,7 @@ public class InteractionsListener extends ListenerAdapter {
 			PatreonService.getInstance().handleActivePatronCommand(event);
 			return;
 		}
+
 	}
 
 	@Override
@@ -343,6 +353,9 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		} else if (componentId.startsWith("emptySelectMenu")) {
 			CrosswordGameHandler.getInstance().handleEmptySelection(event);
+			return;
+		} else if (componentId.startsWith("help")) {
+			UtilService.getInstance().handleHelpSelection(event);
 			return;
 		}
 	}
@@ -357,17 +370,6 @@ public class InteractionsListener extends ListenerAdapter {
 		String buttonCommandId = event.getComponentId();
 
 		MetricService.getInstance().registerCommandData(event);
-
-		// if (CaptchaService.getInstance().isUserBanned(event.getUser().getIdLong())) {
-		// event.reply("You are banned from using bot").setEphemeral(true).queue();
-		// return;
-		// }
-
-		// if
-		// (CaptchaService.getInstance().userHasCaptched(event.getUser().getIdLong())) {
-		// event.reply("Solve the captcha first").setEphemeral(true).queue();
-		// return;
-		// }
 
 		CompletableFuture.runAsync(() -> UpdateReminder.getInstance().handleUser(event.getUser(), event.getChannel()));
 
@@ -474,9 +476,6 @@ public class InteractionsListener extends ListenerAdapter {
 		} else if (buttonCommandId.startsWith("checkRegionButton")) {
 			RegionHandler.getInstance().handleRegionButton(event);
 			return;
-		} else if (buttonCommandId.startsWith("help")) {
-			UtilService.getInstance().handleHelpButton(event);
-			return;
 		} else if (buttonCommandId.startsWith("lb_")) {
 			LeaderboardHandler.getInstance().handleLeaderboardButton(event);
 			return;
@@ -487,12 +486,23 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
-		else if (buttonCommandId.equals("cancelAtlas")) {
+		else if (buttonCommandId.startsWith("cancelAtlas")) {
 			AtlasGameHandler.getInstance().handleCancelStartButton(event);
 			return;
 		}
+
+		else if (buttonCommandId.startsWith("mine")) {
+			MinesHandler.getInstance().handleMineButton(event);
+			return;
+		}
+
+		else if (buttonCommandId.startsWith("cashoutMines")) {
+			MinesHandler.getInstance().handleCashoutButton(event);
+			return;
+		}
+		
 		// Commenting Captcha for now
-		if (random.nextInt(BOUND) == 1) {
+		if (random.nextInt(Constants.BOUND) == 1) {
 			PatreonService.getInstance().sendPatreonRequestMessage(event.getChannel());
 			// event.deferReply().queue();
 			// CaptchaService.getInstance().sendCaptcha(event);
@@ -557,9 +567,6 @@ public class InteractionsListener extends ListenerAdapter {
 						"Antarctica")
 						.queue();
 			}
-		} else if (event.getSubcommandName().equals("buy") || event.getSubcommandName().equals("sell")) {
-			event.replyChoiceStrings("DOOGLE", "MAPPLE", "RAMSUNG", "MICROLOFT", "LOCKSTAR", "SEPSICO", "LETFLIX",
-					"STARMUCKS", "TWEETER", "DISKORD").queue();
 		} else if (event.getSubcommandName().equals("state_flag")) {
 			event
 					.replyChoiceStrings("United States", "Brazil", "Germany", "Spain", "Switzerland", "Canada", "Italy",

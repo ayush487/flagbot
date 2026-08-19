@@ -23,6 +23,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu.Builder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
@@ -31,6 +33,7 @@ import net.dv8tion.jda.api.entities.channel.unions.GuildChannelUnion;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import okhttp3.MediaType;
@@ -229,91 +232,87 @@ public class UtilService {
   }
 
   public void handleHelpCommand(SlashCommandInteractionEvent event) {
-    String subcommandName = event.getSubcommandName();
-    if (subcommandName == null)
-      subcommandName = "";
-    int page = 1;
-    String userPfp = event.getUser().getAvatarUrl();
-    MessageEmbed embed;
-    switch (subcommandName) {
-      case "overview":
-        embed = generalHelpEmbed(userPfp);
-        break;
-      case "guess":
-        embed = guessHelpEmbed(userPfp);
-        page = 2;
-        break;
-      case "crossword":
-        embed = crosswordHelpEmbed(userPfp);
-        page = 3;
-        break;
-      case "atlas":
-        embed = atlasHelpEmbed(userPfp);
-        page = 4;
-        break;
-      case "crossduel":
-        embed = crossduelHelpEmbed(userPfp);
-        page = 5;
-        break;
-      case "race":
-        embed = raceHelpEmbed(userPfp);
-        page = 6;
-        break;
-      case "config":
-        embed = configHelpEmbed(userPfp);
-        page = 7;
-        break;
-      default:
-        embed = generalHelpEmbed(userPfp);
-        break;
-    }
-    int prevPage = page == 1 ? 7 : page - 1;
-    int nextPage = page == 7 ? 1 : page + 1;
-    event.getHook().sendMessageEmbeds(embed)
-        .addComponents(
-            ActionRow.of(Button.secondary("help_" + prevPage, Emoji.fromFormatted("<:left_tri:1471426605263097999>")),
-                Button.secondary("help_" + nextPage, Emoji.fromFormatted("<:right_tri:1471426673131126954>"))))
-        .queue();
+    String avatarUrl = event.getUser().getAvatarUrl();
+    MessageEmbed embed = generalHelpEmbed(avatarUrl);
+    Builder selectMenuBuilder = StringSelectMenu.create("helpMenu");
+    selectMenuBuilder.addOption("Overview", "helpOverview", Emoji.fromFormatted("<:flagbot:1230836096548601907>"));
+    selectMenuBuilder.addOption("Guess Commands", "helpGuess", Emoji.fromUnicode("U+1F50D"));
+    selectMenuBuilder.addOption("Crossword", "helpCrossword", Emoji.fromUnicode("U+1F520"));
+    selectMenuBuilder.addOption("Crossduel", "helpCrossduel", Emoji.fromUnicode("U+2694"));
+    selectMenuBuilder.addOption("Atlas", "helpAtlas", Emoji.fromFormatted("<:atlas:1539680431757201493>"));
+    selectMenuBuilder.addOption("Gambling", "helpGamble", Emoji.fromUnicode("U+1F3B2"));
+    selectMenuBuilder.addOption("Race", "helpRace", Emoji.fromFormatted("<:finish:1224678758837911614>"));
+    selectMenuBuilder.addOption("Config", "helpConfig", Emoji.fromUnicode("U+2699"));
+    selectMenuBuilder.setPlaceholder("Select Help Module");
+    ActionRow row = ActionRow.of(selectMenuBuilder.build());
+    event.getHook().sendMessageEmbeds(embed).addComponents(row).queue();
   }
 
-  public void handleHelpButton(ButtonInteractionEvent event) {
-    int helpPage = Integer.parseInt(event.getComponentId().split("_")[1]);
-    String userPfp = event.getUser().getAvatarUrl();
+  public void handleHelpSelection(StringSelectInteractionEvent event) {
+    event.deferEdit().queue();
+    String avatarUrl = event.getUser().getAvatarUrl();
+    String selection = event.getSelectedOptions().get(0).getValue();
+
     MessageEmbed embed;
-    switch (helpPage) {
-      case 1:
-        embed = generalHelpEmbed(userPfp);
+    switch (selection) {
+      case "helpOverview":
+        embed = generalHelpEmbed(avatarUrl);
         break;
-      case 2:
-        embed = guessHelpEmbed(userPfp);
+      case "helpGuess":
+        embed = guessHelpEmbed(avatarUrl);
         break;
-      case 3:
-        embed = crosswordHelpEmbed(userPfp);
+      case "helpCrossword":
+        embed = crosswordHelpEmbed(avatarUrl);
         break;
-      case 4:
-        embed = atlasHelpEmbed(userPfp);
+      case "helpCrossduel":
+        embed = crossduelHelpEmbed(avatarUrl);
         break;
-      case 5:
-        embed = crossduelHelpEmbed(userPfp);
+      case "helpAtlas":
+        embed = atlasHelpEmbed(avatarUrl);
         break;
-      case 6:
-        embed = raceHelpEmbed(userPfp);
+      case "helpGamble":
+        embed = gambleHelpEmbed(avatarUrl);
         break;
-      case 7:
-        embed = configHelpEmbed(userPfp);
+      case "helpRace":
+        embed = raceHelpEmbed(avatarUrl);
+        break;
+      case "helpConfig":
+        embed = configHelpEmbed(avatarUrl);
         break;
       default:
-        embed = generalHelpEmbed(userPfp);
+        embed = generalHelpEmbed(avatarUrl);
         break;
     }
-    int prevPage = helpPage == 1 ? 7 : helpPage - 1;
-    int nextPage = helpPage == 7 ? 1 : helpPage + 1;
-    event.editMessageEmbeds(embed)
-        .setComponents(ActionRow.of(Button.link("https://discord.gg/RqvTRMmVgR", "Support Server"),
-            Button.link("https://top.gg/bot/1129789320165867662/vote", "❤️Vote")),
-            ActionRow.of(Button.secondary("help_" + prevPage, Emoji.fromFormatted("<:left_tri:1471426605263097999>")),
-                Button.secondary("help_" + nextPage, Emoji.fromFormatted("<:right_tri:1471426673131126954>"))))
-        .queue();
+    event.getHook().editMessageEmbedsById(event.getMessage().getId(), embed).queue();
+
+  }
+
+  private MessageEmbed gambleHelpEmbed(String avatarUrl) {
+    EmbedBuilder eb = new EmbedBuilder();
+    eb.setColor(new Color(255, 153, 51));
+    eb.setTitle("Gambling Commands");
+    eb.setDescription(
+        "Test your luck and grow your coin stack! Every command works as a slash command or prefix command.");
+    eb.addField("🪙 Coinflip",
+        "Bet on heads or tails for a quick double-or-nothing.\n"
+            + "`/coinflip <amount> <side>` • `f!coinflip <amount> <side>`\n"
+            + "📎 *Example:* `f!coinflip 100 heads`",
+        false);
+    eb.addField("🎰 Slots",
+        "Spin the reels and match symbols to win big.\n"
+            + "`/slots <amount>` • `f!slots <amount>`\n"
+            + "📎 *Example:* `f!slots 100`",
+        false);
+    eb.addField("💣 Mines",
+        "Reveal tiles and cash out before you hit a mine!\n"
+            + "`/mines <amount> <mines>` • `f!mines <amount> <mines>`\n"
+            + "📎 *Example:* `f!mines 100 2`",
+        false);
+    eb.addField("💡 Tip",
+        "Higher risk = higher reward. Don't get greedy — cash out before the mines catch up to you!",
+        false);
+    eb.setFooter("Flag Bot • Gambling Help", avatarUrl);
+    return eb.build();
   }
 
   private MessageEmbed generalHelpEmbed(String userPfp) {
@@ -343,7 +342,7 @@ public class UtilService {
     eb.addField("Other Information",
         "[Terms of Services](https://github.com/ayush487/flagbot/blob/main/TERMSOFSERVICE.md)\n[Privacy Policy](https://github.com/ayush487/flagbot/blob/main/PRIVACY.md)",
         false);
-    eb.setFooter("Page 1/7", userPfp);
+    eb.setFooter("Flag Bot • Commands", userPfp);
     return eb.build();
   }
 
@@ -377,7 +376,7 @@ public class UtilService {
     noteBuilder.append(
         "Supported countries for state flag mode: `USA, Brazil, Germany, Spain, Switzerland, Canada, Italy, Russia, Netherlands, England, Australia, Japan, Poland, Argentina`");
     eb.addField("__Extra Info__", noteBuilder.toString(), false);
-    eb.setFooter("Page 2/7", userPfp);
+    eb.setFooter("Flag Bot • Guess Commands", userPfp);
     return eb.build();
   }
 
@@ -397,7 +396,7 @@ public class UtilService {
     buttonsInfo.append("**Quit** : Quit the game\n");
     buttonsInfo.append("**Extra Words** : Display extra words and its count");
     eb.addField("__Buttons__", buttonsInfo.toString(), false);
-    eb.setFooter("Page 3/7", userPfp);
+    eb.setFooter("Flag Bot • Crossword Help", userPfp);
     return eb.build();
   }
 
@@ -428,7 +427,7 @@ public class UtilService {
     sb2.append("`max_score` : *Set the score limit for the game. Default is 30 (customizable between 8 to 100).*\n");
     sb2.append("\n**f!exitatlas** to quit the game midway");
     eb.addField("__Options__", sb2.toString(), false);
-    eb.setFooter("Page 4/7", userPfp);
+    eb.setFooter("Flag Bot • Atlas Help", userPfp);
     return eb.build();
   }
 
@@ -447,7 +446,7 @@ public class UtilService {
     scoreBuilder.append("• Extra words give you 1 point each.\n");
     scoreBuilder.append("• The player with the higher total score at the end wins the game.");
     eb.addField("__Scoring__", scoreBuilder.toString(), false);
-    eb.setFooter("Page 5/7", userPfp);
+    eb.setFooter("Flag Bot • Crossduel Help", userPfp);
     return eb.build();
   }
 
@@ -462,7 +461,7 @@ public class UtilService {
     descBuilder.append("`/race logo` : Start a race in the following channel of Logo mode\n");
     descBuilder.append("`/race maths` : Start a race in the following channel of Maths mode");
     eb.setDescription(descBuilder.toString());
-    eb.setFooter("Page 6/7", userPfp);
+    eb.setFooter("Flag Bot • Race Help", userPfp);
     return eb.build();
   }
 
@@ -479,7 +478,7 @@ public class UtilService {
     descBuilder.append("`/enable` : Enable the commands in the given channel\n");
     descBuilder.append("`/disable_all_channels` : Disable the commands for all the channels of the server\n");
     eb.setDescription(descBuilder.toString());
-    eb.setFooter("Page 7/7", userPfp);
+    eb.setFooter("Flag Bot • Config Help", userPfp);
     return eb.build();
   }
 

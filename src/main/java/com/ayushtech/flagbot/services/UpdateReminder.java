@@ -43,16 +43,15 @@ public class UpdateReminder {
         eb.setColor(Color.PINK);
         eb.setTitle("🎉 Flag Bot Update — New Feature!");
         eb.setDescription("Here's what's new in the latest update:");
-        eb.addField("⚔️ New Command: `/crossduel`",
-                "Challenge another player to a head-to-head crossword duel! Race to solve the puzzle faster than your opponent and claim victory.",
-                false);
-        eb.addField(
-                "💎 Patreon Perks Updated!",
-                "Patreon supporters now receive even more exclusive perks:\n\n"
-                        + "🧩 **+1 Extra Hint** — Get an additional hint in Crossword games.\n"
-                        + "💰 **2× Daily Rewards** — Receive double the rewards from your daily claim.\n"
-                        + "🎨 **Crossword Appearance** — Customize the look of your crossword using `/crossword_appearance`.\n\n"
-                        + "Thank you for supporting Flag Bot! ❤️",
+        eb.addField("🎰 New Gambling Commands!",
+                "Try your luck with three new ways to gamble your coins:\n\n"
+                        + "🪙 **`/coinflip`** — Bet on heads or tails for a quick double-or-nothing.\n"
+                        + "🎰 **`/slots`** — Spin the reels and match symbols to win big.\n"
+                        + "💣 **`/mines`** — Reveal tiles and cash out before you hit a mine!\n\n"
+                        + "Prefer typing commands? These also work as prefix commands:\n"
+                        + "`f!coinflip <amount>`\n"
+                        + "`f!slots <amount>`\n"
+                        + "`f!mines <amount>`",
                 false);
         eb.setFooter("Flag Bot • Changelog", avatarUrl);
         return eb.build();

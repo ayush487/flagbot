@@ -167,7 +167,8 @@ public class PatreonService {
         TextDisplay.of("**CUSTOMIZATION PERKS**\n" +
             "• Modify crossword appearance\n" +
             "• Custom reactions for correct & wrong guesses\n" +
-            "• Customize Atlas game"),
+            "• Customize Atlas game\n" +
+            "• No cooldowns for all commands"),
 
         Separator.create(true, Spacing.SMALL),
 

@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
 
-import com.ayushtech.flagbot.services.UtilService;
 import com.ayushtech.flagbot.utils.Constants;
 
 public class UserDao {
@@ -82,30 +81,6 @@ public class UserDao {
 			e.printStackTrace();
 		}
 	}
-
-	public void addDailyRewards(long userId, int flagCoin, int wordCoin) {
-		try (Connection conn = ConnectionProvider.getConnection()) {
-			Statement stmt = conn.createStatement();
-			String todayDate = UtilService.getInstance().getDate();
-			stmt.executeUpdate(String.format(
-					"INSERT INTO user_table (user_id,coins, cw_coins, last_daily) VALUES (%d, %d, %d, '%s') ON DUPLICATE KEY UPDATE coins = coins + VALUES(coins), cw_coins = cw_coins + VALUES(cw_coins), last_daily = VALUES(last_daily);",
-					userId, flagCoin, wordCoin, todayDate));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	// public void updateUserLastDailyDate(long userId) {
-	// Connection conn = ConnectionProvider.getConnection();
-	// try {
-	// Statement stmt = conn.createStatement();
-	// String todayDate = UtilService.getInstance().getDate();
-	// stmt.executeUpdate("UPDATE users SET last_daily_crossword='" + todayDate + "'
-	// WHERE id=" + userId + ";");
-	// } catch (SQLException e) {
-	// e.printStackTrace();
-	// }
-	// }
 
 	public Optional<String> getUserLastDailyDate(long userId) {
 		try (Connection conn = ConnectionProvider.getConnection()) {

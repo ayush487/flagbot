@@ -3,6 +3,7 @@ package com.ayushtech.flagbot.services;
 import java.awt.Color;
 import java.util.Optional;
 
+import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.dbconnectivity.UserDao;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -45,10 +46,10 @@ public class UserService {
 			boolean isUserPatron = PatreonService.getInstance().isUserPatron(user.getIdLong());
 			if (isUserPatron) {
 				event.getHook().sendMessageEmbeds(getDailyRewardsEmbedPatron(user)).queue();
-				UserDao.getInstance().addDailyRewards(user.getIdLong(), 2000, 200);
+				CoinDao.getInstance().addDailyRewards(user.getIdLong(), 2000, 200);
 			} else {
 				event.getHook().sendMessageEmbeds(getDailyRewardsEmbed(user)).queue();
-				UserDao.getInstance().addDailyRewards(user.getIdLong(), 1000, 100);
+				CoinDao.getInstance().addDailyRewards(user.getIdLong(), 1000, 100);
 			}
 		} else {
 			EmbedBuilder eb = new EmbedBuilder();
