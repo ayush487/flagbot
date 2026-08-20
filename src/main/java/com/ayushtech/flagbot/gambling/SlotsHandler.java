@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
+import com.ayushtech.flagbot.services.MetricService;
 import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.utils.Constants;
 import com.ayushtech.flagbot.utils.LRUCache;
@@ -87,6 +88,7 @@ public class SlotsHandler {
     }
 
     public void handleSlotsPrefixCommand(MessageReceivedEvent event, String[] commandData) {
+        MetricService.getInstance().registerCommandData("slots");
         long userId = event.getAuthor().getIdLong();
         long prevTimestamp = rateLimitCache.getOrDefault(userId, 0l);
         MessageChannel channel = event.getChannel();

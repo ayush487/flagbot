@@ -52,11 +52,6 @@ public class MetricService {
             commandMetricMap.get("race_flags").get(), commandMetricMap.get("race_maps").get(),
             commandMetricMap.get("race_logo").get(), commandMetricMap.get("race_maths").get()),
         true);
-    // eb.addField("__Memoflip__",
-    //     String.format("> Easy : %d\n> Medium : %d\n> Hard : %d\n> Scores : %d",
-    //         commandMetricMap.get("memoflip_easy").get(), commandMetricMap.get("memoflip_medium").get(),
-    //         commandMetricMap.get("memoflip_hard").get(), commandMetricMap.get("memoflip_scores").get()),
-    //     true);
     eb.addField("__Atlas__",
         String.format("> Classic : %d\n> Quick : %d\n> Rapid : %d\n> Help : %d",
             commandMetricMap.get("atlas_classic").get(),
@@ -69,7 +64,16 @@ public class MetricService {
             commandMetricMap.get("crossword_button").get(),
             commandMetricMap.get("crossduel_slash").get()),
         true);
-
+    eb.addField("__Gambling__",
+        String.format(
+            "**Slash**\nSlots : %d\nMines : %d\nCoinflip : %d\n**Prefix**\nSlots : %d\nMines : %d\nCoinflip : %d",
+            commandMetricMap.get("slots_slash").get(),
+            commandMetricMap.get("mines_slash").get(),
+            commandMetricMap.get("coinflip_slash").get(),
+            commandMetricMap.get("slots_prefix").get(),
+            commandMetricMap.get("mines_prefix").get(),
+            commandMetricMap.get("coinflip_prefix").get()),
+        false);
     eb.addField("__Other Commands__",
         String.format(
             "Invite : %d\nLeaderboards : %d\nBalance : %d\nVote : %d\nHelp : %d\nGive Coins : %d\n__Language__\n> set : %d\n> info : %d\n> remove : %d",
@@ -93,6 +97,10 @@ public class MetricService {
     CompletableFuture.runAsync(() -> updateCommandData(event));
   }
 
+  public void registerCommandData(String command) {
+    CompletableFuture.runAsync(() -> updateCommandData(command));
+  }
+
   public void incrementCommandData(String commandName) {
     CompletableFuture.runAsync(() -> {
       AtomicLong metric = commandMetricMap.get(commandName);
@@ -103,6 +111,7 @@ public class MetricService {
   }
 
   private void updateCommandData(SlashCommandInteractionEvent event) {
+
     switch (event.getName()) {
       case "guess": {
         switch (event.getSubcommandName()) {
@@ -188,6 +197,15 @@ public class MetricService {
       case "crossduel":
         commandMetricMap.get("crossduel_slash").incrementAndGet();
         return;
+      case "slots":
+        commandMetricMap.get("slots_slash").incrementAndGet();
+        return;
+      case "mines":
+        commandMetricMap.get("mines_slash").incrementAndGet();
+        return;
+      case "coinflip":
+        commandMetricMap.get("coinflip_slash").incrementAndGet();
+        return;
       case "atlas":
         switch (event.getSubcommandName()) {
           case "classic":
@@ -232,6 +250,22 @@ public class MetricService {
     return;
   }
 
+  private void updateCommandData(String command) {
+    switch (command) {
+      case "slots":
+        commandMetricMap.get("slots_prefix").incrementAndGet();
+        break;
+      case "coinflip":
+        commandMetricMap.get("coinflip_prefix").incrementAndGet();
+        break;
+      case "mines":
+        commandMetricMap.get("mines_prefix").incrementAndGet();
+        break;
+      default:
+        break;
+    }
+  }
+
   private void loadCommandMetricMap() {
     commandMetricMap.put("guess_flag", new AtomicLong());
     commandMetricMap.put("guess_map", new AtomicLong());
@@ -271,5 +305,11 @@ public class MetricService {
     commandMetricMap.put("atlas_rapid", new AtomicLong());
     commandMetricMap.put("atlas_help", new AtomicLong());
     commandMetricMap.put("patreon_request", new AtomicLong());
+    commandMetricMap.put("slots_slash", new AtomicLong());
+    commandMetricMap.put("mines_slash", new AtomicLong());
+    commandMetricMap.put("coinflip_slash", new AtomicLong());
+    commandMetricMap.put("slots_prefix", new AtomicLong());
+    commandMetricMap.put("mines_prefix", new AtomicLong());
+    commandMetricMap.put("coinflip_prefix", new AtomicLong());
   }
 }

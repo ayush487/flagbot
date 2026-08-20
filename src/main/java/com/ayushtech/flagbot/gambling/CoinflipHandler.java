@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
+import com.ayushtech.flagbot.services.MetricService;
 import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.utils.Constants;
 import com.ayushtech.flagbot.utils.LRUCache;
@@ -67,10 +68,8 @@ public class CoinflipHandler {
         String outcomeEmoji = outcome == 0 ? "<:flag_coin:1472232340523843767>"
                 : "<:flagbot_coin_blank:1538134980197355584>";
         String outcomeSide = outcome == 0 ? "heads" : "tails";
-        // This is marker
         String name = event.getUser().getEffectiveName();
         String initialMessage = generateInitialMessage(name, amount, choosen);
-
         event.getHook().sendMessage(initialMessage).queue(m -> {
             String finalMsg = "";
             if (choosenFinal.equals(outcomeSide)) {
@@ -85,8 +84,8 @@ public class CoinflipHandler {
         });
     }
 
-    // f!coinflip 1000 h/t
     public void handleCoinflipPrefixCommand(MessageReceivedEvent event, String[] commandData) {
+        MetricService.getInstance().registerCommandData("coinflip");
         long userId = event.getAuthor().getIdLong();
         Message msg = event.getMessage();
         MessageChannel channel = event.getChannel();

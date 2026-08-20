@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
+import com.ayushtech.flagbot.services.MetricService;
 import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.utils.Constants;
 import com.ayushtech.flagbot.utils.LRUCache;
@@ -73,6 +74,7 @@ public class MinesHandler {
     }
 
     public void handleMinesPrefixCommand(MessageReceivedEvent event, String[] commandData) {
+        MetricService.getInstance().registerCommandData("mines");
         long userId = event.getAuthor().getIdLong();
         long prevTimestamp = rateLimitCache.getOrDefault(userId, 0l);
         Message msg = event.getMessage();
