@@ -85,7 +85,6 @@ public class CoinflipHandler {
     }
 
     public void handleCoinflipPrefixCommand(MessageReceivedEvent event, String[] commandData) {
-        MetricService.getInstance().registerCommandData("coinflip");
         long userId = event.getAuthor().getIdLong();
         Message msg = event.getMessage();
         MessageChannel channel = event.getChannel();

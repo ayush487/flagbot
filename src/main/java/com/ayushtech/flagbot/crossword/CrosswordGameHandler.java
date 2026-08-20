@@ -3,6 +3,7 @@ package com.ayushtech.flagbot.crossword;
 import java.awt.Color;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -24,6 +25,7 @@ import net.dv8tion.jda.api.components.selections.StringSelectMenu.Builder;
 import net.dv8tion.jda.api.components.separator.Separator;
 import net.dv8tion.jda.api.components.separator.Separator.Spacing;
 import net.dv8tion.jda.api.components.textdisplay.TextDisplay;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -83,38 +85,30 @@ public class CrosswordGameHandler {
 
 	}
 
-	// public void handleCrosswordTextCommand(MessageReceivedEvent event) {
-	// long authorId = event.getAuthor().getIdLong();
-	// if (gameMap.containsKey(authorId)) {
-	// event.getChannel().sendMessage("You already have a active game!\nDo you want
-	// to start a new one ?")
-	// .setActionRow(Button.primary("cancelThenNewCrossword_" + authorId, "Start a
-	// new game"),
-	// Button.primary("cancelCrossword_" + authorId, "Cancel Older Game"))
-	// .queue(m -> m.delete().queueAfter(10, TimeUnit.SECONDS));
-	// return;
-	// }
-	// try {
-	// Level level = LevelsDao.getInstance().getUserCurrentLevel(authorId);
-	// CrosswordGame game = new CrosswordGame(authorId, level, event.getChannel(),
-	// true);
-	// gameMap.put(authorId, game);
-	// final int gameHashCode = game.hashCode();
-	// CompletableFuture.delayedExecutor(CROSSWORD_DURATION,
-	// TimeUnit.MINUTES).execute(() -> {
-	// if (!gameMap.containsKey(authorId))
-	// return;
-	// int currentRunningGameHashCode = gameMap.get(authorId).hashCode();
-	// if (gameHashCode == currentRunningGameHashCode) {
-	// game.cancelGame();
-	// gameMap.remove(authorId);
-	// }
-	// });
-	// } catch (SQLException e) {
-	// event.getChannel().sendMessage("Something went wrong!\nPlease try
-	// again").queue();
-	// }
-	// }
+	public void handleCrosswordPrefixCommand(MessageReceivedEvent event) {
+		long userId = event.getAuthor().getIdLong();
+		if (gameMap.containsKey(userId)) {
+			event.getChannel().sendMessage("You already have a active game!\nDo you want to start a new one ?")
+					.setComponents(ActionRow.of(Button.primary("cancelThenNewCrossword_" + userId, "Start a new game"),
+							Button.primary("cancelCrossword_" + userId, "Cancel Older Game")))
+					.queue(m -> m.delete().queueAfter(10, TimeUnit.SECONDS));
+			return;
+		}
+		Level level = LevelsDao.getInstance().getUserCurrentLevel(userId);
+		boolean isUserPatron = PatreonService.getInstance().isUserPatron(userId);
+		var game = new CrosswordGame(userId, level, event.getChannel(), !isUserPatron, true);
+		gameMap.put(userId, game);
+		final int gameHashCode = game.hashCode();
+		CompletableFuture.delayedExecutor(CROSSWORD_DURATION, TimeUnit.MINUTES).execute(() -> {
+			if (!gameMap.containsKey(userId))
+				return;
+			int currentRunningGameHashCode = gameMap.get(userId).hashCode();
+			if (gameHashCode == currentRunningGameHashCode) {
+				game.cancelGame();
+				gameMap.remove(userId);
+			}
+		});
+	}
 
 	public void handleCrosswordButton(ButtonInteractionEvent event) {
 		event.deferReply(true).queue();
@@ -582,6 +576,53 @@ public class CrosswordGameHandler {
 		eb.setFooter("The game will start once the opponent accepts.");
 
 		event.getHook()
+				.sendMessage("<@" + opponentID + ">")
+				.addEmbeds(eb.build())
+				.addComponents(ActionRow.of(
+						Button.success("acceptCrossduel_" + challengerID + "_" + opponentID, "Accept"),
+						Button.danger("denyCrossduel_" + challengerID + "_" + opponentID, "Deny")))
+				.queue();
+	}
+
+	public void handleCrossduelCommand(MessageReceivedEvent event) {
+		Message msg = event.getMessage();
+		List<User> mentionedUsers = msg.getMentions().getUsers();
+		if (mentionedUsers.size() < 1) {
+			msg.reply("You need to mention someone to challenge!")
+					.queue(m -> m.delete().queueAfter(5, TimeUnit.SECONDS));
+			return;
+		}
+		User opponentUser = mentionedUsers.get(0);
+		if (opponentUser.isBot()) {
+			msg.reply("You cannot challenge a bot!")
+					.queue(m -> m.delete().queueAfter(15, TimeUnit.SECONDS));
+			return;
+		}
+		long challengerID = event.getAuthor().getIdLong();
+		long opponentID = opponentUser.getIdLong();
+		if (challengerID == opponentID) {
+			msg.reply("You cannot challenge yourself!")
+					.queue(m -> m.delete().queueAfter(15, TimeUnit.SECONDS));
+			return;
+		}
+		if (gameMap.containsKey(challengerID) || gameMap.containsKey(opponentID)) {
+			msg.reply(
+					"You or your opponent may have an active crossword game. Please complete or quit it to start a Crossduel.")
+					.queue();
+			return;
+		}
+		if (duelGameMap.containsKey(challengerID) || duelGameMap.containsKey(opponentID)) {
+			msg.reply(
+					"You or your opponent may have an active crossduel game. Please complete or quit it to start a new one.")
+					.queue();
+			return;
+		}
+		EmbedBuilder eb = new EmbedBuilder();
+		eb.setTitle("Crossduel Challenge!");
+		eb.setDescription(String.format("<@%d> has challenged <@%d> to a Crossduel!", challengerID, opponentID));
+		eb.setColor(Color.BLUE);
+		eb.setFooter("The game will start once the opponent accepts.");
+		event.getChannel()
 				.sendMessage("<@" + opponentID + ">")
 				.addEmbeds(eb.build())
 				.addComponents(ActionRow.of(

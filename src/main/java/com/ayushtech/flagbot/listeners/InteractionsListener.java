@@ -87,6 +87,11 @@ public class InteractionsListener extends ListenerAdapter {
 			PrivateServerService.getInstance().handleMessage(event);
 		}
 
+		boolean isCommandsDisabled = channelService.isChannelDisabled(event.getChannel().getIdLong());
+
+		if (isCommandsDisabled)
+			return;
+
 		String messageText = event.getMessage().getContentDisplay();
 
 		if (CrosswordGameHandler.getInstance().isActiveGame(event.getAuthor().getIdLong(),
@@ -500,7 +505,7 @@ public class InteractionsListener extends ListenerAdapter {
 			MinesHandler.getInstance().handleCashoutButton(event);
 			return;
 		}
-		
+
 		// Commenting Captcha for now
 		if (random.nextInt(Constants.BOUND) == 1) {
 			PatreonService.getInstance().sendPatreonRequestMessage(event.getChannel());

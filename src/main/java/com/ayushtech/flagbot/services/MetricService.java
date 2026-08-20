@@ -85,6 +85,16 @@ public class MetricService {
             commandMetricMap.get("language_info").get(),
             commandMetricMap.get("language_remove").get()),
         false);
+    eb.addField("Prefix Commands Added Recently",
+        String.format("Crossword %d\nBalance : %d\nLeaderboard : %d\nInvite : %d\nHelp : %d\nCrossduel : %d\nVote : %d",
+            commandMetricMap.get("crossword_prefix").get(),
+            commandMetricMap.get("balance_prefix").get(),
+            commandMetricMap.get("leaderboard_prefix").get(),
+            commandMetricMap.get("invite_prefix").get(),
+            commandMetricMap.get("help_prefix").get(),
+            commandMetricMap.get("crossduel_prefix").get(),
+            commandMetricMap.get("vote_prefix").get()),
+        false);
     eb.addField("Patreon Requests Sents", commandMetricMap.get("patreon_request").get() + "", false);
     event.getHook().sendMessageEmbeds(eb.build()).queue();
   }
@@ -111,7 +121,6 @@ public class MetricService {
   }
 
   private void updateCommandData(SlashCommandInteractionEvent event) {
-
     switch (event.getName()) {
       case "guess": {
         switch (event.getSubcommandName()) {
@@ -261,6 +270,27 @@ public class MetricService {
       case "mines":
         commandMetricMap.get("mines_prefix").incrementAndGet();
         break;
+      case "crossword":
+        commandMetricMap.get("crossword_prefix").incrementAndGet();
+        break;
+      case "balance":
+        commandMetricMap.get("balance_prefix").incrementAndGet();
+        break;
+      case "leaderboard":
+        commandMetricMap.get("leaderboard_prefix").incrementAndGet();
+        break;
+      case "invite":
+        commandMetricMap.get("invite_prefix").incrementAndGet();
+        break;
+      case "help":
+        commandMetricMap.get("help_prefix").incrementAndGet();
+        break;
+      case "crossduel":
+        commandMetricMap.get("crossduel_prefix").incrementAndGet();
+        break;
+      case "vote":
+        commandMetricMap.get("vote_prefix").incrementAndGet();
+        break;
       default:
         break;
     }
@@ -311,5 +341,13 @@ public class MetricService {
     commandMetricMap.put("slots_prefix", new AtomicLong());
     commandMetricMap.put("mines_prefix", new AtomicLong());
     commandMetricMap.put("coinflip_prefix", new AtomicLong());
+    // TODO : Added
+    commandMetricMap.put("crossword_prefix", new AtomicLong());
+    commandMetricMap.put("balance_prefix", new AtomicLong());
+    commandMetricMap.put("leaderboard_prefix", new AtomicLong());
+    commandMetricMap.put("invite_prefix", new AtomicLong());
+    commandMetricMap.put("help_prefix", new AtomicLong());
+    commandMetricMap.put("crossduel_prefix", new AtomicLong());
+    commandMetricMap.put("vote_prefix", new AtomicLong());
   }
 }

@@ -1,10 +1,16 @@
 package com.ayushtech.flagbot.utils;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.ayushtech.flagbot.atlas.AtlasGameHandler;
+import com.ayushtech.flagbot.crossword.CrosswordGameHandler;
 import com.ayushtech.flagbot.gambling.CoinflipHandler;
 import com.ayushtech.flagbot.gambling.MinesHandler;
 import com.ayushtech.flagbot.gambling.SlotsHandler;
+import com.ayushtech.flagbot.services.MetricService;
 import com.ayushtech.flagbot.services.PatreonService;
+import com.ayushtech.flagbot.services.UpdateReminder;
+import com.ayushtech.flagbot.services.UtilService;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -19,6 +25,7 @@ public class PrefixCommandHandler {
     }
 
     public void handlePrefixCommand(MessageReceivedEvent event) {
+        CompletableFuture.runAsync(() -> UpdateReminder.getInstance().handleUser(event.getAuthor(), event.getChannel()));
         String msgContent = event.getMessage().getContentDisplay();
         String[] commandData = msgContent.substring(2).strip().toLowerCase().split(" ");
         String commandName = commandData[0];
@@ -41,12 +48,32 @@ public class PrefixCommandHandler {
             case "coinflip":
                 CoinflipHandler.getInstance().handleCoinflipPrefixCommand(event, commandData);
                 break;
+            case "crossword":
+                CrosswordGameHandler.getInstance().handleCrosswordPrefixCommand(event);
+                break;
+            case "balance":
+                UtilService.getInstance().handleBalanceCommand(event.getAuthor(), event.getChannel());
+                break;
+            case "leaderboard":
+                LeaderboardHandler.getInstance().handleLeaderboardCommand(event, commandData);
+                break;
+            case "invite":
+                UtilService.getInstance().handleInviteCommand(event.getMessage());
+                break;
+            case "help":
+                UtilService.getInstance().handleHelpCommand(event);
+                break;
+            case "crossduel":
+                CrosswordGameHandler.getInstance().handleCrossduelCommand(event);
+                break;
+            case "vote":
+                UtilService.getInstance().handleVoteCommand(event.getMessage());
+                break;
             default:
                 break;
         }
+        MetricService.getInstance().registerCommandData(commandName);
     }
-
-    
 
     private void handleExitAtlasCommand(MessageReceivedEvent event) {
         AtlasGameHandler.getInstance().requestCancelGame(event);

@@ -47,12 +47,14 @@ public class UpdateReminder {
                 "Try your luck with three new ways to gamble your coins:\n\n"
                         + "🪙 **`/coinflip`** — Bet on heads or tails for a quick double-or-nothing.\n"
                         + "🎰 **`/slots`** — Spin the reels and match symbols to win big.\n"
-                        + "💣 **`/mines`** — Reveal tiles and cash out before you hit a mine!\n\n"
-                        + "Prefer typing commands? These also work as prefix commands:\n"
-                        + "`f!coinflip <amount>`\n"
-                        + "`f!slots <amount>`\n"
-                        + "`f!mines <amount>`",
+                        + "💣 **`/mines`** — Reveal tiles and cash out before you hit a mine!",
                 false);
+        eb.addField("⌨️ Prefix Commands Now Available!",
+        "You can now use Flag Bot with `f!` prefix commands too, no slash needed:\n\n"
+                + "`f!balance` `f!leaderboard` `f!invite` `f!help`\n"
+                + "`f!crossword` `f!crossduel` `f!vote`\n"
+                + "`f!coinflip` `f!mines` `f!slots`",
+        false);
         eb.setFooter("Flag Bot • Changelog", avatarUrl);
         return eb.build();
     }

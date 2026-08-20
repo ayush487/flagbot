@@ -26,14 +26,17 @@ import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.components.selections.StringSelectMenu.Builder;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.channel.unions.GuildChannelUnion;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import okhttp3.MediaType;
@@ -82,6 +85,20 @@ public class UtilService {
     eb.setColor(Color.YELLOW);
     eb.setThumbnail(user.getAvatarUrl());
     hook.sendMessageEmbeds(eb.build()).setEphemeral(false).queue();
+    CompletableFuture.runAsync(() -> {
+      UserDao.getInstance().updateUsername(user.getIdLong(), user.getName());
+    });
+  }
+
+  public void handleBalanceCommand(User user, MessageChannel channel) {
+    EmbedBuilder eb = new EmbedBuilder();
+    eb.setTitle(user.getName());
+    long[] data = CoinDao.getInstance().getBalanceAndRankWordCoin(user.getIdLong());
+    eb.setDescription("**Balance** : " + data[0] + " <:flag_coin:1472232340523843767>\n**Rank** : " + data[2]
+        + "\n\n**Word Coins** : " + data[1] + "<:word_coin:1472270316007981301>");
+    eb.setColor(Color.YELLOW);
+    eb.setThumbnail(user.getAvatarUrl());
+    channel.sendMessageEmbeds(eb.build()).queue();
     CompletableFuture.runAsync(() -> {
       UserDao.getInstance().updateUsername(user.getIdLong(), user.getName());
     });
@@ -203,7 +220,21 @@ public class UtilService {
     hook.sendMessageEmbeds(eb.build())
         .addComponents(ActionRow.of(Button.link("https://top.gg/bot/1129789320165867662/vote", "Top.gg")))
         .queue();
+  }
 
+  public void handleVoteCommand(Message msg) {
+    EmbedBuilder eb = new EmbedBuilder();
+    eb.setTitle("Vote for Flag Bot");
+    eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
+    eb.setDescription("Vote for Flag bot on top.gg\n[here](https://top.gg/bot/1129789320165867662/vote)");
+    eb.addField("Rewards",
+        "> Each vote gets you 1000 <:flag_coin:1472232340523843767> & 100 <:word_coin:1472270316007981301>\n> You will get double rewards during weekends",
+        false);
+    eb.setFooter("You can vote every 12 hours");
+    eb.setColor(Color.GREEN);
+    msg.replyEmbeds(eb.build())
+        .addComponents(ActionRow.of(Button.link("https://top.gg/bot/1129789320165867662/vote", "Top.gg")))
+        .queue();
   }
 
   public void handleInviteCommand(InteractionHook hook) {
@@ -223,6 +254,23 @@ public class UtilService {
         .queue();
   }
 
+  public void handleInviteCommand(Message msg) {
+    EmbedBuilder eb = new EmbedBuilder();
+    eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
+    eb.setColor(Color.GREEN);
+    eb.setTitle("Invite Flagbot");
+    eb.addField("Add Flagbot",
+        "[here](https://discord.com/api/oauth2/authorize?client_id=1129789320165867662&permissions=85056&scope=bot+applications.commands)",
+        true);
+    eb.addBlankField(true);
+    eb.addField("Support Server", "[here](https://discord.gg/MASMYsNCT9)", true);
+    msg.replyEmbeds(eb.build())
+        .addComponents(ActionRow.of(Button.link(
+            "https://discord.com/api/oauth2/authorize?client_id=1129789320165867662&permissions=85056&scope=bot+applications.commands",
+            "Add Flag bot to your server"), Button.link("https://top.gg/bot/1129789320165867662/vote", "❤️Vote")))
+        .queue();
+  }
+
   public void handleSupportCommand(InteractionHook hook) {
     EmbedBuilder eb = new EmbedBuilder();
     eb.setColor(Color.YELLOW);
@@ -231,28 +279,22 @@ public class UtilService {
         .queue();
   }
 
+  public void handleHelpCommand(MessageReceivedEvent event) {
+    String avatarUrl = event.getAuthor().getAvatarUrl();
+    MessageEmbed embed = generalHelpEmbed(avatarUrl);
+    event.getChannel().sendMessageEmbeds(embed).addComponents(getHelpSelectionMenu()).queue();
+  }
+
   public void handleHelpCommand(SlashCommandInteractionEvent event) {
     String avatarUrl = event.getUser().getAvatarUrl();
     MessageEmbed embed = generalHelpEmbed(avatarUrl);
-    Builder selectMenuBuilder = StringSelectMenu.create("helpMenu");
-    selectMenuBuilder.addOption("Overview", "helpOverview", Emoji.fromFormatted("<:flagbot:1230836096548601907>"));
-    selectMenuBuilder.addOption("Guess Commands", "helpGuess", Emoji.fromUnicode("U+1F50D"));
-    selectMenuBuilder.addOption("Crossword", "helpCrossword", Emoji.fromUnicode("U+1F520"));
-    selectMenuBuilder.addOption("Crossduel", "helpCrossduel", Emoji.fromUnicode("U+2694"));
-    selectMenuBuilder.addOption("Atlas", "helpAtlas", Emoji.fromFormatted("<:atlas:1539680431757201493>"));
-    selectMenuBuilder.addOption("Gambling", "helpGamble", Emoji.fromUnicode("U+1F3B2"));
-    selectMenuBuilder.addOption("Race", "helpRace", Emoji.fromFormatted("<:finish:1224678758837911614>"));
-    selectMenuBuilder.addOption("Config", "helpConfig", Emoji.fromUnicode("U+2699"));
-    selectMenuBuilder.setPlaceholder("Select Help Module");
-    ActionRow row = ActionRow.of(selectMenuBuilder.build());
-    event.getHook().sendMessageEmbeds(embed).addComponents(row).queue();
+    event.getHook().sendMessageEmbeds(embed).addComponents(getHelpSelectionMenu()).queue();
   }
 
   public void handleHelpSelection(StringSelectInteractionEvent event) {
     event.deferEdit().queue();
     String avatarUrl = event.getUser().getAvatarUrl();
     String selection = event.getSelectedOptions().get(0).getValue();
-
     MessageEmbed embed;
     switch (selection) {
       case "helpOverview":
@@ -285,6 +327,21 @@ public class UtilService {
     }
     event.getHook().editMessageEmbedsById(event.getMessage().getId(), embed).queue();
 
+  }
+
+  private ActionRow getHelpSelectionMenu() {
+    Builder selectMenuBuilder = StringSelectMenu.create("helpMenu");
+    selectMenuBuilder.addOption("Overview", "helpOverview", Emoji.fromFormatted("<:flagbot:1230836096548601907>"));
+    selectMenuBuilder.addOption("Guess Commands", "helpGuess", Emoji.fromUnicode("U+1F50D"));
+    selectMenuBuilder.addOption("Crossword", "helpCrossword", Emoji.fromUnicode("U+1F520"));
+    selectMenuBuilder.addOption("Crossduel", "helpCrossduel", Emoji.fromUnicode("U+2694"));
+    selectMenuBuilder.addOption("Atlas", "helpAtlas", Emoji.fromFormatted("<:atlas:1539680431757201493>"));
+    selectMenuBuilder.addOption("Gambling", "helpGamble", Emoji.fromUnicode("U+1F3B2"));
+    selectMenuBuilder.addOption("Race", "helpRace", Emoji.fromFormatted("<:finish:1224678758837911614>"));
+    selectMenuBuilder.addOption("Config", "helpConfig", Emoji.fromUnicode("U+2699"));
+    selectMenuBuilder.setPlaceholder("Select Help Module");
+    ActionRow row = ActionRow.of(selectMenuBuilder.build());
+    return row;
   }
 
   private MessageEmbed gambleHelpEmbed(String avatarUrl) {
@@ -484,12 +541,10 @@ public class UtilService {
 
   public void handleGiveCommands(SlashCommandInteractionEvent event) {
     String subCommandName = event.getSubcommandName();
-
     if (subCommandName.equals("coins")) {
       CompletableFuture.runAsync(() -> CoinTransferService.getInstance().handleGiveCoinsCommand(event));
       return;
     }
-
   }
 
   public void handleAtlasCommands(SlashCommandInteractionEvent event) {

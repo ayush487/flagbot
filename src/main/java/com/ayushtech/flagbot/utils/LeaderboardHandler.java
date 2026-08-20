@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class LeaderboardHandler {
 
@@ -43,6 +44,28 @@ public class LeaderboardHandler {
 			leaderboardData = getLeaderboardDataLevels(event.getJDA(), 10, 0, event.getUser().getIdLong());
 		}
 		event.getHook().sendMessageEmbeds(createLeaderboardEmbed(leaderboardData, subcommandName, event.getUser()))
+				.addComponents(ActionRow.of(createButtonPrev5(0, leaderboardData.getTotalCount(), subcommandName),
+						createButtonPrev1(0, leaderboardData.getTotalCount(), subcommandName),
+						createButtonMyRank(subcommandName, leaderboardData.getUserRank()),
+						createButtonNext1(0, leaderboardData.getTotalCount(), subcommandName),
+						createButtonNext5(0, leaderboardData.getTotalCount(), subcommandName)))
+				.queue();
+	}
+
+	public void handleLeaderboardCommand(MessageReceivedEvent event, String[] commandData) {
+		String subcommandName = "coins";
+		if (commandData.length > 1) {
+			if (commandData[1].startsWith("l")) {
+				subcommandName = "levels";
+			}
+		}
+		LbData leaderboardData = null;
+		if (subcommandName.equals("coins")) {
+			leaderboardData = getLeaderboardDataCoins(event.getJDA(), 10, 0, event.getAuthor().getIdLong());
+		} else {
+			leaderboardData = getLeaderboardDataLevels(event.getJDA(), 10, 0, event.getAuthor().getIdLong());
+		}
+		event.getChannel().sendMessageEmbeds(createLeaderboardEmbed(leaderboardData, subcommandName, event.getAuthor()))
 				.addComponents(ActionRow.of(createButtonPrev5(0, leaderboardData.getTotalCount(), subcommandName),
 						createButtonPrev1(0, leaderboardData.getTotalCount(), subcommandName),
 						createButtonMyRank(subcommandName, leaderboardData.getUserRank()),
