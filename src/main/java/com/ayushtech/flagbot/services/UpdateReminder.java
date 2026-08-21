@@ -50,11 +50,17 @@ public class UpdateReminder {
                         + "💣 **`/mines`** — Reveal tiles and cash out before you hit a mine!",
                 false);
         eb.addField("⌨️ Prefix Commands Now Available!",
-        "You can now use Flag Bot with `f!` prefix commands too, no slash needed:\n\n"
-                + "`f!balance` `f!leaderboard` `f!invite` `f!help`\n"
-                + "`f!crossword` `f!crossduel` `f!vote`\n"
-                + "`f!coinflip` `f!mines` `f!slots`",
-        false);
+                "You can now use Flag Bot with `f!` prefix commands too, no slash needed:\n\n"
+                        + "`f!balance` `f!leaderboard` `f!invite` `f!help`\n"
+                        + "`f!crossword` `f!crossduel` `f!vote`\n"
+                        + "`f!coinflip` `f!mines` `f!slots`",
+                false);
+        eb.addField("🔧 Customize Your Server's Prefix!",
+                "Don't like `f!`? Change it to whatever you want:\n\n" +
+                        "`/prefix set <new_prefix>` — set a custom prefix (**Manage Server** required)\n" +
+                        "`/prefix` — view current prefixes\n\n" +
+                        "Prefixes can be up to 5 characters long.",
+                false);
         eb.setFooter("Flag Bot • Changelog", avatarUrl);
         return eb.build();
     }

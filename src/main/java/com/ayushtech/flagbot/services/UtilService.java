@@ -392,6 +392,7 @@ public class UtilService {
     sb.append("`/invite` : Invite the bot to your server\n");
     sb.append("`/balance` : You can see your coins and rank\n");
     sb.append("`/give coins` : Send coins to other users.\n");
+    sb.append("`/prefix` : View bot's prefix for this server.\n");
     sb.append("`/vote` : Vote for us and get rewards\n");
     sb.append("`/patreon` : Show information about Patreon Membership");
     eb.addField("Commands", sb.toString(), false);
@@ -528,6 +529,7 @@ public class UtilService {
     eb.setThumbnail("https://cdn.discordapp.com/avatars/1129789320165867662/94a311270ede8ae677711538cc905dd8.png");
     eb.setColor(new Color(255, 153, 51));
     StringBuilder descBuilder = new StringBuilder();
+    descBuilder.append("`/prefix set` : Set the prefix for the server. Can also be used to view prefix information\n");
     descBuilder.append("`/language set` : set language for the server (Only work for flag and map guessers)\n");
     descBuilder.append("`/language info` : see your server language and other supported languages\n");
     descBuilder.append("`/language remove` : remove server language\n");

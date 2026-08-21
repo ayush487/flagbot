@@ -5,7 +5,6 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
-import com.ayushtech.flagbot.services.MetricService;
 import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.utils.Constants;
 import com.ayushtech.flagbot.utils.LRUCache;

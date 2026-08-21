@@ -76,12 +76,15 @@ public class MetricService {
         false);
     eb.addField("__Other Commands__",
         String.format(
-            "Invite : %d\nLeaderboards : %d\nBalance : %d\nVote : %d\nHelp : %d\nGive Coins : %d\n__Language__\n> set : %d\n> info : %d\n> remove : %d",
+            "Invite : %d\nLeaderboards : %d\nBalance : %d\nVote : %d\nHelp : %d\nGive Coins : %d\nPrefix : %d\n__Language__\n> set : %d\n> info : %d\n> remove : %d",
             commandMetricMap.get("invite").get(),
             commandMetricMap.get("leaderboards").get(),
-            commandMetricMap.get("balance").get(), commandMetricMap.get("vote").get(),
+            commandMetricMap.get("balance").get(),
+            commandMetricMap.get("vote").get(),
             commandMetricMap.get("help").get(),
-            commandMetricMap.get("give_coins").get(), commandMetricMap.get("language_set").get(),
+            commandMetricMap.get("give_coins").get(),
+            commandMetricMap.get("prefix_command").get(),
+            commandMetricMap.get("language_set").get(),
             commandMetricMap.get("language_info").get(),
             commandMetricMap.get("language_remove").get()),
         false);
@@ -212,6 +215,9 @@ public class MetricService {
       case "mines":
         commandMetricMap.get("mines_slash").incrementAndGet();
         return;
+      case "prefix":
+        commandMetricMap.get("prefix_command").incrementAndGet();
+        return;
       case "coinflip":
         commandMetricMap.get("coinflip_slash").incrementAndGet();
         return;
@@ -341,7 +347,6 @@ public class MetricService {
     commandMetricMap.put("slots_prefix", new AtomicLong());
     commandMetricMap.put("mines_prefix", new AtomicLong());
     commandMetricMap.put("coinflip_prefix", new AtomicLong());
-    // TODO : Added
     commandMetricMap.put("crossword_prefix", new AtomicLong());
     commandMetricMap.put("balance_prefix", new AtomicLong());
     commandMetricMap.put("leaderboard_prefix", new AtomicLong());
@@ -349,5 +354,6 @@ public class MetricService {
     commandMetricMap.put("help_prefix", new AtomicLong());
     commandMetricMap.put("crossduel_prefix", new AtomicLong());
     commandMetricMap.put("vote_prefix", new AtomicLong());
+    commandMetricMap.put("prefix_command", new AtomicLong());
   }
 }

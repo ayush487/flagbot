@@ -94,13 +94,17 @@ public class InteractionsListener extends ListenerAdapter {
 
 		String messageText = event.getMessage().getContentDisplay();
 
+		String prefix = PrefixCommandHandler.getInstance().getPrefix(event.getGuild().getIdLong());
+
+		if (messageText.startsWith(prefix)) {
+			PrefixCommandHandler.getInstance().handlePrefixCommand(event, prefix);
+		} else if (messageText.startsWith(Constants.DEFAULT_PREFIX)) {
+			PrefixCommandHandler.getInstance().handlePrefixCommand(event, Constants.DEFAULT_PREFIX);
+		}
+
 		if (CrosswordGameHandler.getInstance().isActiveGame(event.getAuthor().getIdLong(),
 				event.getChannel().getIdLong())) {
 			CrosswordGameHandler.getInstance().inspectAnswer(event);
-		}
-
-		if (messageText.startsWith("f!")) {
-			PrefixCommandHandler.getInstance().handlePrefixCommand(event);
 		}
 
 		if (GuessDistanceHandler.getInstance().isActiveGameInChannel(channelId)) {
@@ -192,6 +196,11 @@ public class InteractionsListener extends ListenerAdapter {
 
 		if (slashCommandName.equals("vote")) {
 			UtilService.getInstance().handleVoteCommand(event.getHook());
+			return;
+		}
+
+		else if (slashCommandName.equals("prefix")) {
+			PrefixCommandHandler.getInstance().handlePrefixCommand(event);
 			return;
 		}
 

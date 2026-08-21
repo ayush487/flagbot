@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.ayushtech.flagbot.services.ChannelService;
@@ -73,6 +75,31 @@ public class ChannelDao {
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public Map<Long, String> getServerPrefixData() {
+		try (Connection conn = ConnectionProvider.getConnection()) {
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery("SELECT server_id, prefix FROM servers;");
+			Map<Long, String> serverPrefixData = new HashMap<>();
+			while (rs.next())
+				serverPrefixData.put(rs.getLong("server_id"), rs.getString("prefix"));
+			return serverPrefixData;
+		} catch (SQLException e) {
+			return new HashMap<>();
+		}
+	}
+
+	public boolean setServerPrefix(long serverId, String prefix) {
+		try (Connection conn = ConnectionProvider.getConnection()) {
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(String.format(
+					"INSERT INTO servers (server_id, prefix) VALUES (%d, '%s') on duplicate key update prefix='%s';",
+					serverId, prefix, prefix));
+			return true;
+		} catch (SQLException e) {
 			return false;
 		}
 	}
