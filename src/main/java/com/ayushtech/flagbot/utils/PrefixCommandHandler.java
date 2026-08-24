@@ -84,7 +84,7 @@ public class PrefixCommandHandler {
             default:
                 break;
         }
-        MetricService.getInstance().registerCommandData(commandName);
+        MetricService.getInstance().registerCommandData(commandName, event.getAuthor().getIdLong());
     }
 
     public String getPrefix(long serverId) {

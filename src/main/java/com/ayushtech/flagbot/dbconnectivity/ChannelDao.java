@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import com.ayushtech.flagbot.services.ChannelService;
@@ -117,6 +118,24 @@ public class ChannelDao {
 			System.out.println("Something went wrong while accesing database");
 			e.printStackTrace();
 			return new ArrayList<>();
+		}
+	}
+
+	public void addCommandUsageData(Map<Long, Map<String, AtomicInteger>> snapshot) {
+		String sql = "INSERT INTO command_usage(user_id, command_name, use_count, last_used) VALUES (?, ?, ?, NOW()) ON DUPLICATE KEY UPDATE use_count = use_count + VALUES(use_count), last_used=NOW()";
+		try (Connection conn = ConnectionProvider.getConnection()) {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			for (var userEntry : snapshot.entrySet()) {
+				for (var commandEntry : userEntry.getValue().entrySet()) {
+					ps.setLong(1, userEntry.getKey());
+					ps.setString(2, commandEntry.getKey());
+					ps.setInt(3, commandEntry.getValue().get());
+					ps.addBatch();
+				}
+			}
+			ps.executeBatch();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 

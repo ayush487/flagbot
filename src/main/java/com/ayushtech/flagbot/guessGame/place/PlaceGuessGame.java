@@ -9,6 +9,7 @@ import com.ayushtech.flagbot.guessGame.GuessGameEndRunnable;
 import com.ayushtech.flagbot.guessGame.GuessGameHandler;
 import com.ayushtech.flagbot.guessGame.GuessGameUtil;
 import com.ayushtech.flagbot.services.GameEndService;
+import com.ayushtech.flagbot.services.MetricService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
@@ -79,6 +80,7 @@ public class PlaceGuessGame implements GuessGame {
       startAgain(channel, rounds - 1, roundSize, isSkippable);
     }
     disableButtons();
+    MetricService.getInstance().recordUserCommandData(event.getAuthor().getIdLong(), "win_gplace");
   }
 
   @Override

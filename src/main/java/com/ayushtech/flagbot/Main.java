@@ -15,6 +15,7 @@ import com.ayushtech.flagbot.guessGame.GuessGameUtil;
 import com.ayushtech.flagbot.listeners.InteractionsListener;
 import com.ayushtech.flagbot.services.ChannelService;
 import com.ayushtech.flagbot.services.LanguageService;
+import com.ayushtech.flagbot.services.MetricService;
 import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.services.UtilService;
 import com.ayushtech.flagbot.services.VotingService;
@@ -72,6 +73,7 @@ public class Main {
                 scheduler.scheduleAtFixedRate(() -> {
                         PatreonService.getInstance().updatePatronUsers();
                         VotingService.getInstance().renewVoterData();
+                        MetricService.getInstance().flush();
                         System.gc();
                 }, 10, 10, TimeUnit.MINUTES);
 

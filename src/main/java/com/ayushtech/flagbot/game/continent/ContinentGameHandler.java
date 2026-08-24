@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
 import com.ayushtech.flagbot.guessGame.GuessGameUtil;
+import com.ayushtech.flagbot.services.MetricService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
@@ -84,7 +85,7 @@ public class ContinentGameHandler {
         .sendMessageEmbeds(getNotificationEmbedAsWin(user.getIdLong(), country, correctContinent, userBalance))
         .addComponents(ActionRow.of(Button.primary("playAgainContinent", "Play Again")))
         .queue();
-
+    MetricService.getInstance().recordUserCommandData(user.getIdLong(), "win_gcontinent");
   }
 
   private MessageEmbed getNotificationEmbedAsWin(long userId, String countryCode, String continentCode,

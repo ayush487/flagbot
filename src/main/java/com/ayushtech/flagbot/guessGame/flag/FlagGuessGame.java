@@ -11,6 +11,7 @@ import com.ayushtech.flagbot.guessGame.GuessGameHandler;
 import com.ayushtech.flagbot.guessGame.GuessGameUtil;
 import com.ayushtech.flagbot.services.GameEndService;
 import com.ayushtech.flagbot.services.LanguageService;
+import com.ayushtech.flagbot.services.MetricService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
@@ -124,6 +125,7 @@ public class FlagGuessGame implements GuessGame {
       startAgain(channel, difficulty, rounds - 1, roundSize, isSkippable, lang, continentCode);
     }
     disableButtons();
+    MetricService.getInstance().recordUserCommandData(event.getAuthor().getIdLong(), "win_gflag");
   }
 
   @Override

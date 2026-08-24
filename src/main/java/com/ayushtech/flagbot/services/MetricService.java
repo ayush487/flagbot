@@ -4,7 +4,11 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+
+import com.ayushtech.flagbot.dbconnectivity.ChannelDao;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -15,11 +19,18 @@ public class MetricService {
   private static MetricService metricService = null;
   private Map<String, AtomicLong> commandMetricMap;
   private long startingInstance;
+  private Map<Long, Map<String, AtomicInteger>> commandBuffer;
 
   private MetricService() {
     startingInstance = System.currentTimeMillis();
     commandMetricMap = new HashMap<>(38);
+    commandBuffer = new ConcurrentHashMap<>();
     loadCommandMetricMap();
+  }
+
+  public void flush() {
+    ChannelDao.getInstance().addCommandUsageData(commandBuffer);
+    commandBuffer.clear();
   }
 
   public static MetricService getInstance() {
@@ -110,8 +121,8 @@ public class MetricService {
     CompletableFuture.runAsync(() -> updateCommandData(event));
   }
 
-  public void registerCommandData(String command) {
-    CompletableFuture.runAsync(() -> updateCommandData(command));
+  public void registerCommandData(String command, long userId) {
+    CompletableFuture.runAsync(() -> updateCommandData(command, userId));
   }
 
   public void incrementCommandData(String commandName) {
@@ -129,30 +140,39 @@ public class MetricService {
         switch (event.getSubcommandName()) {
           case "flag":
             commandMetricMap.get("guess_flag").incrementAndGet();
+            recordUserCommandData(event.getUser().getIdLong(), "guess_flag");
             return;
           case "map":
             commandMetricMap.get("guess_map").incrementAndGet();
+            recordUserCommandData(event.getUser().getIdLong(), "guess_map");
             return;
           case "logo":
             commandMetricMap.get("guess_logo").incrementAndGet();
+            recordUserCommandData(event.getUser().getIdLong(), "guess_logo");
             return;
           case "place":
             commandMetricMap.get("guess_place").incrementAndGet();
+            recordUserCommandData(event.getUser().getIdLong(), "guess_place");
             return;
           case "capital":
             commandMetricMap.get("guess_capital").incrementAndGet();
+            recordUserCommandData(event.getUser().getIdLong(), "guess_capital");
             return;
           case "distance":
             commandMetricMap.get("guess_distance").incrementAndGet();
+            recordUserCommandData(event.getUser().getIdLong(), "guess_distance");
             return;
           case "location":
             commandMetricMap.get("guess_location").incrementAndGet();
+            recordUserCommandData(event.getUser().getIdLong(), "guess_location");
             return;
           case "state_flag":
             commandMetricMap.get("guess_stateflag").incrementAndGet();
+            recordUserCommandData(event.getUser().getIdLong(), "guess_state_flag");
             return;
           default:
             commandMetricMap.get("guess_continent").incrementAndGet();
+            recordUserCommandData(event.getUser().getIdLong(), "guess_continent");
             return;
         }
       }
@@ -160,15 +180,19 @@ public class MetricService {
         switch (event.getSubcommandName()) {
           case "flags":
             commandMetricMap.get("race_flags").incrementAndGet();
+            recordUserCommandData(event.getUser().getIdLong(), "race_flag");
             return;
           case "maths":
             commandMetricMap.get("race_maths").incrementAndGet();
+            recordUserCommandData(event.getUser().getIdLong(), "race_maths");
             return;
           case "logo":
             commandMetricMap.get("race_logo").incrementAndGet();
+            recordUserCommandData(event.getUser().getIdLong(), "race_logo");
             return;
           default:
             commandMetricMap.get("race_maps").incrementAndGet();
+            recordUserCommandData(event.getUser().getIdLong(), "race_map");
             return;
         }
       }
@@ -199,41 +223,51 @@ public class MetricService {
         return;
       case "give":
         commandMetricMap.get("give_coins").incrementAndGet();
+        recordUserCommandData(event.getUser().getIdLong(), "give_coins");
         return;
       case "balance":
         commandMetricMap.get("balance").incrementAndGet();
+        recordUserCommandData(event.getUser().getIdLong(), "balance");
         return;
       case "crossword":
         commandMetricMap.get("crossword_slash").incrementAndGet();
+        recordUserCommandData(event.getUser().getIdLong(), "crossword");
         return;
       case "crossduel":
         commandMetricMap.get("crossduel_slash").incrementAndGet();
+        recordUserCommandData(event.getUser().getIdLong(), "crossduel");
         return;
       case "slots":
         commandMetricMap.get("slots_slash").incrementAndGet();
+        recordUserCommandData(event.getUser().getIdLong(), "slots");
         return;
       case "mines":
         commandMetricMap.get("mines_slash").incrementAndGet();
+        recordUserCommandData(event.getUser().getIdLong(), "mines");
         return;
       case "prefix":
         commandMetricMap.get("prefix_command").incrementAndGet();
         return;
       case "coinflip":
         commandMetricMap.get("coinflip_slash").incrementAndGet();
+        recordUserCommandData(event.getUser().getIdLong(), "coinflip");
         return;
       case "atlas":
         switch (event.getSubcommandName()) {
           case "classic":
             commandMetricMap.get("atlas_classic").incrementAndGet();
+            recordUserCommandData(event.getUser().getIdLong(), "atlas_classic");
             return;
           case "quick":
             commandMetricMap.get("atlas_quick").incrementAndGet();
+            recordUserCommandData(event.getUser().getIdLong(), "atlas_quick");
             return;
           case "help":
             commandMetricMap.get("atlas_help").incrementAndGet();
             return;
           default:
             commandMetricMap.get("atlas_rapid").incrementAndGet();
+            recordUserCommandData(event.getUser().getIdLong(), "atlas_rapid");
             return;
         }
       default:
@@ -245,42 +279,56 @@ public class MetricService {
     String buttonId = event.getComponentId();
     if (buttonId.startsWith("playAgainFlag")) {
       commandMetricMap.get("play_flag").incrementAndGet();
+      recordUserCommandData(event.getUser().getIdLong(), "guess_flag");
     } else if (buttonId.startsWith("playAgainMap")) {
       commandMetricMap.get("play_map").incrementAndGet();
+      recordUserCommandData(event.getUser().getIdLong(), "guess_map");
     } else if (buttonId.startsWith("playAgainLogo")) {
       commandMetricMap.get("play_logo").incrementAndGet();
+      recordUserCommandData(event.getUser().getIdLong(), "guess_logo");
     } else if (buttonId.startsWith("playAgainPlace")) {
       commandMetricMap.get("play_place").incrementAndGet();
+      recordUserCommandData(event.getUser().getIdLong(), "guess_place");
     } else if (buttonId.startsWith("playAgainContinent")) {
       commandMetricMap.get("play_continent").incrementAndGet();
+      recordUserCommandData(event.getUser().getIdLong(), "guess_continent");
     } else if (buttonId.startsWith("playAgainLocation")) {
       commandMetricMap.get("play_location").incrementAndGet();
+      recordUserCommandData(event.getUser().getIdLong(), "guess_location");
     } else if (buttonId.startsWith("playAgainCapital")) {
       commandMetricMap.get("play_capital").incrementAndGet();
+      recordUserCommandData(event.getUser().getIdLong(), "guess_capital");
     } else if (buttonId.startsWith("playAgainStateFlag")) {
       commandMetricMap.get("play_stateflag").incrementAndGet();
+      recordUserCommandData(event.getUser().getIdLong(), "guess_state_flag");
     } else if (buttonId.startsWith("newCrossword")) {
       commandMetricMap.get("crossword_button").incrementAndGet();
+      recordUserCommandData(event.getUser().getIdLong(), "crossword");
     }
     return;
   }
 
-  private void updateCommandData(String command) {
+  private void updateCommandData(String command, long userId) {
     switch (command) {
       case "slots":
         commandMetricMap.get("slots_prefix").incrementAndGet();
+        recordUserCommandData(userId, "slots");
         break;
       case "coinflip":
         commandMetricMap.get("coinflip_prefix").incrementAndGet();
+        recordUserCommandData(userId, "coinflip");
         break;
       case "mines":
         commandMetricMap.get("mines_prefix").incrementAndGet();
+        recordUserCommandData(userId, "mines");
         break;
       case "crossword":
         commandMetricMap.get("crossword_prefix").incrementAndGet();
+        recordUserCommandData(userId, "crossword");
         break;
       case "balance":
         commandMetricMap.get("balance_prefix").incrementAndGet();
+        recordUserCommandData(userId, "balance");
         break;
       case "leaderboard":
         commandMetricMap.get("leaderboard_prefix").incrementAndGet();
@@ -293,6 +341,7 @@ public class MetricService {
         break;
       case "crossduel":
         commandMetricMap.get("crossduel_prefix").incrementAndGet();
+        recordUserCommandData(userId, "crossduel");
         break;
       case "vote":
         commandMetricMap.get("vote_prefix").incrementAndGet();
@@ -300,6 +349,12 @@ public class MetricService {
       default:
         break;
     }
+  }
+
+  public void recordUserCommandData(long userId, String commandName) {
+    commandBuffer.computeIfAbsent(userId, key -> new HashMap<>())
+        .computeIfAbsent(commandName, key -> new AtomicInteger())
+        .incrementAndGet();
   }
 
   private void loadCommandMetricMap() {
