@@ -60,7 +60,7 @@ public class CSVFileReader {
         thaiMap.put(records[0], records[14]);
       }
     } catch (IOException e) {
-      System.out.print("\n\n--------------------\nFailed to ready country-names.csv\nTerminating the Application\n----------------------\n");
+      System.out.print("\n\n--------------------\nFailed to read country-names.csv\nTerminating the Application\n----------------------\n");
       System.exit(0);
     }
     Map<String, Map<String, String>> languageMap = new HashMap<>(13);

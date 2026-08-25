@@ -20,17 +20,21 @@ public class MetricService {
   private Map<String, AtomicLong> commandMetricMap;
   private long startingInstance;
   private Map<Long, Map<String, AtomicInteger>> commandBuffer;
+  private Map<Long, Map<String, AtomicInteger>> gamblingStatsMap;
 
   private MetricService() {
     startingInstance = System.currentTimeMillis();
     commandMetricMap = new HashMap<>(38);
     commandBuffer = new ConcurrentHashMap<>();
+    gamblingStatsMap = new HashMap<>();
     loadCommandMetricMap();
   }
 
   public void flush() {
     ChannelDao.getInstance().addCommandUsageData(commandBuffer);
     commandBuffer.clear();
+    ChannelDao.getInstance().addGamblingStats(gamblingStatsMap);
+    gamblingStatsMap.clear();
   }
 
   public static MetricService getInstance() {
@@ -355,6 +359,13 @@ public class MetricService {
     commandBuffer.computeIfAbsent(userId, key -> new HashMap<>())
         .computeIfAbsent(commandName, key -> new AtomicInteger())
         .incrementAndGet();
+  }
+
+  public void updateGambleStats(long userId, String cmdName, boolean isWin, int amount) {
+    cmdName += isWin ? "_win" : "_lose";
+    Map<String, AtomicInteger> userStats = gamblingStatsMap.computeIfAbsent(userId, k -> new HashMap<>());
+    userStats.computeIfAbsent(cmdName + "_amount", k -> new AtomicInteger()).addAndGet(amount);
+    userStats.computeIfAbsent(cmdName + "_count", k -> new AtomicInteger()).incrementAndGet();
   }
 
   private void loadCommandMetricMap() {

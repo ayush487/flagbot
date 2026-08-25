@@ -139,6 +139,25 @@ public class ChannelDao {
 		}
 	}
 
+	public void addGamblingStats(Map<Long, Map<String, AtomicInteger>> gamblingStatsMap) {
+		if (gamblingStatsMap.isEmpty())
+			return;
+		String sqlUnformatted = "INSERT INTO gambling_stats(user_id, %s) VALUES (%d, %d) ON DUPLICATE KEY UPDATE %s = %s + VALUES(%s)";
+		try (Connection conn = ConnectionProvider.getConnection()) {
+			Statement stmt = conn.createStatement();
+			for (long userId : gamblingStatsMap.keySet()) {
+				Map<String, AtomicInteger> userData = gamblingStatsMap.get(userId);
+				for (String column : userData.keySet()) {
+					stmt.addBatch(String.format(sqlUnformatted, column, userId, userData.get(column).get(), column,
+							column, column));
+				}
+			}
+			stmt.executeBatch();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private String getQueryToAddMultipleChannels(List<Long> channelIdList) {
 		String query = channelIdList.stream()
 				.filter(cId -> !ChannelService.getInstance().isChannelDisabled(cId))

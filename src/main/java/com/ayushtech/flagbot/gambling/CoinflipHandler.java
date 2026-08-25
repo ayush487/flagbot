@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
+import com.ayushtech.flagbot.services.MetricService;
 import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.utils.Constants;
 import com.ayushtech.flagbot.utils.LRUCache;
@@ -74,12 +75,13 @@ public class CoinflipHandler {
             if (choosenFinal.equals(outcomeSide)) {
                 finalMsg = generateFinalWinMessage(name, amount, choosenFinal, outcomeEmoji);
                 CoinDao.getInstance().addCoins(userId, amount);
+                MetricService.getInstance().updateGambleStats(userId, "coinflip", true, (int) amount);
             } else {
                 finalMsg = generateFinalLoseMessage(name, amount, choosenFinal, outcomeEmoji);
                 CoinDao.getInstance().addCoins(userId, amount * -1);
+                MetricService.getInstance().updateGambleStats(userId, "coinflip", false, (int) amount);
             }
             m.editMessage(finalMsg).queueAfter(2, TimeUnit.SECONDS);
-
         });
     }
 
@@ -125,9 +127,11 @@ public class CoinflipHandler {
             if (choosenFinal.equals(outcomeSide)) {
                 finalMsg = generateFinalWinMessage(name, amount, choosenFinal, outcomeEmoji);
                 CoinDao.getInstance().addCoins(userId, amount);
+                MetricService.getInstance().updateGambleStats(userId, "coinflip", true, (int) amount);
             } else {
                 finalMsg = generateFinalLoseMessage(name, amount, choosenFinal, outcomeEmoji);
                 CoinDao.getInstance().addCoins(userId, amount * -1);
+                MetricService.getInstance().updateGambleStats(userId, "coinflip", false, (int) amount);
             }
             m.editMessage(finalMsg).queueAfter(2, TimeUnit.SECONDS);
         });

@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
+import com.ayushtech.flagbot.services.MetricService;
 import com.ayushtech.flagbot.services.PatreonService;
 import com.ayushtech.flagbot.utils.Constants;
 import com.ayushtech.flagbot.utils.LRUCache;
@@ -62,7 +63,8 @@ public class SlotsHandler {
         long amount = checkAmount(amountOption.getAsLong());
         long userBalance = CoinDao.getInstance().getBalance(userId);
         if (userBalance < amount) {
-            event.getHook().sendMessage("🪙 **You don't have enough coins to gamble!** Your balance is too low.").queue();
+            event.getHook().sendMessage("🪙 **You don't have enough coins to gamble!** Your balance is too low.")
+                    .queue();
             return;
         }
         rateLimitCache.put(userId, System.currentTimeMillis());
@@ -84,6 +86,10 @@ public class SlotsHandler {
             m.editMessage(getSlotImage(card1, 7, card3, initText, "")).queueAfter(2, TimeUnit.SECONDS);
             m.editMessage(getSlotImage(card1, card2, card3, initText, finalText)).queueAfter(3, TimeUnit.SECONDS);
         });
+        if (payout == 0.0)
+            MetricService.getInstance().updateGambleStats(userId, "slot", false, (int) amount);
+        else
+            MetricService.getInstance().updateGambleStats(userId, "slot", true, (int) (finalAmount - amount));
     }
 
     public void handleSlotsPrefixCommand(MessageReceivedEvent event, String[] commandData) {
@@ -101,19 +107,21 @@ public class SlotsHandler {
             return;
         }
         if (commandData.length < 2) {
-            msg.reply("⚠️ **Specify the amount!** — try `f!slots 100`").queue(m -> m.delete().queueAfter(3000, TimeUnit.MILLISECONDS));
+            msg.reply("⚠️ **Specify the amount!** — try `f!slots 100`")
+                    .queue(m -> m.delete().queueAfter(3000, TimeUnit.MILLISECONDS));
             return;
         }
         Optional<Long> amountOptional = parse(commandData[1]);
         if (amountOptional.isEmpty()) {
-            msg.reply("❌ **Invalid arguments!** — usage: `f!slots <amount>`").queue(m -> m.delete().queueAfter(3000, TimeUnit.MILLISECONDS));
+            msg.reply("❌ **Invalid arguments!** — usage: `f!slots <amount>`")
+                    .queue(m -> m.delete().queueAfter(3000, TimeUnit.MILLISECONDS));
             return;
         }
         long amount = checkAmount(amountOptional.get());
         long userBalance = CoinDao.getInstance().getBalance(userId);
         if (userBalance < amount) {
             channel.sendMessage("🪙 **You don't have enough coins to gamble!** Your balance is too low.")
-            .queue(m -> m.delete().queueAfter(3000, TimeUnit.MILLISECONDS));
+                    .queue(m -> m.delete().queueAfter(3000, TimeUnit.MILLISECONDS));
             return;
         }
         rateLimitCache.put(userId, System.currentTimeMillis());
@@ -135,6 +143,10 @@ public class SlotsHandler {
             m.editMessage(getSlotImage(card1, 7, card3, initText, "")).queueAfter(2, TimeUnit.SECONDS);
             m.editMessage(getSlotImage(card1, card2, card3, initText, finalText)).queueAfter(3, TimeUnit.SECONDS);
         });
+        if (payout == 0.0)
+            MetricService.getInstance().updateGambleStats(userId, "slot", false, (int) amount);
+        else
+            MetricService.getInstance().updateGambleStats(userId, "slot", true, (int) (finalAmount - amount));
     }
 
     private Optional<Long> parse(String num) {

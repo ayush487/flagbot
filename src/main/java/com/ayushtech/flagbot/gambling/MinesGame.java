@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.Random;
 
 import com.ayushtech.flagbot.dbconnectivity.CoinDao;
+import com.ayushtech.flagbot.services.MetricService;
 
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
@@ -73,7 +74,6 @@ public class MinesGame {
             title = "💎 GEM DISCOVERED!";
             if (minesExplored == 9 - mines)
                 endGameAsWin();
-
         }
         message.editMessageComponents(getComponent(this, title)).useComponentsV2().queue();
     }
@@ -105,11 +105,13 @@ public class MinesGame {
         isGameActive = false;
         CoinDao.getInstance().addCoins(userId, winningAmount);
         MinesHandler.getInstance().removeGame(userId);
+        MetricService.getInstance().updateGambleStats(userId, "mines", true, (int) (winningAmount - amount));
     }
 
     private void endGameAsLose() {
         isGameActive = false;
         MinesHandler.getInstance().removeGame(userId);
+        MetricService.getInstance().updateGambleStats(userId, "mines", false, (int) amount);
     }
 
     private void setMessage(Message msg) {

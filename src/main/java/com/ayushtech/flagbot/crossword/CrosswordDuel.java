@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+import com.ayushtech.flagbot.services.MetricService;
 import com.ayushtech.flagbot.services.UtilService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -112,10 +113,12 @@ public class CrosswordDuel {
         String description;
         if (player1Points > player2Points) {
             winner = player1;
-            description = String.format("The Crossduel has ended due to time running out! <@%d> wins with more points! 🏆", winner);
+            description = String
+                    .format("The Crossduel has ended due to time running out! <@%d> wins with more points! 🏆", winner);
         } else if (player2Points > player1Points) {
             winner = player2;
-            description = String.format("The Crossduel has ended due to time running out! <@%d> wins with more points! 🏆", winner);
+            description = String
+                    .format("The Crossduel has ended due to time running out! <@%d> wins with more points! 🏆", winner);
         } else {
             description = "The Crossduel has ended due to time running out! It's a tie! 🤝";
         }
@@ -154,11 +157,7 @@ public class CrosswordDuel {
                 .setComponents(ActionRow.of(winningPlayerId == 0 ? Button.secondary("compl", "Duel Tied").asDisabled()
                         : Button.success("complete", "Duel Completed").asDisabled()))
                 .queue();
-        // try {
-        // LevelsDao.getInstance().promoteUserLevel(userId, levelNumber);
-        // } catch (SQLException e) {
-        // e.printStackTrace();
-        // }
+        MetricService.getInstance().recordUserCommandData(winningPlayerId, "crossduel_win");
     }
 
     private void updateEmbed() {
