@@ -27,8 +27,8 @@ public class SlotsHandler {
 
     private final String[] cards = { ":bell:", ":cherries:", ":lemon:", ":four_leaf_clover:", ":gem:", ":seven:" };
     private static final int[] RATES = { 35, 25, 16, 10, 8, 6 };
-    private final double[] pairPayouts = { 1.25, 1.55, 2.1, 2.6, 3.1, 4.0 };
-    private final double[] trioPayouts = { 2.1, 3.1, 5.2, 7.2, 10.5, 15.0 };
+    private final double[] pairPayouts = { 1.0, 1.5, 2, 2.5, 3, 4.0 };
+    private final double[] trioPayouts = { 2, 5, 10, 15, 25,  40 };
     private final Map<String, String> slotEmojis;
     private Random random;
 
