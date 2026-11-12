@@ -23,21 +23,6 @@ public class PlacesDao {
     return placesDao;
   }
 
-  public List<String> getPlacesCodeList() {
-    try (Connection conn = ConnectionProvider.getConnection()) {
-      Statement stmt = conn.createStatement();
-      ResultSet rs = stmt.executeQuery("SELECT code FROM places;");
-      List<String> list = new ArrayList<>();
-      while (rs.next()) {
-        list.add(rs.getString("code"));
-      }
-      return list;
-    } catch (SQLException e) {
-      e.printStackTrace();
-      return new ArrayList<>();
-    }
-  }
-
   public List<Place> getPlacesList() {
     try (Connection conn = ConnectionProvider.getConnection()) {
       Statement stmt = conn.createStatement();

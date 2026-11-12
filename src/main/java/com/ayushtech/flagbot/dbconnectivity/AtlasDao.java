@@ -14,7 +14,7 @@ public class AtlasDao {
 
   private AtlasDao() {
     random = new Random();
-  };
+  }
 
   public static AtlasDao getInstance() {
     if (atlasDao == null) {
@@ -25,7 +25,7 @@ public class AtlasDao {
 
   public AtlasQuestion getQuestion() {
     int qId = random.nextInt(375) + 1;
-    ;
+
     try (Connection conn = ConnectionProvider.getConnection()){
       Statement stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery("SELECT question, answers FROM atlas_quiz WHERE qId=" + qId + ";");

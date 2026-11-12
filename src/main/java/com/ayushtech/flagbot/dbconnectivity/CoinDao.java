@@ -43,19 +43,6 @@ public class CoinDao {
         }
     }
 
-    public void addCwCoins(long userId, int cwCoins) {
-        try (Connection conn = ConnectionProvider.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(
-                    "insert into user_table (user_id, cw_coins) values (? , ?) on duplicate key update cw_coins = cw_coins + ?;");
-            ps.setLong(1, userId);
-            ps.setInt(2, cwCoins);
-            ps.setInt(3, cwCoins);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void addCoins(long userId, long coins, int cwCoins) {
         long userBalance = getBalance(userId);
         coinCache.put(userId, userBalance+coins);
@@ -103,7 +90,7 @@ public class CoinDao {
             return coin;
         } catch (Exception e) {
             e.printStackTrace();
-            return 0l;
+            return 0L;
         }
     }
 
@@ -152,13 +139,12 @@ public class CoinDao {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        long[] returnArr = { 0, 0, 999999l };
-        return returnArr;
+        return new long[]{ 0, 0, 999999L };
 
     }
 
     public long resetUserCoins(long userId) {
-        coinCache.put(userId, 0l);
+        coinCache.put(userId, 0L);
         try (Connection conn = ConnectionProvider.getConnection()) {
             PreparedStatement ps1 = conn.prepareStatement("Select coins from user_table where user_id=?");
             ps1.setLong(1, userId);

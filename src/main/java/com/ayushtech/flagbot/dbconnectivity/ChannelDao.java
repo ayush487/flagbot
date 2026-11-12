@@ -28,22 +28,6 @@ public class ChannelDao {
 		return channelDao;
 	}
 
-	public boolean isChannelDisabled(Long channelId) {
-		try (Connection conn = ConnectionProvider.getConnection()) {
-			PreparedStatement ps = conn.prepareStatement("select channel from disabled_channels where channel=?;");
-			ps.setLong(1, channelId);
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				return true;
-			} else {
-				return false;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
 	public boolean addDisableChannel(Long channelId) {
 		try (Connection conn = ConnectionProvider.getConnection()) {
 			PreparedStatement ps = conn.prepareStatement("Insert into disabled_channels (channel) values (?);");
@@ -159,10 +143,9 @@ public class ChannelDao {
 	}
 
 	private String getQueryToAddMultipleChannels(List<Long> channelIdList) {
-		String query = channelIdList.stream()
+		return channelIdList.stream()
 				.filter(cId -> !ChannelService.getInstance().isChannelDisabled(cId))
 				.map(cid -> "(" + cid + ")")
 				.collect(Collectors.joining(",", "Insert into disabled_channels (channel) values ", ";"));
-		return query;
 	}
 }

@@ -100,13 +100,6 @@ public class GuessGameUtil {
     return placeList.get(random.nextInt(placeList.size()));
   }
 
-  // public String getMapImage(String countryName) {
-  //   countryName = mapImageOverrideMap.containsKey(countryName)
-  //       ? mapImageOverrideMap.get(countryName)
-  //       : countryName.toLowerCase().replace(' ', '_');
-  //   return String.format("https://maps.lib.utexas.edu/maps/cia16/%s_sm_2016.gif", countryName);
-  // }
-
   public String getMapImage(String code) {
     return "https://raw.githubusercontent.com/ayush487/image-library/refs/heads/main/maps/" + code + ".gif";
   }
