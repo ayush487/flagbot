@@ -59,7 +59,7 @@ public class Main {
 
                 DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createLight(bot_token,
                                 EnumSet.of(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES,
-                                                GatewayIntent.DIRECT_MESSAGES));
+                                                GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS));
                 builder.setActivity(Activity.playing("/crossduel"));
                 builder.disableCache(EnumSet.of(CacheFlag.VOICE_STATE, CacheFlag.EMOJI, CacheFlag.STICKER,
                                 CacheFlag.SCHEDULED_EVENTS));

@@ -38,6 +38,8 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class InteractionsListener extends ListenerAdapter {
@@ -47,7 +49,6 @@ public class InteractionsListener extends ListenerAdapter {
 	private static String WEBHOOK_URL = "";
 	private final long vote_notifs_channel = 1190982948804100108l;
 	private Map<String, String> alternateNamesMap;
-	private String[] keywords = { "link", "games", "download game" };
 	private long privateServerId = 1465232854681129065l;
 	private long newPledgeChannel = 1263027212194414644l;
 	private long updatePledgeChannel = 1263027292322529301l;
@@ -62,6 +63,15 @@ public class InteractionsListener extends ListenerAdapter {
 
 	public static void setJoinUpdateWebhookUrl(String url) {
 		WEBHOOK_URL = url;
+	}
+
+	@Override
+	public void onMessageReactionAdd(MessageReactionAddEvent event) {
+		if (!event.isFromGuild() || event.getUser().isBot()) return;
+		long guildId = event.getGuild().getIdLong();
+		if (guildId==privateServerId) {
+			PrivateServerService.getInstance().handleEventAddReactions(event);
+		}
 	}
 
 	@Override
@@ -82,8 +92,7 @@ public class InteractionsListener extends ListenerAdapter {
 		if (event.getAuthor().isBot())
 			return;
 
-		if (event.isFromGuild() && event.getGuild().getIdLong() == privateServerId
-				&& isContainKeyword(event.getMessage().getContentDisplay().toLowerCase())) {
+		if (event.isFromGuild() && event.getGuild().getIdLong() == privateServerId) {
 			PrivateServerService.getInstance().handleMessage(event);
 		}
 
@@ -157,8 +166,8 @@ public class InteractionsListener extends ListenerAdapter {
 			return;
 		}
 
-		else if (slashCommandName.equals("vcping")) {
-			PrivateServerService.getInstance().handleVcPingCommand(event);
+		else if (slashCommandName.equals("event")) {
+			PrivateServerService.getInstance().handleEventCommand(event);
 			return;
 		}
 
@@ -609,13 +618,7 @@ public class InteractionsListener extends ListenerAdapter {
 				"Flagbot Leaved server : **" + event.getGuild().getName() + "**");
 	}
 
-	private boolean isContainKeyword(String message) {
-		for (String keyword : keywords) {
-			if (message.contains(keyword))
-				return true;
-		}
-		return false;
-	}
+
 
 	private void loadAlternateNames() {
 		alternateNamesMap.put("uae", "United Arab Emirates");
